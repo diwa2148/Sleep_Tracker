@@ -27,24 +27,30 @@ class RecoveryDebtCard extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Row(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(6),
-                    decoration: BoxDecoration(
-                      color: AppColors.positive.withValues(alpha: 0.12),
-                      borderRadius: BorderRadius.circular(6),
+              Expanded(
+                child: Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(6),
+                      decoration: BoxDecoration(
+                        color: AppColors.positive.withValues(alpha: 0.12),
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                      child: const Icon(Icons.battery_charging_full_rounded,
+                          size: 16, color: AppColors.positive),
                     ),
-                    child: const Icon(Icons.battery_charging_full_rounded,
-                        size: 16, color: AppColors.positive),
-                  ),
-                  const SizedBox(width: 8),
-                  Text(
-                    'Recovery & Readiness Index',
-                    style: AppTypography.titleMedium(isDark),
-                  ),
-                ],
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        'Recovery & Readiness',
+                        style: AppTypography.titleMedium(isDark),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ],
+                ),
               ),
+              const SizedBox(width: 8),
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                 decoration: BoxDecoration(

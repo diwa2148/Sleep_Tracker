@@ -57,7 +57,7 @@ class SleepTrackerProvider with ChangeNotifier {
       _sessions = await _sleepRepo.getAllSessions();
       _activeSession = await _sleepRepo.getActiveSession();
 
-      if (_sessions.isEmpty) {
+      if (_sessions.isEmpty && _sleepRepo is SqliteSleepRepository) {
         final now = DateTime.now();
         final seedSessions = [
           SleepSession(

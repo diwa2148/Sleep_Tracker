@@ -66,20 +66,25 @@ class DashboardScreen extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          _getGreeting(),
-                          style: AppTypography.headlineMedium(isDark),
-                        ),
-                        const SizedBox(height: 2),
-                        Text(
-                          DateTimeFormatter.formatFullDate(DateTime.now()),
-                          style: AppTypography.bodySmall(isDark),
-                        ),
-                      ],
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            _getGreeting(),
+                            style: AppTypography.headlineMedium(isDark),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          const SizedBox(height: 2),
+                          Text(
+                            DateTimeFormatter.formatFullDate(DateTime.now()),
+                            style: AppTypography.bodySmall(isDark),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ],
+                      ),
                     ),
+                    const SizedBox(width: 8),
                     // Goal Indicator Badge
                     Container(
                       padding: const EdgeInsets.symmetric(
@@ -299,20 +304,25 @@ class DashboardScreen extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Tonight\'s Schedule Target',
-                      style: AppTypography.titleMedium(isDark),
-                    ),
-                    const SizedBox(height: 2),
-                    Text(
-                      'Target rest: ${goalMinutes ~/ 60}h | Live tracking ready',
-                      style: AppTypography.bodySmall(isDark),
-                    ),
-                  ],
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'No Sleep Recorded Yet',
+                        style: AppTypography.titleMedium(isDark),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        'Tonight\'s Target: ${goalMinutes ~/ 60}h | Live tracking ready',
+                        style: AppTypography.bodySmall(isDark),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
+                  ),
                 ),
+                const SizedBox(width: 8),
                 Container(
                   padding:
                       const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
@@ -425,19 +435,23 @@ class DashboardScreen extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    relativeDate,
-                    style: AppTypography.titleMedium(isDark),
-                  ),
-                  Text(
-                    DateTimeFormatter.formatSessionInterval(
-                        session.startTimestamp, session.endTimestamp),
-                    style: AppTypography.bodySmall(isDark),
-                  ),
-                ],
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      relativeDate,
+                      style: AppTypography.titleMedium(isDark),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    Text(
+                      DateTimeFormatter.formatSessionInterval(
+                          session.startTimestamp, session.endTimestamp),
+                      style: AppTypography.bodySmall(isDark),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
+                ),
               ),
               IconButton(
                 icon: const Icon(Icons.edit_outlined, size: 18),

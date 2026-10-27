@@ -29,24 +29,30 @@ class RecentSessionsListCard extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Row(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(6),
-                    decoration: BoxDecoration(
-                      color: AppColors.primary.withValues(alpha: 0.12),
-                      borderRadius: BorderRadius.circular(6),
+              Expanded(
+                child: Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(6),
+                      decoration: BoxDecoration(
+                        color: AppColors.primary.withValues(alpha: 0.12),
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                      child: const Icon(Icons.history_toggle_off_rounded,
+                          size: 16, color: AppColors.primary),
                     ),
-                    child: const Icon(Icons.history_toggle_off_rounded,
-                        size: 16, color: AppColors.primary),
-                  ),
-                  const SizedBox(width: 8),
-                  Text(
-                    'Recent Sleep Sessions',
-                    style: AppTypography.titleMedium(isDark),
-                  ),
-                ],
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        'Recent Sessions',
+                        style: AppTypography.titleMedium(isDark),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ],
+                ),
               ),
+              const SizedBox(width: 8),
               InkWell(
                 onTap: onSeeAll,
                 borderRadius: BorderRadius.circular(4),

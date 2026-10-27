@@ -34,8 +34,8 @@ class _AndroidEmulatorFrameState extends State<AndroidEmulatorFrame> {
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
 
-    // If already on a native mobile screen (e.g. physical Android phone or narrow window)
-    if (screenSize.width <= 480) {
+    // If already on a native mobile screen (e.g. physical Android phone, narrow window, or test runner)
+    if (screenSize.width <= 600 || screenSize.height <= 650) {
       return widget.child;
     }
 
