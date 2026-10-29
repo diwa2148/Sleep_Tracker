@@ -30,6 +30,11 @@ class SleepStats {
   final SleepSession? longestSession;
   final List<DailySleepSummary> dailySummaries;
 
+  // Real-time calculated physiological recovery metrics
+  final int sleepDebtMinutes; // positive = deficit, negative = surplus
+  final int sleepEfficiencyPercentage; // 0 - 100
+  final int currentStreak; // consecutive days hitting sleep goal
+
   // Comparison metrics against previous period (optional)
   final int? previousPeriodAverageDurationMinutes;
   final int? durationDifferenceMinutes; // positive = increased sleep
@@ -45,6 +50,9 @@ class SleepStats {
     this.shortestSession,
     this.longestSession,
     this.dailySummaries = const [],
+    this.sleepDebtMinutes = 0,
+    this.sleepEfficiencyPercentage = 0,
+    this.currentStreak = 0,
     this.previousPeriodAverageDurationMinutes,
     this.durationDifferenceMinutes,
   });
@@ -62,6 +70,9 @@ class SleepStats {
       shortestSession: null,
       longestSession: null,
       dailySummaries: [],
+      sleepDebtMinutes: 0,
+      sleepEfficiencyPercentage: 0,
+      currentStreak: 0,
     );
   }
 
@@ -88,6 +99,26 @@ class SleepStats {
     if (averageWakeMinutes == null) return '--';
     return _formatMinutesOfDay(averageWakeMinutes!);
   }
+
+  /// Formatted sleep debt string, e.g. "45m debt", "1h 15m debt", or "+20m surplus".
+  String get formattedSleepDebt {
+    if (isEmpty) return '0m';
+    if (sleepDebtMinutes > 0) {
+      final h = sleepDebtMinutes ~/ 60;
+      final m = sleepDebtMinutes % 60;
+      if (h > 0) return '${h}h ${m}m debt';
+      return '${m}m debt';
+    } else if (sleepDebtMinutes < 0) {
+      final surplus = sleepDebtMinutes.abs();
+      final h = surplus ~/ 60;
+      final m = surplus % 60;
+      if (h > 0) return '+${h}h ${m}m';
+      return '+${m}m';
+    }
+    return '0m';
+  }
+
+  bool get hasSleepDebt => sleepDebtMinutes > 15;
 
   static String _formatMinutesOfDay(int minutes) {
     int h = (minutes ~/ 60) % 24;

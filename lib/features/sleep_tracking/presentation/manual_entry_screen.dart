@@ -88,6 +88,34 @@ class _ManualEntryScreenState extends State<ManualEntryScreen> {
 
   Duration get _currentDuration => _endDateTime.difference(_startDateTime);
 
+  static const _quickFactors = [
+    '☕ Caffeine',
+    '🏃 Workout',
+    '📱 Late Screen',
+    '📖 Reading',
+    '🧘 Meditated',
+    '❄️ Cool Room',
+    '🍷 Alcohol',
+    '⚡ Stress',
+  ];
+
+  void _toggleFactor(String factor) {
+    final currentText = _notesController.text;
+    if (currentText.contains(factor)) {
+      var updated = currentText.replaceAll(factor, '').trim();
+      updated = updated.replaceAll(RegExp(r',\s*,'), ',');
+      updated = updated.replaceAll(RegExp(r'^,\s*|,\s*$'), '');
+      _notesController.text = updated;
+    } else {
+      if (currentText.trim().isEmpty) {
+        _notesController.text = factor;
+      } else {
+        _notesController.text = '${currentText.trim()}, $factor';
+      }
+    }
+    setState(() {});
+  }
+
   Future<void> _pickStartDate() async {
     final picked = await showDatePicker(
       context: context,
@@ -98,6 +126,9 @@ class _ManualEntryScreenState extends State<ManualEntryScreen> {
     if (picked != null) {
       setState(() {
         _startDate = picked;
+        if (_endDate.isBefore(picked)) {
+          _endDate = picked;
+        }
         _validate();
       });
     }
@@ -399,8 +430,53 @@ class _ManualEntryScreenState extends State<ManualEntryScreen> {
               ),
               const SizedBox(height: 24),
 
+              // Quick Factor Tags
+              Text('QUICK SLEEP FACTORS',
+                  style: AppTypography.labelSmall(isDark)
+                      .copyWith(letterSpacing: 1.1)),
+              const SizedBox(height: 8),
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: _quickFactors.map((factor) {
+                  final isSelected =
+                      _notesController.text.contains(factor);
+                  return FilterChip(
+                    label: Text(factor),
+                    selected: isSelected,
+                    onSelected: (_) => _toggleFactor(factor),
+                    selectedColor: AppColors.primary.withValues(alpha: 0.2),
+                    checkmarkColor: AppColors.primary,
+                    labelStyle: TextStyle(
+                      fontSize: 12,
+                      fontWeight:
+                          isSelected ? FontWeight.w600 : FontWeight.w500,
+                      color: isSelected
+                          ? AppColors.primary
+                          : (isDark
+                              ? AppColors.textSecondaryDark
+                              : AppColors.textSecondaryLight),
+                    ),
+                    backgroundColor: isDark
+                        ? AppColors.darkSurface
+                        : const Color(0xFFF1F5F9),
+                    side: BorderSide(
+                      color: isSelected
+                          ? AppColors.primary
+                          : (isDark
+                              ? AppColors.darkBorder
+                              : AppColors.lightBorder),
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                  );
+                }).toList(),
+              ),
+              const SizedBox(height: 18),
+
               // Notes Field
-              Text('NOTES & FACTORS',
+              Text('NOTES & OBSERVATIONS',
                   style: AppTypography.labelSmall(isDark)
                       .copyWith(letterSpacing: 1.1)),
               const SizedBox(height: 8),

@@ -30,11 +30,6 @@ class SettingsProvider with ChangeNotifier {
     notifyListeners();
     try {
       _preferences = await _prefsRepo.loadPreferences();
-      // Enforce light theme requirement
-      if (_preferences.themeMode != ThemeMode.light) {
-        _preferences = _preferences.copyWith(themeMode: ThemeMode.light);
-        await _prefsRepo.savePreferences(_preferences);
-      }
     } catch (e) {
       debugPrint('Failed to load preferences: $e');
     } finally {

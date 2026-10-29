@@ -30,8 +30,8 @@ class SomnaApp extends StatelessWidget {
             title: AppConfig.appName,
             debugShowCheckedModeBanner: false,
             theme: AppTheme.lightTheme,
-            darkTheme: AppTheme.lightTheme,
-            themeMode: ThemeMode.light,
+            darkTheme: AppTheme.darkTheme,
+            themeMode: settings.themeMode,
             localizationsDelegates: const [
               GlobalMaterialLocalizations.delegate,
               GlobalWidgetsLocalizations.delegate,

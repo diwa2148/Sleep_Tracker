@@ -7,11 +7,19 @@ import '../../../../core/widgets/somna_card.dart';
 class RecoveryDebtCard extends StatelessWidget {
   final int consistencyScore;
   final int totalSessions;
+  final String sleepDebt;
+  final bool hasSleepDebt;
+  final int sleepEfficiency;
+  final int streakDays;
 
   const RecoveryDebtCard({
     super.key,
     required this.consistencyScore,
     required this.totalSessions,
+    this.sleepDebt = '0m',
+    this.hasSleepDebt = false,
+    this.sleepEfficiency = 92,
+    this.streakDays = 0,
   });
 
   @override
@@ -95,9 +103,9 @@ class RecoveryDebtCard extends StatelessWidget {
                 child: _buildMetricItem(
                   icon: Icons.scale_rounded,
                   title: 'Sleep Debt',
-                  value: '+15m',
-                  subtext: 'Optimal balance',
-                  accentColor: AppColors.positive,
+                  value: sleepDebt,
+                  subtext: hasSleepDebt ? 'Rest deficit' : 'Optimal balance',
+                  accentColor: hasSleepDebt ? AppColors.warning : AppColors.positive,
                   isDark: isDark,
                 ),
               ),
@@ -106,8 +114,8 @@ class RecoveryDebtCard extends StatelessWidget {
                 child: _buildMetricItem(
                   icon: Icons.favorite_rounded,
                   title: 'Rest Continuity',
-                  value: '94%',
-                  subtext: 'High sleep quality',
+                  value: '$sleepEfficiency%',
+                  subtext: sleepEfficiency >= 85 ? 'High sleep quality' : 'Moderate rest',
                   accentColor: const Color(0xFF6366F1),
                   isDark: isDark,
                 ),
@@ -117,7 +125,7 @@ class RecoveryDebtCard extends StatelessWidget {
                 child: _buildMetricItem(
                   icon: Icons.local_fire_department_rounded,
                   title: 'Target Streak',
-                  value: '${totalSessions > 0 ? totalSessions : 5} Days',
+                  value: '${streakDays > 0 ? streakDays : (totalSessions > 0 ? 1 : 0)} Days',
                   subtext: 'In target window',
                   accentColor: AppColors.secondary,
                   isDark: isDark,

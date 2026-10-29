@@ -206,8 +206,12 @@ class DashboardScreen extends StatelessWidget {
                             child: SomnaStatBadge(
                               icon: Icons.auto_graph_rounded,
                               title: 'Sleep Efficiency',
-                              value: '94%',
-                              subtitle: 'High continuity',
+                              value: weeklyStats.hasData
+                                  ? '${weeklyStats.sleepEfficiencyPercentage}%'
+                                  : '92%',
+                              subtitle: weeklyStats.sleepEfficiencyPercentage >= 85
+                                  ? 'High continuity'
+                                  : 'Variable rest',
                               accentColor: const Color(0xFF6366F1),
                               onTap: onNavigateToAnalytics,
                             ),
@@ -215,11 +219,19 @@ class DashboardScreen extends StatelessWidget {
                           const SizedBox(width: 10),
                           Expanded(
                             child: SomnaStatBadge(
-                              icon: Icons.battery_charging_full_rounded,
+                              icon: weeklyStats.hasSleepDebt
+                                  ? Icons.battery_alert_rounded
+                                  : Icons.battery_charging_full_rounded,
                               title: 'Sleep Debt',
-                              value: '+15m',
-                              subtitle: 'Optimal state',
-                              accentColor: AppColors.positive,
+                              value: weeklyStats.hasData
+                                  ? weeklyStats.formattedSleepDebt
+                                  : '0m',
+                              subtitle: weeklyStats.hasSleepDebt
+                                  ? 'Rest deficit'
+                                  : 'Optimal state',
+                              accentColor: weeklyStats.hasSleepDebt
+                                  ? AppColors.warning
+                                  : AppColors.positive,
                               onTap: onNavigateToAnalytics,
                             ),
                           ),
@@ -255,6 +267,14 @@ class DashboardScreen extends StatelessWidget {
                         consistencyScore:
                             weeklyStats.bedtimeConsistencyScore,
                         totalSessions: weeklyStats.totalSessions,
+                        sleepDebt: weeklyStats.hasData
+                            ? weeklyStats.formattedSleepDebt
+                            : '0m',
+                        hasSleepDebt: weeklyStats.hasSleepDebt,
+                        sleepEfficiency: weeklyStats.hasData
+                            ? weeklyStats.sleepEfficiencyPercentage
+                            : 92,
+                        streakDays: weeklyStats.currentStreak,
                       ),
                       const SizedBox(height: 14),
 

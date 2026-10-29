@@ -81,7 +81,45 @@ class AnalyticsService {
       }
     }
 
-    // 6. Previous Period Comparison (e.g. Previous 7 days)
+    // 6. Sleep Debt & Efficiency
+    final targetTotalMinutes = periodSessions.length * sleepGoalMinutes;
+    final sleepDebt = targetTotalMinutes - totalDuration;
+
+    // Efficiency: Quality score (if rated) combined with duration consistency
+    final ratedSessions =
+        periodSessions.where((s) => s.qualityRating != null).toList();
+    double baseEfficiency = 88.0;
+    if (ratedSessions.isNotEmpty) {
+      final avgRating = ratedSessions.fold<int>(
+              0, (sum, s) => sum + s.qualityRating!) /
+          ratedSessions.length;
+      // 1 star -> 64%, 2 -> 72%, 3 -> 80%, 4 -> 89%, 5 -> 96%
+      baseEfficiency = 55.0 + (avgRating * 8.2);
+    }
+    // Continuity factor from variability
+    final continuityBonus = (consistency * 0.05);
+    final calculatedEfficiency =
+        (baseEfficiency + continuityBonus).clamp(65.0, 98.0).round();
+
+    // 7. Day-by-day mapping for charts & Streak calculation
+    final dailySummaries = _generateDailySummaries(
+      periodSessions,
+      normalizedStart,
+      days,
+      sleepGoalMinutes,
+    );
+
+    int streak = 0;
+    for (final summary in dailySummaries.reversed) {
+      if (summary.durationMinutes == 0) continue; // skip unrecorded days
+      if (summary.metGoal) {
+        streak++;
+      } else {
+        break;
+      }
+    }
+
+    // 8. Previous Period Comparison (e.g. Previous 7 days)
     final prevPeriodEnd = normalizedStart.subtract(const Duration(seconds: 1));
     final prevPeriodStart = prevPeriodEnd.subtract(Duration(days: days));
     final prevSessions = sessions.where((s) {
@@ -99,14 +137,6 @@ class AnalyticsService {
       durationDiff = avgDuration - prevAvgDuration;
     }
 
-    // 7. Day-by-day mapping for charts
-    final dailySummaries = _generateDailySummaries(
-      periodSessions,
-      normalizedStart,
-      days,
-      sleepGoalMinutes,
-    );
-
     return SleepStats(
       totalSessions: periodSessions.length,
       averageDurationMinutes: avgDuration,
@@ -118,6 +148,9 @@ class AnalyticsService {
       shortestSession: shortest,
       longestSession: longest,
       dailySummaries: dailySummaries,
+      sleepDebtMinutes: sleepDebt,
+      sleepEfficiencyPercentage: calculatedEfficiency,
+      currentStreak: streak,
       previousPeriodAverageDurationMinutes: prevAvgDuration,
       durationDifferenceMinutes: durationDiff,
     );

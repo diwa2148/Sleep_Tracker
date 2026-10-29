@@ -47,6 +47,34 @@ class _WakeUpSheetState extends State<WakeUpSheet> {
   int? _rating;
   final TextEditingController _notesController = TextEditingController();
 
+  static const _quickFactors = [
+    '☕ Caffeine',
+    '🏃 Workout',
+    '📱 Late Screen',
+    '📖 Reading',
+    '🧘 Meditated',
+    '❄️ Cool Room',
+    '🍷 Alcohol',
+    '⚡ Stress',
+  ];
+
+  void _toggleFactor(String factor) {
+    final currentText = _notesController.text;
+    if (currentText.contains(factor)) {
+      var updated = currentText.replaceAll(factor, '').trim();
+      updated = updated.replaceAll(RegExp(r',\s*,'), ',');
+      updated = updated.replaceAll(RegExp(r'^,\s*|,\s*$'), '');
+      _notesController.text = updated;
+    } else {
+      if (currentText.trim().isEmpty) {
+        _notesController.text = factor;
+      } else {
+        _notesController.text = '${currentText.trim()}, $factor';
+      }
+    }
+    setState(() {});
+  }
+
   @override
   void dispose() {
     _notesController.dispose();
@@ -122,7 +150,51 @@ class _WakeUpSheetState extends State<WakeUpSheet> {
               onRatingChanged: (newRating) =>
                   setState(() => _rating = newRating),
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: 20),
+
+            // Quick Sleep Factor Tags
+            Text(
+              'Influencing Factors',
+              style: AppTypography.titleSmall(isDark),
+            ),
+            const SizedBox(height: 8),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: _quickFactors.map((factor) {
+                final isSelected = _notesController.text.contains(factor);
+                return FilterChip(
+                  label: Text(factor),
+                  selected: isSelected,
+                  onSelected: (_) => _toggleFactor(factor),
+                  selectedColor: AppColors.primary.withValues(alpha: 0.2),
+                  checkmarkColor: AppColors.primary,
+                  labelStyle: TextStyle(
+                    fontSize: 12,
+                    fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
+                    color: isSelected
+                        ? AppColors.primary
+                        : (isDark
+                            ? AppColors.textSecondaryDark
+                            : AppColors.textSecondaryLight),
+                  ),
+                  backgroundColor: isDark
+                      ? AppColors.darkSurface
+                      : const Color(0xFFF1F5F9),
+                  side: BorderSide(
+                    color: isSelected
+                        ? AppColors.primary
+                        : (isDark
+                            ? AppColors.darkBorder
+                            : AppColors.lightBorder),
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                );
+              }).toList(),
+            ),
+            const SizedBox(height: 16),
 
             // Notes Input
             TextField(

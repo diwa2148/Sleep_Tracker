@@ -152,6 +152,14 @@ class _AndroidEmulatorFrameState extends State<AndroidEmulatorFrame> {
   }
 
   Widget _buildSmartphone({required double width, required double height}) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final chassisBgColor =
+        isDark ? const Color(0xFF0F172A) : const Color(0xFFF8FAFC);
+    final statusContentColor =
+        isDark ? const Color(0xFFF1F5F9) : const Color(0xFF0F172A);
+    final gestureBarColor =
+        isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B);
+
     return Container(
       width: width,
       height: height,
@@ -220,7 +228,7 @@ class _AndroidEmulatorFrameState extends State<AndroidEmulatorFrame> {
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(42),
                 child: Container(
-                  color: const Color(0xFFF8FAFC), // Native Light theme
+                  color: chassisBgColor,
                   child: Stack(
                     children: [
                       // Application Content constrained to phone viewport
@@ -247,7 +255,7 @@ class _AndroidEmulatorFrameState extends State<AndroidEmulatorFrame> {
                         height: 28,
                         child: Container(
                           padding: const EdgeInsets.symmetric(horizontal: 22),
-                          color: const Color(0xFFF8FAFC),
+                          color: chassisBgColor,
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             crossAxisAlignment: CrossAxisAlignment.center,
@@ -255,8 +263,8 @@ class _AndroidEmulatorFrameState extends State<AndroidEmulatorFrame> {
                               // Digital Clock
                               Text(
                                 _formatTime(),
-                                style: const TextStyle(
-                                  color: Color(0xFF0F172A),
+                                style: TextStyle(
+                                  color: statusContentColor,
                                   fontSize: 12,
                                   fontWeight: FontWeight.w700,
                                   letterSpacing: 0.2,
@@ -280,25 +288,25 @@ class _AndroidEmulatorFrameState extends State<AndroidEmulatorFrame> {
                               // System Icons (5G, Wi-Fi, Battery)
                               Row(
                                 children: [
-                                  const Icon(Icons.signal_cellular_4_bar_rounded,
-                                      size: 13, color: Color(0xFF0F172A)),
+                                  Icon(Icons.signal_cellular_4_bar_rounded,
+                                      size: 13, color: statusContentColor),
                                   const SizedBox(width: 4),
-                                  const Icon(Icons.wifi_rounded,
-                                      size: 13, color: Color(0xFF0F172A)),
+                                  Icon(Icons.wifi_rounded,
+                                      size: 13, color: statusContentColor),
                                   const SizedBox(width: 4),
                                   Row(
                                     children: [
-                                      const Text(
+                                      Text(
                                         '98%',
                                         style: TextStyle(
-                                          color: Color(0xFF0F172A),
+                                          color: statusContentColor,
                                           fontSize: 10,
                                           fontWeight: FontWeight.w700,
                                         ),
                                       ),
                                       const SizedBox(width: 2),
-                                      const Icon(Icons.battery_full_rounded,
-                                          size: 14, color: Color(0xFF0F172A)),
+                                      Icon(Icons.battery_full_rounded,
+                                          size: 14, color: statusContentColor),
                                     ],
                                   ),
                                 ],
@@ -318,7 +326,7 @@ class _AndroidEmulatorFrameState extends State<AndroidEmulatorFrame> {
                             width: 110,
                             height: 4,
                             decoration: BoxDecoration(
-                              color: const Color(0xFF64748B),
+                              color: gestureBarColor,
                               borderRadius: BorderRadius.circular(2),
                             ),
                           ),

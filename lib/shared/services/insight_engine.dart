@@ -68,7 +68,37 @@ class InsightEngine {
       }
     }
 
-    // Case 3: Bedtime Consistency Insight
+    // Case 3: Sleep Debt & Recovery Status
+    if (weeklyStats.sleepDebtMinutes > 45 && totalDaysRecorded >= 3) {
+      final hours = weeklyStats.sleepDebtMinutes ~/ 60;
+      final mins = weeklyStats.sleepDebtMinutes % 60;
+      final debtStr = hours > 0 ? '${hours}h ${mins}m' : '${mins}m';
+      insights.add(SleepInsight(
+        id: 'sleep_debt_notice',
+        title: 'Sleep Debt Accumulation',
+        message:
+            'You have accumulated approximately $debtStr of sleep deficit against your goal this week. An extra 30–45 mins of sleep tonight will restore your readiness.',
+        type: InsightType.warning,
+        category: InsightCategory.duration,
+        calculationExplanation:
+            'Calculated from total sleep duration deficit across $totalDaysRecorded recorded sessions against your ${preferences.formattedSleepGoal} target ($debtStr total debt).',
+        icon: Icons.battery_alert_rounded,
+      ));
+    } else if (weeklyStats.sleepDebtMinutes <= 0 && totalDaysRecorded >= 4) {
+      insights.add(SleepInsight(
+        id: 'sleep_recovery_optimal',
+        title: 'Optimal Recovery Balance',
+        message:
+            'Zero sleep debt detected over the past week! Your restorative sleep supply is completely in harmony with your biological target.',
+        type: InsightType.positive,
+        category: InsightCategory.duration,
+        calculationExplanation:
+            'Total recorded sleep duration equals or exceeds total goal duration across the current 7-day window.',
+        icon: Icons.battery_charging_full_rounded,
+      ));
+    }
+
+    // Case 4: Bedtime Consistency Insight
     if (weeklyStats.bedtimeConsistencyScore >= 80) {
       insights.add(SleepInsight(
         id: 'high_consistency',
