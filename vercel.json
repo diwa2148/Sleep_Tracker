@@ -1,6 +1,5 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "buildCommand": "bash vercel_build.sh",
   "outputDirectory": "build/web",
   "headers": [
     {
@@ -24,4 +23,3 @@
     }
   ]
 }
-
