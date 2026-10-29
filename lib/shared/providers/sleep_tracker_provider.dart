@@ -97,7 +97,7 @@ class SleepTrackerProvider with ChangeNotifier {
             id: 'seed_4',
             startTimestamp:
                 DateTime(now.year, now.month, now.day - 4, 0, 10),
-            endTimestamp: DateTime(now.year, now.month, now.day - 3, 7, 50),
+            endTimestamp: DateTime(now.year, now.month, now.day - 4, 7, 50),
             qualityRating: 4,
             notes: 'Restful sleep',
             source: 'manual',

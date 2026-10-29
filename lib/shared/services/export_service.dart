@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 import '../../app/app_config.dart';
@@ -66,23 +67,35 @@ class ExportService {
     required bool isCsv,
   }) async {
     try {
-      final tempDir = await getTemporaryDirectory();
       final timestamp = DateTime.now().millisecondsSinceEpoch;
       final ext = isCsv ? 'csv' : 'json';
-      final file = File('${tempDir.path}/somna_sleep_export_$timestamp.$ext');
-
+      final fileName = 'somna_sleep_export_$timestamp.$ext';
       final content = isCsv ? generateCsv(sessions) : generateJson(sessions);
-      await file.writeAsString(content);
-
       final mimeType = isCsv ? 'text/csv' : 'application/json';
+
+      final XFile xFile;
+      if (kIsWeb) {
+        xFile = XFile.fromData(
+          utf8.encode(content),
+          name: fileName,
+          mimeType: mimeType,
+        );
+      } else {
+        final tempDir = await getTemporaryDirectory();
+        final file = File('${tempDir.path}/$fileName');
+        await file.writeAsString(content);
+        xFile = XFile(file.path, mimeType: mimeType, name: fileName);
+      }
+
       final result = await Share.shareXFiles(
-        [XFile(file.path, mimeType: mimeType)],
+        [xFile],
         text: 'Exported Sleep History from ${AppConfig.appName}',
         subject: '${AppConfig.appName} Sleep Data Export',
       );
 
       return result.status == ShareResultStatus.success ||
-          result.status == ShareResultStatus.dismissed;
+          result.status == ShareResultStatus.dismissed ||
+          result.status == ShareResultStatus.unavailable;
     } catch (e) {
       return false;
     }
