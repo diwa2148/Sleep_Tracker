@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../core/utils/date_time_formatter.dart';
+import 'analytics_service.dart';
 import '../models/sleep_insight.dart';
 import '../models/sleep_session.dart';
 import '../models/sleep_stats.dart';
@@ -171,6 +172,39 @@ class InsightEngine {
               'Average duration computed exclusively from sessions where subjective rating was 4 or 5 stars (${highRated.length} sessions analyzed).',
           icon: Icons.star_rounded,
         ));
+      }
+    }
+
+    // Case 6: Behavioral Habit Factor Correlations
+    final factorCorrelations =
+        AnalyticsService.computeFactorCorrelations(completed);
+    for (final corr in factorCorrelations) {
+      if (corr.occurrences >= 1) {
+        if (corr.durationDiffMinutes <= -25) {
+          insights.add(SleepInsight(
+            id: 'factor_${corr.factor.key}',
+            title: '${corr.factor.name} Impact Detected',
+            message:
+                'On nights with ${corr.factor.label}, your recorded sleep averaged ${DateTimeFormatter.formatMinutes(corr.avgDurationMinutesWith)} (${corr.formattedDurationDiff} compared to baseline).',
+            type: InsightType.warning,
+            category: InsightCategory.quality,
+            calculationExplanation:
+                'Analyzed ${corr.occurrences} sessions logged with ${corr.factor.label} vs remaining recorded sessions.',
+            icon: Icons.bolt_rounded,
+          ));
+        } else if (corr.durationDiffMinutes >= 20 || corr.qualityDiff >= 0.4) {
+          insights.add(SleepInsight(
+            id: 'factor_${corr.factor.key}',
+            title: '${corr.factor.name} Rest Boost',
+            message:
+                'Nights with ${corr.factor.label} correlated with higher quality rest (${corr.formattedDurationDiff} duration and +${corr.qualityDiff.toStringAsFixed(1)} quality stars).',
+            type: InsightType.positive,
+            category: InsightCategory.quality,
+            calculationExplanation:
+                'Derived from ${corr.occurrences} sessions tagged with ${corr.factor.label}.',
+            icon: Icons.thumb_up_alt_rounded,
+          ));
+        }
       }
     }
 

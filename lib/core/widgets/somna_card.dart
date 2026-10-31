@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import '../../app/theme/app_colors.dart';
 
-/// Premium container card with subtle borders, gentle gradients, and rounded corners.
+/// Modern card container with sleek rounded corners, subtle ambient depth,
+/// and responsive interactive states.
 class SomnaCard extends StatelessWidget {
   final Widget child;
   final EdgeInsetsGeometry? padding;
@@ -15,13 +16,13 @@ class SomnaCard extends StatelessWidget {
   const SomnaCard({
     super.key,
     required this.child,
-    this.padding = const EdgeInsets.all(14),
+    this.padding = const EdgeInsets.all(16),
     this.margin,
     this.onTap,
     this.backgroundColor,
     this.border,
     this.gradient,
-    this.borderRadius = 8,
+    this.borderRadius = 16, // Modern smooth card radius
   });
 
   @override
@@ -30,7 +31,7 @@ class SomnaCard extends StatelessWidget {
     final defaultBg = isDark ? AppColors.darkCard : AppColors.lightCard;
     final defaultBorder = Border.all(
       color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
-      width: 1,
+      width: 1.0,
     );
 
     final cardContent = Container(
@@ -41,12 +42,14 @@ class SomnaCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(borderRadius),
         border: border ?? defaultBorder,
         boxShadow: [
+          // Soft ambient modern shadow
           BoxShadow(
             color: isDark
-                ? Colors.black.withValues(alpha: 0.25)
-                : const Color(0x060F172A),
-            blurRadius: 4,
-            offset: const Offset(0, 1),
+                ? Colors.black.withValues(alpha: 0.3)
+                : const Color(0xFF64748B).withValues(alpha: 0.08),
+            blurRadius: 16,
+            spreadRadius: 0,
+            offset: const Offset(0, 4),
           ),
         ],
       ),
@@ -68,6 +71,8 @@ class SomnaCard extends StatelessWidget {
         child: InkWell(
           onTap: onTap,
           borderRadius: BorderRadius.circular(borderRadius),
+          splashColor: AppColors.primary.withValues(alpha: 0.08),
+          highlightColor: AppColors.primary.withValues(alpha: 0.04),
           child: cardContent,
         ),
       );

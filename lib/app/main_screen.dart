@@ -5,6 +5,7 @@ import '../features/history/presentation/history_screen.dart';
 import '../features/insights/presentation/insights_screen.dart';
 import '../features/settings/presentation/settings_screen.dart';
 import 'theme/app_colors.dart';
+import 'theme/app_typography.dart';
 
 /// Primary root screen running inside an authentic Android mobile environment.
 class MainScreen extends StatefulWidget {
@@ -36,7 +37,7 @@ class _MainScreenState extends State<MainScreen> {
       const SettingsScreen(),
     ];
 
-    final mobileApp = Scaffold(
+    return Scaffold(
       backgroundColor:
           isDark ? AppColors.darkBackground : AppColors.lightBackground,
       body: IndexedStack(
@@ -52,6 +53,13 @@ class _MainScreenState extends State<MainScreen> {
               width: 1,
             ),
           ),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: isDark ? 0.25 : 0.05),
+              blurRadius: 16,
+              offset: const Offset(0, -4),
+            ),
+          ],
         ),
         child: SafeArea(
           top: false,
@@ -67,31 +75,41 @@ class _MainScreenState extends State<MainScreen> {
                 isDark ? AppColors.textMutedDark : AppColors.textMutedLight,
             selectedFontSize: 11,
             unselectedFontSize: 11,
+            selectedLabelStyle: const TextStyle(
+              fontFamily: AppTypography.fontFamily,
+              fontWeight: FontWeight.w700,
+              letterSpacing: 0.2,
+            ),
+            unselectedLabelStyle: const TextStyle(
+              fontFamily: AppTypography.fontFamily,
+              fontWeight: FontWeight.w500,
+              letterSpacing: 0.2,
+            ),
             elevation: 0,
-            items: const [
+            items: [
               BottomNavigationBarItem(
-                icon: Icon(Icons.home_rounded),
-                activeIcon: Icon(Icons.home_rounded),
+                icon: const Icon(Icons.home_rounded),
+                activeIcon: _buildActiveIcon(Icons.home_rounded, isDark),
                 label: 'Home',
               ),
               BottomNavigationBarItem(
-                icon: Icon(Icons.history_rounded),
-                activeIcon: Icon(Icons.history_rounded),
+                icon: const Icon(Icons.history_rounded),
+                activeIcon: _buildActiveIcon(Icons.history_rounded, isDark),
                 label: 'History',
               ),
               BottomNavigationBarItem(
-                icon: Icon(Icons.insights_rounded),
-                activeIcon: Icon(Icons.insights_rounded),
+                icon: const Icon(Icons.insights_rounded),
+                activeIcon: _buildActiveIcon(Icons.insights_rounded, isDark),
                 label: 'Analytics',
               ),
               BottomNavigationBarItem(
-                icon: Icon(Icons.auto_awesome_rounded),
-                activeIcon: Icon(Icons.auto_awesome_rounded),
+                icon: const Icon(Icons.auto_awesome_rounded),
+                activeIcon: _buildActiveIcon(Icons.auto_awesome_rounded, isDark),
                 label: 'Insights',
               ),
               BottomNavigationBarItem(
-                icon: Icon(Icons.settings_rounded),
-                activeIcon: Icon(Icons.settings_rounded),
+                icon: const Icon(Icons.settings_rounded),
+                activeIcon: _buildActiveIcon(Icons.settings_rounded, isDark),
                 label: 'Settings',
               ),
             ],
@@ -99,7 +117,17 @@ class _MainScreenState extends State<MainScreen> {
         ),
       ),
     );
+  }
 
-    return mobileApp;
+  Widget _buildActiveIcon(IconData icon, bool isDark) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 3),
+      decoration: BoxDecoration(
+        color: (isDark ? AppColors.primary : AppColors.primaryDark)
+            .withValues(alpha: 0.16),
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Icon(icon),
+    );
   }
 }

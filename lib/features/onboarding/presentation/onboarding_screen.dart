@@ -75,11 +75,16 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       Container(
                         padding: const EdgeInsets.all(8),
                         decoration: BoxDecoration(
-                          color: AppColors.primary.withValues(alpha: 0.15),
+                          color: isDark
+                              ? const Color(0xFF262626)
+                              : const Color(0xFFE5E5E5),
                           shape: BoxShape.circle,
                         ),
-                        child: const Icon(Icons.nights_stay_rounded,
-                            color: AppColors.primary, size: 20),
+                        child: Icon(
+                          Icons.nights_stay_rounded,
+                          color: isDark ? Colors.white : Colors.black,
+                          size: 20,
+                        ),
                       ),
                       const SizedBox(width: 10),
                       Text(
@@ -139,7 +144,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                         height: 8,
                         decoration: BoxDecoration(
                           color: isActive
-                              ? AppColors.primary
+                              ? (isDark ? Colors.white : Colors.black)
                               : (isDark
                                   ? AppColors.darkBorder
                                   : AppColors.lightBorder),
@@ -175,19 +180,17 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             height: 110,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              gradient: LinearGradient(
-                colors: [
-                  AppColors.primary.withValues(alpha: 0.25),
-                  AppColors.secondary.withValues(alpha: 0.1),
-                ],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
+              color: isDark ? const Color(0xFF171717) : const Color(0xFFEEEEEE),
               border: Border.all(
-                  color: AppColors.primary.withValues(alpha: 0.3), width: 1.5),
+                color: isDark ? Colors.white : Colors.black,
+                width: 1.5,
+              ),
             ),
-            child: const Icon(Icons.bedtime_rounded,
-                size: 54, color: AppColors.primary),
+            child: Icon(
+              Icons.bedtime_rounded,
+              size: 54,
+              color: isDark ? Colors.white : Colors.black,
+            ),
           ),
           const SizedBox(height: 32),
           Text(
@@ -208,8 +211,11 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             padding: const EdgeInsets.all(16),
             child: Row(
               children: [
-                const Icon(Icons.shield_outlined,
-                    color: AppColors.positive, size: 24),
+                Icon(
+                  Icons.shield_outlined,
+                  color: isDark ? Colors.white : Colors.black,
+                  size: 24,
+                ),
                 const SizedBox(width: 14),
                 Expanded(
                   child: Column(
@@ -271,24 +277,34 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   children: [
                     Text(
                       '$hours',
-                      style: AppTypography.displayLarge(isDark)
-                          .copyWith(color: AppColors.primary),
+                      style: AppTypography.displayLarge(isDark).copyWith(
+                        color:
+                            isDark ? AppColors.primary : AppColors.primaryDark,
+                      ),
                     ),
                     Text(
                       'h ',
-                      style: AppTypography.headlineMedium(isDark)
-                          .copyWith(color: AppColors.primary),
+                      style: AppTypography.headlineMedium(isDark).copyWith(
+                        color:
+                            isDark ? AppColors.primary : AppColors.primaryDark,
+                      ),
                     ),
                     if (mins > 0) ...[
                       Text(
                         '$mins',
-                        style: AppTypography.displayLarge(isDark)
-                            .copyWith(color: AppColors.primary),
+                        style: AppTypography.displayLarge(isDark).copyWith(
+                          color: isDark
+                              ? AppColors.primary
+                              : AppColors.primaryDark,
+                        ),
                       ),
                       Text(
                         'm',
-                        style: AppTypography.headlineMedium(isDark)
-                            .copyWith(color: AppColors.primary),
+                        style: AppTypography.headlineMedium(isDark).copyWith(
+                          color: isDark
+                              ? AppColors.primary
+                              : AppColors.primaryDark,
+                        ),
                       ),
                     ],
                   ],
@@ -316,9 +332,14 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text('4h', style: AppTypography.bodySmall(isDark)),
-                    Text('8h (Recommended)',
-                        style: AppTypography.bodySmall(isDark)
-                            .copyWith(color: AppColors.positive)),
+                    Text(
+                      '8h (Recommended)',
+                      style: AppTypography.bodySmall(isDark).copyWith(
+                        color: isDark
+                            ? const Color(0xFFA3A3A3)
+                            : const Color(0xFF525252),
+                      ),
+                    ),
                     Text('12h', style: AppTypography.bodySmall(isDark)),
                   ],
                 ),
@@ -388,7 +409,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 style: AppTypography.bodySmall(isDark),
               ),
               value: _enableBedtimeReminder,
-              activeThumbColor: AppColors.primary,
+              activeThumbColor: isDark ? Colors.white : Colors.black,
               onChanged: (val) => setState(() => _enableBedtimeReminder = val),
             ),
           ),
@@ -424,10 +445,14 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           Container(
             padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
-              color: AppColors.primary.withValues(alpha: 0.15),
+              color: isDark ? const Color(0xFF262626) : const Color(0xFFE5E5E5),
               borderRadius: BorderRadius.circular(12),
             ),
-            child: Icon(icon, color: AppColors.primary, size: 22),
+            child: Icon(
+              icon,
+              color: isDark ? Colors.white : Colors.black,
+              size: 22,
+            ),
           ),
           const SizedBox(width: 16),
           Expanded(
@@ -464,12 +489,17 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             height: 100,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: AppColors.positive.withValues(alpha: 0.15),
+              color: isDark ? const Color(0xFF262626) : const Color(0xFFE5E5E5),
               border: Border.all(
-                  color: AppColors.positive.withValues(alpha: 0.4), width: 2),
+                color: isDark ? Colors.white : Colors.black,
+                width: 2,
+              ),
             ),
-            child: const Icon(Icons.check_circle_rounded,
-                size: 56, color: AppColors.positive),
+            child: Icon(
+              Icons.check_circle_rounded,
+              size: 56,
+              color: isDark ? Colors.white : Colors.black,
+            ),
           ),
           const SizedBox(height: 28),
           Text(
@@ -527,8 +557,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           Text(label, style: AppTypography.bodyMedium(isDark)),
           Text(
             value,
-            style: AppTypography.titleSmall(isDark)
-                .copyWith(color: AppColors.primary),
+            style: AppTypography.titleSmall(isDark).copyWith(
+              color: isDark ? AppColors.primary : AppColors.primaryDark,
+            ),
           ),
         ],
       ),

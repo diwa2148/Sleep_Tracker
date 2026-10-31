@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import '../../../app/app_config.dart';
 import '../../../app/theme/app_colors.dart';
@@ -9,6 +10,7 @@ import '../../../core/widgets/somna_card.dart';
 import '../../../shared/providers/settings_provider.dart';
 import '../../../shared/providers/sleep_tracker_provider.dart';
 import '../../../shared/services/export_service.dart';
+import '../../alarm/presentation/widgets/retro_alarm_deck_card.dart';
 import 'privacy_policy_sheet.dart';
 
 /// Settings screen for configuring goals, schedules, reminders, theme, and data export.
@@ -28,7 +30,7 @@ class SettingsScreen extends StatelessWidget {
       ),
       body: SafeArea(
         child: ListView(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+          padding: const EdgeInsets.fromLTRB(16, 10, 16, 96),
           children: [
             // --- SECTION 1: SLEEP GOAL & SCHEDULE ---
             _buildSectionHeader('SLEEP GOAL & SCHEDULE', isDark),
@@ -39,22 +41,28 @@ class SettingsScreen extends StatelessWidget {
                 children: [
                   ListTile(
                     contentPadding: EdgeInsets.zero,
-                    leading: const Icon(Icons.flag_rounded,
-                        color: AppColors.primary),
+                    leading: Icon(
+                      Icons.flag_rounded,
+                      color: isDark ? AppColors.primary : AppColors.primaryDark,
+                    ),
                     title: Text('Daily Sleep Goal',
                         style: AppTypography.titleSmall(isDark)),
                     trailing: Text(
                       prefs.formattedSleepGoal,
-                      style: AppTypography.titleMedium(isDark)
-                          .copyWith(color: AppColors.primary),
+                      style: AppTypography.titleMedium(isDark).copyWith(
+                        color:
+                            isDark ? AppColors.primary : AppColors.primaryDark,
+                      ),
                     ),
                     onTap: () => _showGoalDialog(context, settings),
                   ),
                   const Divider(height: 1),
                   ListTile(
                     contentPadding: EdgeInsets.zero,
-                    leading: const Icon(Icons.nightlight_round,
-                        color: AppColors.primary),
+                    leading: Icon(
+                      Icons.nightlight_round,
+                      color: isDark ? AppColors.primary : AppColors.primaryDark,
+                    ),
                     title: Text('Target Bedtime',
                         style: AppTypography.titleSmall(isDark)),
                     trailing: Text(
@@ -78,8 +86,12 @@ class SettingsScreen extends StatelessWidget {
                   const Divider(height: 1),
                   ListTile(
                     contentPadding: EdgeInsets.zero,
-                    leading: const Icon(Icons.wb_sunny_rounded,
-                        color: AppColors.secondary),
+                    leading: Icon(
+                      Icons.wb_sunny_rounded,
+                      color: isDark
+                          ? const Color(0xFFA3A3A3)
+                          : const Color(0xFF525252),
+                    ),
                     title: Text('Target Wake-Up',
                         style: AppTypography.titleSmall(isDark)),
                     trailing: Text(
@@ -114,15 +126,17 @@ class SettingsScreen extends StatelessWidget {
                 children: [
                   SwitchListTile(
                     contentPadding: EdgeInsets.zero,
-                    secondary: const Icon(Icons.notifications_active_outlined,
-                        color: AppColors.primary),
+                    secondary: Icon(
+                      Icons.notifications_active_outlined,
+                      color: isDark ? AppColors.primary : AppColors.primaryDark,
+                    ),
                     title: Text('Bedtime Reminder',
                         style: AppTypography.titleSmall(isDark)),
                     subtitle: Text(
                         'Notification at ${prefs.preferredBedtime.format(context)}',
                         style: AppTypography.bodySmall(isDark)),
                     value: prefs.bedtimeReminderEnabled,
-                    activeThumbColor: AppColors.primary,
+                    activeThumbColor: isDark ? Colors.white : Colors.black,
                     onChanged: (val) async {
                       final success = await settings.setBedtimeReminder(val);
                       if (!success && context.mounted) {
@@ -137,15 +151,19 @@ class SettingsScreen extends StatelessWidget {
                   const Divider(height: 1),
                   SwitchListTile(
                     contentPadding: EdgeInsets.zero,
-                    secondary: const Icon(Icons.alarm_on_rounded,
-                        color: AppColors.secondary),
+                    secondary: Icon(
+                      Icons.alarm_on_rounded,
+                      color: isDark
+                          ? const Color(0xFFA3A3A3)
+                          : const Color(0xFF525252),
+                    ),
                     title: Text('Wake-Up Reminder',
                         style: AppTypography.titleSmall(isDark)),
                     subtitle: Text(
                         'Notification at ${prefs.preferredWakeTime.format(context)}',
                         style: AppTypography.bodySmall(isDark)),
                     value: prefs.wakeReminderEnabled,
-                    activeThumbColor: AppColors.secondary,
+                    activeThumbColor: isDark ? Colors.white : Colors.black,
                     onChanged: (val) async {
                       final success = await settings.setWakeReminder(val);
                       if (!success && context.mounted) {
@@ -162,7 +180,13 @@ class SettingsScreen extends StatelessWidget {
             ),
             const SizedBox(height: 24),
 
-            // --- SECTION 3: APPEARANCE & PREFERENCES ---
+            // --- SECTION 3: WAKE ALARM SYNTHESIZER ---
+            _buildSectionHeader('WAKE ALARM SYNTHESIZER', isDark),
+            const SizedBox(height: 8),
+            const RetroAlarmDeckCard(),
+            const SizedBox(height: 24),
+
+            // --- SECTION 4: APPEARANCE & PREFERENCES ---
             _buildSectionHeader('APPEARANCE & FEEDBACK', isDark),
             const SizedBox(height: 8),
             SomnaCard(
@@ -171,29 +195,53 @@ class SettingsScreen extends StatelessWidget {
                 children: [
                   ListTile(
                     contentPadding: EdgeInsets.zero,
-                    leading: const Icon(Icons.palette_outlined,
-                        color: AppColors.primary),
+                    leading: Icon(
+                      Icons.palette_outlined,
+                      color: isDark ? AppColors.primary : AppColors.primaryDark,
+                    ),
                     title: Text('Theme Mode',
                         style: AppTypography.titleSmall(isDark)),
                     trailing: Text(
                       prefs.themeMode.name.toUpperCase(),
-                      style: AppTypography.labelLarge(isDark)
-                          .copyWith(color: AppColors.primary),
+                      style: AppTypography.labelLarge(isDark).copyWith(
+                        color:
+                            isDark ? AppColors.primary : AppColors.primaryDark,
+                      ),
                     ),
                     onTap: () => _showThemeDialog(context, settings),
                   ),
                   const Divider(height: 1),
                   SwitchListTile(
                     contentPadding: EdgeInsets.zero,
-                    secondary: const Icon(Icons.vibration_rounded,
-                        color: AppColors.positive),
+                    secondary: Icon(
+                      Icons.vibration_rounded,
+                      color: isDark ? AppColors.primary : AppColors.primaryDark,
+                    ),
                     title: Text('Haptic Feedback',
                         style: AppTypography.titleSmall(isDark)),
                     subtitle: Text('Vibrate on buttons and interactions',
                         style: AppTypography.bodySmall(isDark)),
                     value: prefs.hapticsEnabled,
-                    activeThumbColor: AppColors.positive,
+                    activeThumbColor: isDark ? Colors.white : Colors.black,
                     onChanged: (val) => settings.setHapticsEnabled(val),
+                  ),
+                  const Divider(height: 1),
+                  SwitchListTile(
+                    contentPadding: EdgeInsets.zero,
+                    secondary: Icon(
+                      Icons.dark_mode_outlined,
+                      color: isDark ? AppColors.primary : AppColors.primaryDark,
+                    ),
+                    title: Text('OLED Pitch-Black Mode',
+                        style: AppTypography.titleSmall(isDark)),
+                    subtitle: Text('Zero sub-pixel glow for bedside charging',
+                        style: AppTypography.bodySmall(isDark)),
+                    value: prefs.oledModeEnabled,
+                    activeThumbColor: isDark ? Colors.white : Colors.black,
+                    onChanged: (val) {
+                      HapticFeedback.lightImpact();
+                      settings.updateOledMode(val);
+                    },
                   ),
                 ],
               ),
@@ -209,8 +257,10 @@ class SettingsScreen extends StatelessWidget {
                 children: [
                   ListTile(
                     contentPadding: EdgeInsets.zero,
-                    leading: const Icon(Icons.file_download_outlined,
-                        color: AppColors.positive),
+                    leading: Icon(
+                      Icons.file_download_outlined,
+                      color: isDark ? AppColors.primary : AppColors.primaryDark,
+                    ),
                     title: Text('Export Sleep History (CSV)',
                         style: AppTypography.titleSmall(isDark)),
                     subtitle: Text('RFC-4180 standard spreadsheet export',
@@ -236,8 +286,12 @@ class SettingsScreen extends StatelessWidget {
                   const Divider(height: 1),
                   ListTile(
                     contentPadding: EdgeInsets.zero,
-                    leading: const Icon(Icons.code_rounded,
-                        color: AppColors.secondary),
+                    leading: Icon(
+                      Icons.code_rounded,
+                      color: isDark
+                          ? const Color(0xFFA3A3A3)
+                          : const Color(0xFF525252),
+                    ),
                     title: Text('Export Raw Data (JSON)',
                         style: AppTypography.titleSmall(isDark)),
                     subtitle: Text('Complete machine-readable JSON backup',
@@ -263,8 +317,12 @@ class SettingsScreen extends StatelessWidget {
                   const Divider(height: 1),
                   ListTile(
                     contentPadding: EdgeInsets.zero,
-                    leading: const Icon(Icons.delete_forever_rounded,
-                        color: AppColors.error),
+                    leading: Icon(
+                      Icons.delete_forever_rounded,
+                      color: isDark
+                          ? const Color(0xFF737373)
+                          : const Color(0xFF525252),
+                    ),
                     title: Text('Erase All Data',
                         style: AppTypography.titleSmall(isDark)
                             .copyWith(color: AppColors.error)),
@@ -306,8 +364,10 @@ class SettingsScreen extends StatelessWidget {
                 children: [
                   ListTile(
                     contentPadding: EdgeInsets.zero,
-                    leading: const Icon(Icons.privacy_tip_outlined,
-                        color: AppColors.primary),
+                    leading: Icon(
+                      Icons.privacy_tip_outlined,
+                      color: isDark ? AppColors.primary : AppColors.primaryDark,
+                    ),
                     title: Text('Privacy Charter',
                         style: AppTypography.titleSmall(isDark)),
                     subtitle: Text(
@@ -372,8 +432,9 @@ class SettingsScreen extends StatelessWidget {
               children: [
                 Text(
                   mins == 0 ? '${hours}h' : '${hours}h ${mins}m',
-                  style: AppTypography.displayMedium(isDark)
-                      .copyWith(color: AppColors.primary),
+                  style: AppTypography.displayMedium(isDark).copyWith(
+                    color: isDark ? AppColors.primary : AppColors.primaryDark,
+                  ),
                 ),
                 const SizedBox(height: 16),
                 Slider(
@@ -451,11 +512,16 @@ class SettingsScreen extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: AppColors.primary.withValues(alpha: 0.15),
+                color: isDark
+                    ? const Color(0xFF262626)
+                    : const Color(0xFFE5E5E5),
                 shape: BoxShape.circle,
               ),
-              child: const Icon(Icons.nights_stay_rounded,
-                  color: AppColors.primary, size: 24),
+              child: Icon(
+                Icons.nights_stay_rounded,
+                color: isDark ? Colors.white : Colors.black,
+                size: 24,
+              ),
             ),
             const SizedBox(width: 12),
             Text(AppConfig.appName, style: AppTypography.titleLarge(isDark)),

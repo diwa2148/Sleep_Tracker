@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'app_colors.dart';
 import 'app_typography.dart';
 
-/// Centralized Material 3 theme configurations for SOMNA.
+/// Centralized Material 3 theme configurations with Modern, Sleek, Health-App styling.
 class AppTheme {
   AppTheme._();
 
@@ -13,12 +13,12 @@ class AppTheme {
       primary: AppColors.primary,
       onPrimary: Colors.black,
       primaryContainer: AppColors.darkElevated,
-      onPrimaryContainer: AppColors.primaryLight,
+      onPrimaryContainer: Colors.white,
       secondary: AppColors.secondary,
       onSecondary: Colors.black,
       secondaryContainer: AppColors.darkSurface,
       onSecondaryContainer: AppColors.secondaryLight,
-      tertiary: AppColors.positive,
+      tertiary: Colors.white,
       onTertiary: Colors.black,
       error: AppColors.error,
       onError: Colors.black,
@@ -26,7 +26,7 @@ class AppTheme {
       onSurface: AppColors.textPrimaryDark,
       surfaceContainerHighest: AppColors.darkElevated,
       outline: AppColors.darkBorder,
-      shadow: Colors.black.withValues(alpha: 0.5),
+      shadow: Colors.black.withValues(alpha: 0.6),
     );
 
     return ThemeData(
@@ -52,30 +52,30 @@ class AppTheme {
         color: AppColors.darkCard,
         elevation: 0,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
-          side: const BorderSide(color: AppColors.darkBorder, width: 1),
+          borderRadius: BorderRadius.circular(16),
+          side: const BorderSide(color: AppColors.darkBorder, width: 1.0),
         ),
         margin: EdgeInsets.zero,
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
           backgroundColor: AppColors.primary,
-          foregroundColor: const Color(0xFF0B1020),
+          foregroundColor: Colors.black,
           elevation: 0,
           textStyle: AppTypography.labelLarge(true)
-              .copyWith(fontWeight: FontWeight.w700),
+              .copyWith(fontWeight: FontWeight.w600),
           shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
           padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
         ),
       ),
       outlinedButtonTheme: OutlinedButtonThemeData(
         style: OutlinedButton.styleFrom(
           foregroundColor: AppColors.textPrimaryDark,
-          side: const BorderSide(color: AppColors.darkBorder, width: 1.5),
+          side: const BorderSide(color: AppColors.darkBorder, width: 1.0),
           textStyle: AppTypography.labelLarge(true),
           shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         ),
       ),
@@ -91,20 +91,20 @@ class AppTheme {
         contentPadding:
             const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(6),
-          borderSide: const BorderSide(color: AppColors.darkBorder),
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: AppColors.darkBorder, width: 1.0),
         ),
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(6),
-          borderSide: const BorderSide(color: AppColors.darkBorder),
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: AppColors.darkBorder, width: 1.0),
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(6),
+          borderRadius: BorderRadius.circular(12),
           borderSide: const BorderSide(color: AppColors.primary, width: 1.5),
         ),
         errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(6),
-          borderSide: const BorderSide(color: AppColors.error),
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: AppColors.error, width: 1.0),
         ),
         hintStyle: AppTypography.bodyMedium(true)
             .copyWith(color: AppColors.textMutedDark),
@@ -116,13 +116,13 @@ class AppTheme {
         selectedItemColor: AppColors.primary,
         unselectedItemColor: AppColors.textMutedDark,
         type: BottomNavigationBarType.fixed,
-        elevation: 8,
+        elevation: 0,
       ),
       dialogTheme: DialogThemeData(
         backgroundColor: AppColors.darkSurface,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
-          side: const BorderSide(color: AppColors.darkBorder),
+          borderRadius: BorderRadius.circular(20),
+          side: const BorderSide(color: AppColors.darkBorder, width: 1.0),
         ),
         titleTextStyle: AppTypography.titleLarge(true),
         contentTextStyle: AppTypography.bodyMedium(true),
@@ -130,7 +130,10 @@ class AppTheme {
       snackBarTheme: SnackBarThemeData(
         backgroundColor: AppColors.darkElevated,
         contentTextStyle: AppTypography.bodyMedium(true),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+          side: const BorderSide(color: AppColors.darkBorder),
+        ),
         behavior: SnackBarBehavior.floating,
       ),
       sliderTheme: SliderThemeData(
@@ -138,7 +141,7 @@ class AppTheme {
         inactiveTrackColor: AppColors.darkBorder,
         thumbColor: AppColors.primary,
         overlayColor: AppColors.primary.withValues(alpha: 0.15),
-        trackHeight: 6,
+        trackHeight: 5,
       ),
       dividerTheme: const DividerThemeData(
         color: AppColors.darkBorder,
@@ -154,12 +157,12 @@ class AppTheme {
       primary: AppColors.primaryDark,
       onPrimary: Colors.white,
       primaryContainer: AppColors.lightElevated,
-      onPrimaryContainer: AppColors.primaryDark,
+      onPrimaryContainer: Colors.black,
       secondary: AppColors.secondaryDark,
       onSecondary: Colors.white,
       secondaryContainer: AppColors.lightSurface,
-      onSecondaryContainer: AppColors.secondaryDark,
-      tertiary: AppColors.positiveDark,
+      onSecondaryContainer: AppColors.secondary,
+      tertiary: Colors.black,
       onTertiary: Colors.white,
       error: AppColors.error,
       onError: Colors.white,
@@ -193,8 +196,8 @@ class AppTheme {
         color: AppColors.lightCard,
         elevation: 0,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
-          side: const BorderSide(color: AppColors.lightBorder, width: 1),
+          borderRadius: BorderRadius.circular(16),
+          side: const BorderSide(color: AppColors.lightBorder, width: 1.0),
         ),
         margin: EdgeInsets.zero,
       ),
@@ -204,19 +207,19 @@ class AppTheme {
           foregroundColor: Colors.white,
           elevation: 0,
           textStyle: AppTypography.labelLarge(false)
-              .copyWith(fontWeight: FontWeight.w700),
+              .copyWith(fontWeight: FontWeight.w600),
           shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
           padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
         ),
       ),
       outlinedButtonTheme: OutlinedButtonThemeData(
         style: OutlinedButton.styleFrom(
           foregroundColor: AppColors.textPrimaryLight,
-          side: const BorderSide(color: AppColors.lightBorder, width: 1.5),
+          side: const BorderSide(color: AppColors.lightBorder, width: 1.0),
           textStyle: AppTypography.labelLarge(false),
           shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         ),
       ),
@@ -232,21 +235,21 @@ class AppTheme {
         contentPadding:
             const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(6),
-          borderSide: const BorderSide(color: AppColors.lightBorder),
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: AppColors.lightBorder, width: 1.0),
         ),
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(6),
-          borderSide: const BorderSide(color: AppColors.lightBorder),
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: AppColors.lightBorder, width: 1.0),
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(6),
+          borderRadius: BorderRadius.circular(12),
           borderSide:
               const BorderSide(color: AppColors.primaryDark, width: 1.5),
         ),
         errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(6),
-          borderSide: const BorderSide(color: AppColors.error),
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: AppColors.error, width: 1.0),
         ),
         hintStyle: AppTypography.bodyMedium(false)
             .copyWith(color: AppColors.textMutedLight),
@@ -258,13 +261,13 @@ class AppTheme {
         selectedItemColor: AppColors.primaryDark,
         unselectedItemColor: AppColors.textMutedLight,
         type: BottomNavigationBarType.fixed,
-        elevation: 8,
+        elevation: 0,
       ),
       dialogTheme: DialogThemeData(
         backgroundColor: AppColors.lightSurface,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
-          side: const BorderSide(color: AppColors.lightBorder),
+          borderRadius: BorderRadius.circular(20),
+          side: const BorderSide(color: AppColors.lightBorder, width: 1.0),
         ),
         titleTextStyle: AppTypography.titleLarge(false),
         contentTextStyle: AppTypography.bodyMedium(false),
@@ -272,7 +275,10 @@ class AppTheme {
       snackBarTheme: SnackBarThemeData(
         backgroundColor: AppColors.lightElevated,
         contentTextStyle: AppTypography.bodyMedium(false),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+          side: const BorderSide(color: AppColors.lightBorder),
+        ),
         behavior: SnackBarBehavior.floating,
       ),
       sliderTheme: SliderThemeData(
@@ -280,7 +286,7 @@ class AppTheme {
         inactiveTrackColor: AppColors.lightBorder,
         thumbColor: AppColors.primaryDark,
         overlayColor: AppColors.primaryDark.withValues(alpha: 0.15),
-        trackHeight: 6,
+        trackHeight: 5,
       ),
       dividerTheme: const DividerThemeData(
         color: AppColors.lightBorder,

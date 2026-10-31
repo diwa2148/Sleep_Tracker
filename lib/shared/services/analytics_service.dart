@@ -1,4 +1,5 @@
 import '../../core/utils/time_calculator.dart';
+import '../models/sleep_factor.dart';
 import '../models/sleep_session.dart';
 import '../models/sleep_stats.dart';
 
@@ -200,5 +201,77 @@ class AnalyticsService {
     }
 
     return summaries;
+  }
+
+  /// Computes statistical habit correlations for lifestyle factors (caffeine, workout, reading, etc.).
+  static List<FactorCorrelation> computeFactorCorrelations(
+      List<SleepSession> sessions) {
+    final completed = sessions.where((s) => s.endTimestamp != null).toList();
+    if (completed.length < 2) return const [];
+
+    final correlations = <FactorCorrelation>[];
+
+    for (final factor in SleepFactor.all) {
+      final withFactor = completed.where((s) {
+        if (s.notes == null) return false;
+        final lower = s.notes!.toLowerCase();
+        return s.notes!.contains(factor.label) ||
+            lower.contains(factor.name.toLowerCase());
+      }).toList();
+
+      if (withFactor.isEmpty) continue;
+
+      final withoutFactor = completed.where((s) {
+        if (s.notes == null) return true;
+        final lower = s.notes!.toLowerCase();
+        return !s.notes!.contains(factor.label) &&
+            !lower.contains(factor.name.toLowerCase());
+      }).toList();
+
+      final totalWith = withFactor.fold<int>(
+        0,
+        (sum, s) => sum + s.durationMinutes(),
+      );
+      final avgWith = (totalWith / withFactor.length).round();
+
+      final totalWithout = withoutFactor.isEmpty
+          ? completed.fold<int>(0, (sum, s) => sum + s.durationMinutes())
+          : withoutFactor.fold<int>(0, (sum, s) => sum + s.durationMinutes());
+      final countWithout =
+          withoutFactor.isEmpty ? completed.length : withoutFactor.length;
+      final avgWithout = (totalWithout / countWithout).round();
+
+      // Quality ratings
+      final ratedWith =
+          withFactor.where((s) => s.qualityRating != null).toList();
+      final avgQualityWith = ratedWith.isEmpty
+          ? 0.0
+          : ratedWith.fold<int>(0, (sum, s) => sum + s.qualityRating!) /
+              ratedWith.length;
+
+      final ratedWithout =
+          withoutFactor.where((s) => s.qualityRating != null).toList();
+      final avgQualityWithout = ratedWithout.isEmpty
+          ? avgQualityWith
+          : ratedWithout.fold<int>(0, (sum, s) => sum + s.qualityRating!) /
+              ratedWithout.length;
+
+      correlations.add(FactorCorrelation(
+        factor: factor,
+        occurrences: withFactor.length,
+        avgDurationMinutesWith: avgWith,
+        avgDurationMinutesWithout: avgWithout,
+        avgQualityWith: avgQualityWith,
+        avgQualityWithout: avgQualityWithout,
+      ));
+    }
+
+    correlations.sort((a, b) {
+      final occComp = b.occurrences.compareTo(a.occurrences);
+      if (occComp != 0) return occComp;
+      return b.durationDiffMinutes.abs().compareTo(a.durationDiffMinutes.abs());
+    });
+
+    return correlations;
   }
 }

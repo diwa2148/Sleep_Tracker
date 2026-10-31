@@ -9,7 +9,7 @@ enum SomnaButtonType {
   destructive,
 }
 
-/// Custom button with haptic feedback, subtle gradients, and loading states.
+/// Modern button with smooth rounded styling, haptic feedback, and responsive states.
 class SomnaButton extends StatelessWidget {
   final String text;
   final VoidCallback? onPressed;
@@ -18,6 +18,7 @@ class SomnaButton extends StatelessWidget {
   final bool isLoading;
   final double? width;
   final double height;
+  final double borderRadius;
 
   const SomnaButton({
     super.key,
@@ -27,7 +28,8 @@ class SomnaButton extends StatelessWidget {
     this.icon,
     this.isLoading = false,
     this.width,
-    this.height = 44,
+    this.height = 48,
+    this.borderRadius = 14,
   });
 
   @override
@@ -37,26 +39,35 @@ class SomnaButton extends StatelessWidget {
     Color bg;
     Color fg;
     Border? border;
+    Gradient? gradient;
 
     switch (type) {
       case SomnaButtonType.primary:
-        bg = isDark ? AppColors.primary : AppColors.primaryDark;
-        fg = isDark ? const Color(0xFF0B1020) : Colors.white;
+        bg = isDark ? Colors.white : Colors.black;
+        fg = isDark ? Colors.black : Colors.white;
+        border = null;
+        gradient = LinearGradient(
+          colors: isDark
+              ? [const Color(0xFFFFFFFF), const Color(0xFFD4D4D4)]
+              : [const Color(0xFF1E1E1E), const Color(0xFF000000)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        );
         break;
       case SomnaButtonType.secondary:
         bg = isDark ? AppColors.darkElevated : AppColors.lightElevated;
         fg = isDark ? AppColors.textPrimaryDark : AppColors.textPrimaryLight;
         border = Border.all(
           color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
-          width: 1,
+          width: 1.0,
         );
         break;
       case SomnaButtonType.destructive:
-        bg = AppColors.error.withValues(alpha: 0.15);
-        fg = AppColors.error;
+        bg = isDark ? const Color(0xFF262626) : const Color(0xFFE5E5E5);
+        fg = isDark ? Colors.white : Colors.black;
         border = Border.all(
-          color: AppColors.error.withValues(alpha: 0.4),
-          width: 1,
+          color: isDark ? const Color(0xFF404040) : const Color(0xFFCCCCCC),
+          width: 1.0,
         );
         break;
     }
@@ -75,18 +86,22 @@ class SomnaButton extends StatelessWidget {
                   onPressed!();
                 }
               : null,
-          borderRadius: BorderRadius.circular(6),
+          borderRadius: BorderRadius.circular(borderRadius),
           child: AnimatedContainer(
-            duration: const Duration(milliseconds: 180),
+            duration: const Duration(milliseconds: 140),
             decoration: BoxDecoration(
-              color: isEnabled ? bg : bg.withValues(alpha: 0.4),
+              color: gradient == null
+                  ? (isEnabled ? bg : bg.withValues(alpha: 0.4))
+                  : null,
+              gradient: isEnabled ? gradient : null,
               border: border,
-              borderRadius: BorderRadius.circular(6),
+              borderRadius: BorderRadius.circular(borderRadius),
               boxShadow: isEnabled && type == SomnaButtonType.primary
                   ? [
                       BoxShadow(
-                        color: (isDark ? AppColors.primary : AppColors.primaryDark)
-                            .withValues(alpha: isDark ? 0.3 : 0.25),
+                        color: isDark
+                            ? Colors.white.withValues(alpha: 0.12)
+                            : Colors.black.withValues(alpha: 0.18),
                         blurRadius: 14,
                         offset: const Offset(0, 4),
                       ),
@@ -96,10 +111,10 @@ class SomnaButton extends StatelessWidget {
             alignment: Alignment.center,
             child: isLoading
                 ? SizedBox(
-                    width: 22,
-                    height: 22,
+                    width: 20,
+                    height: 20,
                     child: CircularProgressIndicator(
-                      strokeWidth: 2.5,
+                      strokeWidth: 2.2,
                       valueColor: AlwaysStoppedAnimation<Color>(fg),
                     ),
                   )
@@ -108,15 +123,16 @@ class SomnaButton extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       if (icon != null) ...[
-                        Icon(icon, size: 20, color: fg),
+                        Icon(icon, size: 18, color: fg),
                         const SizedBox(width: 8),
                       ],
                       Text(
                         text,
                         style: AppTypography.labelLarge(isDark).copyWith(
                           color: fg,
-                          fontWeight: FontWeight.w700,
-                          fontSize: 15,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 14,
+                          letterSpacing: 0.2,
                         ),
                       ),
                     ],

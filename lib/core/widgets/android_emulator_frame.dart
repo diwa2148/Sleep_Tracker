@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import '../../app/theme/app_typography.dart';
 
-/// Wraps the application inside a high-fidelity Android Emulator frame
-/// with modern Android Studio controls, status bar, and gesture navigation.
+/// Wraps the application inside a high-fidelity Retro Handheld / Vintage Cyberdeck casing
+/// with tactile hardware controls, vintage status indicators, and mechanical styling.
 class AndroidEmulatorFrame extends StatefulWidget {
   final Widget child;
   final GlobalKey<NavigatorState>? navigatorKey;
@@ -34,7 +35,7 @@ class _AndroidEmulatorFrameState extends State<AndroidEmulatorFrame> {
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
 
-    // If already on a native mobile screen (e.g. physical Android phone, narrow window, or test runner)
+    // If already on a native mobile screen (e.g. physical phone, narrow window, or test runner)
     if (screenSize.width <= 600 || screenSize.height <= 650) {
       return widget.child;
     }
@@ -45,18 +46,18 @@ class _AndroidEmulatorFrameState extends State<AndroidEmulatorFrame> {
     final targetWidth = _isRotated ? targetHeight * (820 / 412) : 412.0;
 
     return Scaffold(
-      backgroundColor: const Color(0xFF0D1117), // Studio dark workbench background
+      backgroundColor: const Color(0xFF000000), // Pure black studio workbench background
       body: SafeArea(
         child: Column(
           children: [
-            // Emulator Header Title Bar (like Android Studio Device Manager)
+            // Retro Terminal Title Bar
             Container(
               height: 42,
               padding: const EdgeInsets.symmetric(horizontal: 20),
               decoration: const BoxDecoration(
-                color: Color(0xFF161B22),
+                color: Color(0xFF0D0D0D),
                 border: Border(
-                  bottom: BorderSide(color: Color(0xFF30363D), width: 1),
+                  bottom: BorderSide(color: Color(0xFF262626), width: 1.5),
                 ),
               ),
               child: Row(
@@ -64,16 +65,17 @@ class _AndroidEmulatorFrameState extends State<AndroidEmulatorFrame> {
                 children: [
                   Row(
                     children: [
-                      const Icon(Icons.phone_android_rounded,
-                          size: 18, color: Color(0xFF38BDF8)),
+                      const Icon(Icons.memory_rounded,
+                          size: 18, color: Colors.white),
                       const SizedBox(width: 8),
                       const Text(
-                        'Android Emulator',
+                        'SOMNA RETRO-TERMINAL • ST-84',
                         style: TextStyle(
                           color: Colors.white,
-                          fontSize: 13,
+                          fontSize: 12,
                           fontWeight: FontWeight.w700,
-                          letterSpacing: 0.5,
+                          fontFamily: AppTypography.fontFamily,
+                          letterSpacing: 0.8,
                         ),
                       ),
                       const SizedBox(width: 10),
@@ -81,16 +83,18 @@ class _AndroidEmulatorFrameState extends State<AndroidEmulatorFrame> {
                         padding: const EdgeInsets.symmetric(
                             horizontal: 6, vertical: 2),
                         decoration: BoxDecoration(
-                          color: const Color(0xFF238636).withValues(alpha: 0.2),
-                          borderRadius: BorderRadius.circular(4),
-                          border: Border.all(color: const Color(0xFF238636)),
+                          color: const Color(0xFF262626),
+                          borderRadius: BorderRadius.circular(3),
+                          border: Border.all(color: const Color(0xFF404040)),
                         ),
                         child: const Text(
-                          'Pixel 8 Pro • API 34',
+                          'CH-01 • HI-FI OS',
                           style: TextStyle(
-                            color: Color(0xFF3FB950),
+                            color: Colors.white,
                             fontSize: 10,
-                            fontWeight: FontWeight.w600,
+                            fontWeight: FontWeight.w700,
+                            fontFamily: AppTypography.fontFamily,
+                            letterSpacing: 0.5,
                           ),
                         ),
                       ),
@@ -102,17 +106,25 @@ class _AndroidEmulatorFrameState extends State<AndroidEmulatorFrame> {
                         width: 7,
                         height: 7,
                         decoration: const BoxDecoration(
-                          color: Color(0xFF3FB950),
+                          color: Colors.white,
                           shape: BoxShape.circle,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.white,
+                              blurRadius: 6,
+                              spreadRadius: 1,
+                            ),
+                          ],
                         ),
                       ),
                       const SizedBox(width: 6),
                       const Text(
-                        'ONLINE (ARM64)',
+                        'SYS: ONLINE (60 FPS)',
                         style: TextStyle(
-                          color: Color(0xFF8B949E),
+                          color: Color(0xFFA3A3A3),
                           fontSize: 10,
-                          fontWeight: FontWeight.w600,
+                          fontWeight: FontWeight.w700,
+                          fontFamily: AppTypography.fontFamily,
                           letterSpacing: 0.5,
                         ),
                       ),
@@ -122,7 +134,7 @@ class _AndroidEmulatorFrameState extends State<AndroidEmulatorFrame> {
               ),
             ),
 
-            // Central Emulator Stage
+            // Central Retro Stage
             Expanded(
               child: Center(
                 child: SingleChildScrollView(
@@ -131,14 +143,14 @@ class _AndroidEmulatorFrameState extends State<AndroidEmulatorFrame> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      // Phone Chassis
+                      // Handheld Chassis
                       _buildSmartphone(
                         width: targetWidth,
                         height: targetHeight,
                       ),
                       const SizedBox(width: 14),
 
-                      // Android Studio Side Floating Toolbar
+                      // Side Mechanical Floating Toolbar
                       _buildSideToolbar(),
                     ],
                   ),
@@ -154,44 +166,86 @@ class _AndroidEmulatorFrameState extends State<AndroidEmulatorFrame> {
   Widget _buildSmartphone({required double width, required double height}) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final chassisBgColor =
-        isDark ? const Color(0xFF0F172A) : const Color(0xFFF8FAFC);
+        isDark ? const Color(0xFF000000) : const Color(0xFFFFFFFF);
     final statusContentColor =
-        isDark ? const Color(0xFFF1F5F9) : const Color(0xFF0F172A);
+        isDark ? const Color(0xFFFFFFFF) : const Color(0xFF000000);
     final gestureBarColor =
-        isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B);
+        isDark ? const Color(0xFF555555) : const Color(0xFFAAAAAA);
 
     return Container(
       width: width,
       height: height,
       decoration: BoxDecoration(
-        color: const Color(0xFF1E242B), // Matte Titanium edge
-        borderRadius: BorderRadius.circular(48),
-        border: Border.all(color: const Color(0xFF38424D), width: 3),
+        color: isDark
+            ? const Color(0xFF0A0A0A)
+            : const Color(0xFFF7F7F7), // Retro matte monochrome gunmetal
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(
+          color: isDark ? const Color(0xFF262626) : const Color(0xFFD4D4D4),
+          width: 3.5,
+        ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.65),
-            blurRadius: 36,
-            spreadRadius: 4,
-            offset: const Offset(0, 16),
+            color: Colors.black.withValues(alpha: 0.8),
+            blurRadius: 28,
+            offset: const Offset(0, 14),
           ),
           BoxShadow(
-            color: const Color(0xFF38BDF8).withValues(alpha: 0.08),
-            blurRadius: 60,
-            spreadRadius: 10,
+            color: (isDark ? Colors.white : Colors.black).withValues(alpha: 0.05),
+            blurRadius: 40,
+            spreadRadius: 2,
           ),
         ],
       ),
       child: Stack(
         children: [
-          // Outer Hardware Buttons on Right Side (Power & Volume)
+          // Corner Screw Rivets
+          Positioned(
+            left: 10,
+            top: 10,
+            child: Text('✛',
+                style: TextStyle(
+                    color: isDark ? const Color(0xFF404040) : const Color(0xFFCCCCCC),
+                    fontSize: 12,
+                    fontWeight: FontWeight.w900)),
+          ),
+          Positioned(
+            right: 10,
+            top: 10,
+            child: Text('✛',
+                style: TextStyle(
+                    color: isDark ? const Color(0xFF404040) : const Color(0xFFCCCCCC),
+                    fontSize: 12,
+                    fontWeight: FontWeight.w900)),
+          ),
+          Positioned(
+            left: 10,
+            bottom: 8,
+            child: Text('✛',
+                style: TextStyle(
+                    color: isDark ? const Color(0xFF404040) : const Color(0xFFCCCCCC),
+                    fontSize: 12,
+                    fontWeight: FontWeight.w900)),
+          ),
+          Positioned(
+            right: 10,
+            bottom: 8,
+            child: Text('✛',
+                style: TextStyle(
+                    color: isDark ? const Color(0xFF404040) : const Color(0xFFCCCCCC),
+                    fontSize: 12,
+                    fontWeight: FontWeight.w900)),
+          ),
+
+          // Outer Hardware Buttons on Right Side
           Positioned(
             right: -5,
             top: 140,
             child: Container(
-              width: 4,
+              width: 5,
               height: 48,
               decoration: BoxDecoration(
-                color: const Color(0xFF4A5568),
+                color: isDark ? Colors.white : Colors.black,
                 borderRadius: BorderRadius.circular(2),
               ),
             ),
@@ -200,10 +254,10 @@ class _AndroidEmulatorFrameState extends State<AndroidEmulatorFrame> {
             right: -5,
             top: 200,
             child: Container(
-              width: 4,
+              width: 5,
               height: 48,
               decoration: BoxDecoration(
-                color: const Color(0xFF4A5568),
+                color: isDark ? const Color(0xFF404040) : const Color(0xFFCCCCCC),
                 borderRadius: BorderRadius.circular(2),
               ),
             ),
@@ -212,10 +266,10 @@ class _AndroidEmulatorFrameState extends State<AndroidEmulatorFrame> {
             right: -5,
             top: 270,
             child: Container(
-              width: 4,
+              width: 5,
               height: 38,
               decoration: BoxDecoration(
-                color: const Color(0xFF4A5568),
+                color: isDark ? const Color(0xFF404040) : const Color(0xFFCCCCCC),
                 borderRadius: BorderRadius.circular(2),
               ),
             ),
@@ -224,9 +278,9 @@ class _AndroidEmulatorFrameState extends State<AndroidEmulatorFrame> {
           // Inner Screen Bezel & Display
           Positioned.fill(
             child: Padding(
-              padding: const EdgeInsets.all(7.0), // Screen Bezel
+              padding: const EdgeInsets.symmetric(horizontal: 9.0, vertical: 10.0), // Screen Bezel
               child: ClipRRect(
-                borderRadius: BorderRadius.circular(42),
+                borderRadius: BorderRadius.circular(16),
                 child: Container(
                   color: chassisBgColor,
                   child: Stack(
@@ -234,11 +288,11 @@ class _AndroidEmulatorFrameState extends State<AndroidEmulatorFrame> {
                       // Application Content constrained to phone viewport
                       Positioned.fill(
                         top: 28, // Below Status Bar
-                        bottom: 18, // Above Gesture Bar
+                        bottom: 16, // Above Gesture Bar
                         child: ClipRect(
                           child: MediaQuery(
                             data: MediaQuery.of(context).copyWith(
-                              size: Size(width - 14, height - 60),
+                              size: Size(width - 18, height - 64),
                               padding: EdgeInsets.zero,
                               viewInsets: EdgeInsets.zero,
                             ),
@@ -247,15 +301,25 @@ class _AndroidEmulatorFrameState extends State<AndroidEmulatorFrame> {
                         ),
                       ),
 
-                      // Modern Android Status Bar
+                      // Retro Digital Status Bar
                       Positioned(
                         top: 0,
                         left: 0,
                         right: 0,
                         height: 28,
                         child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 22),
-                          color: chassisBgColor,
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          decoration: BoxDecoration(
+                            color: chassisBgColor,
+                            border: Border(
+                              bottom: BorderSide(
+                                color: isDark
+                                    ? const Color(0xFF262626)
+                                    : const Color(0xFFE5E5E5),
+                                width: 1,
+                              ),
+                            ),
+                          ),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             crossAxisAlignment: CrossAxisAlignment.center,
@@ -265,49 +329,62 @@ class _AndroidEmulatorFrameState extends State<AndroidEmulatorFrame> {
                                 _formatTime(),
                                 style: TextStyle(
                                   color: statusContentColor,
-                                  fontSize: 12,
+                                  fontSize: 11,
                                   fontWeight: FontWeight.w700,
-                                  letterSpacing: 0.2,
+                                  fontFamily: AppTypography.fontFamily,
+                                  letterSpacing: 0.5,
                                 ),
                               ),
 
-                              // Camera Punch-Hole
-                              Container(
-                                width: 11,
-                                height: 11,
-                                decoration: BoxDecoration(
-                                  color: Colors.black,
-                                  shape: BoxShape.circle,
-                                  border: Border.all(
-                                    color: const Color(0xFF1E293B),
-                                    width: 1,
+                              // Retro LED Center Status
+                              Row(
+                                children: [
+                                  Container(
+                                    width: 6,
+                                    height: 6,
+                                    decoration: BoxDecoration(
+                                      color: isDark ? Colors.white : Colors.black,
+                                      shape: BoxShape.circle,
+                                    ),
                                   ),
-                                ),
+                                  const SizedBox(width: 4),
+                                  Text(
+                                    'REC',
+                                    style: TextStyle(
+                                      color: statusContentColor,
+                                      fontSize: 9,
+                                      fontWeight: FontWeight.w700,
+                                      fontFamily: AppTypography.fontFamily,
+                                      letterSpacing: 0.5,
+                                    ),
+                                  ),
+                                ],
                               ),
 
                               // System Icons (5G, Wi-Fi, Battery)
                               Row(
                                 children: [
-                                  Icon(Icons.signal_cellular_4_bar_rounded,
-                                      size: 13, color: statusContentColor),
-                                  const SizedBox(width: 4),
+                                  Text(
+                                    '[5G]',
+                                    style: TextStyle(
+                                      color: statusContentColor,
+                                      fontSize: 9,
+                                      fontWeight: FontWeight.w700,
+                                      fontFamily: AppTypography.fontFamily,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 5),
                                   Icon(Icons.wifi_rounded,
-                                      size: 13, color: statusContentColor),
-                                  const SizedBox(width: 4),
-                                  Row(
-                                    children: [
-                                      Text(
-                                        '98%',
-                                        style: TextStyle(
-                                          color: statusContentColor,
-                                          fontSize: 10,
-                                          fontWeight: FontWeight.w700,
-                                        ),
-                                      ),
-                                      const SizedBox(width: 2),
-                                      Icon(Icons.battery_full_rounded,
-                                          size: 14, color: statusContentColor),
-                                    ],
+                                      size: 12, color: statusContentColor),
+                                  const SizedBox(width: 5),
+                                  Text(
+                                    '98%',
+                                    style: TextStyle(
+                                      color: statusContentColor,
+                                      fontSize: 10,
+                                      fontWeight: FontWeight.w700,
+                                      fontFamily: AppTypography.fontFamily,
+                                    ),
                                   ),
                                 ],
                               ),
@@ -323,8 +400,8 @@ class _AndroidEmulatorFrameState extends State<AndroidEmulatorFrame> {
                         right: 0,
                         child: Center(
                           child: Container(
-                            width: 110,
-                            height: 4,
+                            width: 100,
+                            height: 3.5,
                             decoration: BoxDecoration(
                               color: gestureBarColor,
                               borderRadius: BorderRadius.circular(2),
@@ -345,17 +422,17 @@ class _AndroidEmulatorFrameState extends State<AndroidEmulatorFrame> {
 
   Widget _buildSideToolbar() {
     return Container(
-      width: 44,
+      width: 46,
       padding: const EdgeInsets.symmetric(vertical: 8),
       decoration: BoxDecoration(
-        color: const Color(0xFF161B22),
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: const Color(0xFF30363D), width: 1),
+        color: const Color(0xFF111111),
+        borderRadius: BorderRadius.circular(6),
+        border: Border.all(color: const Color(0xFF262626), width: 1.5),
         boxShadow: const [
           BoxShadow(
-            color: Colors.black45,
+            color: Colors.black54,
             blurRadius: 8,
-            offset: Offset(0, 4),
+            offset: Offset(2, 4),
           ),
         ],
       ),
@@ -368,7 +445,7 @@ class _AndroidEmulatorFrameState extends State<AndroidEmulatorFrame> {
             onTap: () {
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
-                  content: Text('Android Power Button pressed'),
+                  content: Text('Power Button toggled'),
                   duration: Duration(milliseconds: 900),
                 ),
               );
@@ -384,7 +461,7 @@ class _AndroidEmulatorFrameState extends State<AndroidEmulatorFrame> {
             tooltip: 'Volume Down',
             onTap: () {},
           ),
-          const Divider(color: Color(0xFF30363D), height: 12),
+          const Divider(color: Color(0xFF262626), height: 12),
           _buildToolButton(
             icon: Icons.screen_rotation_rounded,
             tooltip: 'Rotate Device',
@@ -404,7 +481,7 @@ class _AndroidEmulatorFrameState extends State<AndroidEmulatorFrame> {
               );
             },
           ),
-          const Divider(color: Color(0xFF30363D), height: 12),
+          const Divider(color: Color(0xFF262626), height: 12),
           // Android 3-Button Navigation
           _buildToolButton(
             icon: Icons.arrow_back_rounded,
@@ -450,10 +527,10 @@ class _AndroidEmulatorFrameState extends State<AndroidEmulatorFrame> {
         color: Colors.transparent,
         child: InkWell(
           onTap: onTap,
-          borderRadius: BorderRadius.circular(6),
+          borderRadius: BorderRadius.circular(4),
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 8),
-            child: Icon(icon, size: 18, color: const Color(0xFFC9D1D9)),
+            child: Icon(icon, size: 18, color: Colors.white),
           ),
         ),
       ),

@@ -37,11 +37,16 @@ class SleepStagesCard extends StatelessWidget {
                     Container(
                       padding: const EdgeInsets.all(6),
                       decoration: BoxDecoration(
-                        color: const Color(0xFF6366F1).withValues(alpha: 0.12),
+                        color: isDark
+                            ? const Color(0xFF262626)
+                            : const Color(0xFFE5E5E5),
                         borderRadius: BorderRadius.circular(6),
                       ),
-                      child: const Icon(Icons.waves_rounded,
-                          size: 16, color: Color(0xFF6366F1)),
+                      child: Icon(
+                        Icons.waves_rounded,
+                        size: 16,
+                        color: isDark ? Colors.white : Colors.black,
+                      ),
                     ),
                     const SizedBox(width: 8),
                     Expanded(
@@ -58,22 +63,29 @@ class SleepStagesCard extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                 decoration: BoxDecoration(
-                  color: AppColors.positive.withValues(alpha: 0.12),
+                  color: isDark
+                      ? const Color(0xFF262626)
+                      : const Color(0xFFE5E5E5),
                   borderRadius: BorderRadius.circular(6),
                   border: Border.all(
-                    color: AppColors.positive.withValues(alpha: 0.3),
+                    color: isDark
+                        ? const Color(0xFF404040)
+                        : const Color(0xFFCCCCCC),
                   ),
                 ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Icon(Icons.bolt_rounded,
-                        size: 12, color: AppColors.positive),
+                    Icon(
+                      Icons.bolt_rounded,
+                      size: 12,
+                      color: isDark ? Colors.white : Colors.black,
+                    ),
                     const SizedBox(width: 4),
                     Text(
                       'Optimal Cycle',
                       style: AppTypography.labelSmall(isDark).copyWith(
-                        color: AppColors.positive,
+                        color: isDark ? Colors.white : Colors.black,
                         fontWeight: FontWeight.w700,
                       ),
                     ),
@@ -94,52 +106,72 @@ class SleepStagesCard extends StatelessWidget {
                   Expanded(
                     flex: deepMins,
                     child: Container(
-                      color: const Color(0xFF4338CA), // Deep Indigo
+                      color: isDark
+                          ? const Color(0xFFFFFFFF)
+                          : const Color(0xFF000000), // Deep Sleep
                       alignment: Alignment.center,
-                      child: const Text('22%',
-                          style: TextStyle(
-                              fontSize: 10,
-                              fontWeight: FontWeight.w700,
-                              color: Colors.white)),
+                      child: Text(
+                        '22%',
+                        style: TextStyle(
+                          fontSize: 10,
+                          fontWeight: FontWeight.w700,
+                          color: isDark ? Colors.black : Colors.white,
+                        ),
+                      ),
                     ),
                   ),
                   const SizedBox(width: 2),
                   Expanded(
                     flex: remMins,
                     child: Container(
-                      color: const Color(0xFF8B5CF6), // Vibrant Violet
+                      color: isDark
+                          ? const Color(0xFFA3A3A3)
+                          : const Color(0xFF525252), // REM
                       alignment: Alignment.center,
-                      child: const Text('26%',
-                          style: TextStyle(
-                              fontSize: 10,
-                              fontWeight: FontWeight.w700,
-                              color: Colors.white)),
+                      child: Text(
+                        '26%',
+                        style: TextStyle(
+                          fontSize: 10,
+                          fontWeight: FontWeight.w700,
+                          color: isDark ? Colors.black : Colors.white,
+                        ),
+                      ),
                     ),
                   ),
                   const SizedBox(width: 2),
                   Expanded(
                     flex: lightMins,
                     child: Container(
-                      color: const Color(0xFF0EA5E9), // Sky Blue
+                      color: isDark
+                          ? const Color(0xFF525252)
+                          : const Color(0xFFA3A3A3), // Light Rest
                       alignment: Alignment.center,
-                      child: const Text('44%',
-                          style: TextStyle(
-                              fontSize: 10,
-                              fontWeight: FontWeight.w700,
-                              color: Colors.white)),
+                      child: Text(
+                        '44%',
+                        style: TextStyle(
+                          fontSize: 10,
+                          fontWeight: FontWeight.w700,
+                          color: isDark ? Colors.white : Colors.black,
+                        ),
+                      ),
                     ),
                   ),
                   const SizedBox(width: 2),
                   Expanded(
                     flex: awakeMins,
                     child: Container(
-                      color: const Color(0xFFF59E0B), // Amber
+                      color: isDark
+                          ? const Color(0xFF262626)
+                          : const Color(0xFFE5E5E5), // Awake
                       alignment: Alignment.center,
-                      child: const Text('8%',
-                          style: TextStyle(
-                              fontSize: 10,
-                              fontWeight: FontWeight.w700,
-                              color: Colors.white)),
+                      child: Text(
+                        '8%',
+                        style: TextStyle(
+                          fontSize: 10,
+                          fontWeight: FontWeight.w700,
+                          color: isDark ? Colors.white : Colors.black,
+                        ),
+                      ),
                     ),
                   ),
                 ],
@@ -156,7 +188,9 @@ class SleepStagesCard extends StatelessWidget {
                   label: 'Deep Sleep',
                   duration: '${deepMins ~/ 60}h ${deepMins % 60}m',
                   percentage: '22%',
-                  color: const Color(0xFF4338CA),
+                  color: isDark
+                      ? const Color(0xFFFFFFFF)
+                      : const Color(0xFF000000),
                   isDark: isDark,
                 ),
               ),
@@ -166,7 +200,9 @@ class SleepStagesCard extends StatelessWidget {
                   label: 'REM Sleep',
                   duration: '${remMins ~/ 60}h ${remMins % 60}m',
                   percentage: '26%',
-                  color: const Color(0xFF8B5CF6),
+                  color: isDark
+                      ? const Color(0xFFA3A3A3)
+                      : const Color(0xFF525252),
                   isDark: isDark,
                 ),
               ),
@@ -176,7 +212,9 @@ class SleepStagesCard extends StatelessWidget {
                   label: 'Light Rest',
                   duration: '${lightMins ~/ 60}h ${lightMins % 60}m',
                   percentage: '44%',
-                  color: const Color(0xFF0EA5E9),
+                  color: isDark
+                      ? const Color(0xFF525252)
+                      : const Color(0xFFA3A3A3),
                   isDark: isDark,
                 ),
               ),
@@ -186,7 +224,9 @@ class SleepStagesCard extends StatelessWidget {
                   label: 'Awake',
                   duration: '${awakeMins}m',
                   percentage: '8%',
-                  color: const Color(0xFFF59E0B),
+                  color: isDark
+                      ? const Color(0xFF262626)
+                      : const Color(0xFFE5E5E5),
                   isDark: isDark,
                 ),
               ),

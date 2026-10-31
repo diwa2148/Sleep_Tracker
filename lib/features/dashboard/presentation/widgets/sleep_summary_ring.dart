@@ -4,7 +4,8 @@ import '../../../../app/theme/app_colors.dart';
 import '../../../../app/theme/app_typography.dart';
 import '../../../../core/utils/date_time_formatter.dart';
 
-/// Circular progress ring visualizing sleep duration versus the user's sleep goal.
+/// Circular progress ring visualizing sleep duration versus the user's sleep goal
+/// with retro calibrated gauge tick marks, technical indicators, and digital readouts.
 class SleepSummaryRing extends StatelessWidget {
   final int durationMinutes;
   final int goalMinutes;
@@ -31,15 +32,14 @@ class SleepSummaryRing extends StatelessWidget {
       child: Stack(
         alignment: Alignment.center,
         children: [
-          // Background & Progress Arc Canvas
+          // Background & Progress Arc Canvas with Hour Calibration Dots
           CustomPaint(
             size: Size(size, size),
             painter: _RingPainter(
               progress: progress,
               isDark: isDark,
-              trackColor: isDark ? AppColors.darkBorder : AppColors.lightBorder,
-              progressColor:
-                  progress >= 1.0 ? AppColors.positive : AppColors.primary,
+              trackColor: isDark ? const Color(0xFF262626) : const Color(0xFFE5E5E5),
+              progressColor: isDark ? Colors.white : Colors.black,
             ),
           ),
 
@@ -49,7 +49,9 @@ class SleepSummaryRing extends StatelessWidget {
             children: [
               Text(
                 DateTimeFormatter.formatMinutes(durationMinutes),
-                style: AppTypography.statNumber(isDark, fontSize: 32),
+                style: AppTypography.statNumber(isDark, fontSize: 30).copyWith(
+                  letterSpacing: -0.5,
+                ),
               ),
               const SizedBox(height: 4),
               Row(
@@ -58,20 +60,21 @@ class SleepSummaryRing extends StatelessWidget {
                   Icon(
                     progress >= 1.0
                         ? Icons.check_circle_rounded
-                        : Icons.track_changes_rounded,
-                    size: 14,
+                        : Icons.timelapse_rounded,
+                    size: 13,
                     color: progress >= 1.0
                         ? AppColors.positive
-                        : AppColors.secondary,
+                        : (isDark ? AppColors.primary : AppColors.primaryDark),
                   ),
                   const SizedBox(width: 4),
                   Text(
                     '$percentage% of goal',
-                    style: AppTypography.labelMedium(isDark).copyWith(
+                    style: AppTypography.labelSmall(isDark).copyWith(
                       color: progress >= 1.0
                           ? AppColors.positive
-                          : AppColors.secondary,
-                      fontWeight: FontWeight.w600,
+                          : (isDark ? AppColors.primary : AppColors.primaryDark),
+                      fontWeight: FontWeight.w700,
+                      letterSpacing: 0.5,
                     ),
                   ),
                 ],
@@ -100,10 +103,28 @@ class _RingPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final center = Offset(size.width / 2, size.height / 2);
-    final strokeWidth = size.width * 0.085;
-    final radius = (size.width - strokeWidth) / 2;
+    final strokeWidth = size.width * 0.08;
+    final radius = (size.width - strokeWidth - 12) / 2;
 
-    // Track Paint
+    // 1. Draw 12 subtle modern hour dots around perimeter
+    final dotRadius = size.width / 2 - 3.5;
+    for (int i = 0; i < 12; i++) {
+      final angle = (i / 12.0) * 2 * math.pi - math.pi / 2;
+      final isCardinal = i % 3 == 0;
+      final dotPaint = Paint()
+        ..color = isCardinal
+            ? (isDark ? const Color(0xFF737373) : const Color(0xFFA3A3A3))
+            : (isDark ? const Color(0xFF333333) : const Color(0xFFD4D4D4))
+        ..style = PaintingStyle.fill;
+
+      final dotCenter = Offset(
+        center.dx + dotRadius * math.cos(angle),
+        center.dy + dotRadius * math.sin(angle),
+      );
+      canvas.drawCircle(dotCenter, isCardinal ? 2.0 : 1.2, dotPaint);
+    }
+
+    // 2. Track Paint
     final trackPaint = Paint()
       ..color = trackColor
       ..style = PaintingStyle.stroke
@@ -114,14 +135,31 @@ class _RingPainter extends CustomPainter {
 
     if (progress <= 0) return;
 
-    // Progress Paint with Gradient
     final sweepAngle = (progress * 2 * math.pi).clamp(0.0, 2 * math.pi);
+
+    // 3. Ambient Glow behind progress arc
+    final glowPaint = Paint()
+      ..color = progressColor.withValues(alpha: isDark ? 0.2 : 0.1)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = strokeWidth + 4
+      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 6)
+      ..strokeCap = StrokeCap.round;
+
+    canvas.drawArc(
+      Rect.fromCircle(center: center, radius: radius),
+      -math.pi / 2,
+      sweepAngle,
+      false,
+      glowPaint,
+    );
+
+    // 4. Progress Paint with Retro Glow Shader
     final progressPaint = Paint()
       ..shader = SweepGradient(
         startAngle: 0.0,
         endAngle: 2 * math.pi,
         colors: [
-          progressColor.withValues(alpha: 0.7),
+          progressColor.withValues(alpha: 0.75),
           progressColor,
         ],
         transform: const GradientRotation(-math.pi / 2),

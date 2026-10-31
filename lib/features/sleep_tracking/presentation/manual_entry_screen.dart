@@ -282,8 +282,8 @@ class _ManualEntryScreenState extends State<ManualEntryScreen> {
                     const EdgeInsets.symmetric(vertical: 24, horizontal: 20),
                 gradient: LinearGradient(
                   colors: isDark
-                      ? [const Color(0xFF1E284A), const Color(0xFF141B2D)]
-                      : [const Color(0xFFF1F5F9), const Color(0xFFFFFFFF)],
+                      ? [const Color(0xFF171717), const Color(0xFF0F0F0F)]
+                      : [const Color(0xFFF5F5F5), const Color(0xFFFFFFFF)],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
@@ -301,7 +301,9 @@ class _ManualEntryScreenState extends State<ManualEntryScreen> {
                             : '--',
                         style: AppTypography.displayMedium(isDark).copyWith(
                           color: isValidDuration
-                              ? AppColors.primary
+                              ? (isDark
+                                  ? AppColors.primary
+                                  : AppColors.primaryDark)
                               : AppColors.error,
                         ),
                       ),
@@ -311,13 +313,18 @@ class _ManualEntryScreenState extends State<ManualEntryScreen> {
                           padding: const EdgeInsets.symmetric(
                               horizontal: 10, vertical: 4),
                           decoration: BoxDecoration(
-                            color: AppColors.secondary.withValues(alpha: 0.15),
+                            color: isDark
+                                ? const Color(0xFF262626)
+                                : const Color(0xFFE5E5E5),
                             borderRadius: BorderRadius.circular(10),
                           ),
                           child: Text(
                             'Overnight Session',
-                            style: AppTypography.labelSmall(isDark)
-                                .copyWith(color: AppColors.secondary),
+                            style: AppTypography.labelSmall(isDark).copyWith(
+                              color: isDark
+                                  ? const Color(0xFFD4D4D4)
+                                  : const Color(0xFF262626),
+                            ),
                           ),
                         ),
                       ],
@@ -445,24 +452,26 @@ class _ManualEntryScreenState extends State<ManualEntryScreen> {
                     label: Text(factor),
                     selected: isSelected,
                     onSelected: (_) => _toggleFactor(factor),
-                    selectedColor: AppColors.primary.withValues(alpha: 0.2),
-                    checkmarkColor: AppColors.primary,
+                    selectedColor: isDark
+                        ? const Color(0xFF262626)
+                        : const Color(0xFFE5E5E5),
+                    checkmarkColor: isDark ? Colors.white : Colors.black,
                     labelStyle: TextStyle(
                       fontSize: 12,
                       fontWeight:
                           isSelected ? FontWeight.w600 : FontWeight.w500,
                       color: isSelected
-                          ? AppColors.primary
+                          ? (isDark ? Colors.white : Colors.black)
                           : (isDark
                               ? AppColors.textSecondaryDark
                               : AppColors.textSecondaryLight),
                     ),
                     backgroundColor: isDark
                         ? AppColors.darkSurface
-                        : const Color(0xFFF1F5F9),
+                        : const Color(0xFFF5F5F5),
                     side: BorderSide(
                       color: isSelected
-                          ? AppColors.primary
+                          ? (isDark ? Colors.white : Colors.black)
                           : (isDark
                               ? AppColors.darkBorder
                               : AppColors.lightBorder),
@@ -517,7 +526,9 @@ class _ManualEntryScreenState extends State<ManualEntryScreen> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(icon, size: 18, color: AppColors.primary),
+          Icon(icon,
+              size: 18,
+              color: isDark ? AppColors.primary : AppColors.primaryDark),
           const SizedBox(width: 8),
           Flexible(
             child: Text(

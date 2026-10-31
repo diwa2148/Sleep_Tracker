@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:sleep_tracker/app/theme/app_theme.dart';
 import 'package:sleep_tracker/features/dashboard/presentation/dashboard_screen.dart';
 import 'package:sleep_tracker/features/history/presentation/history_screen.dart';
+import 'package:sleep_tracker/features/history/presentation/session_detail_sheet.dart';
 import 'package:sleep_tracker/features/insights/presentation/insights_screen.dart';
 import 'package:sleep_tracker/features/onboarding/presentation/onboarding_screen.dart';
 import 'package:sleep_tracker/features/settings/presentation/settings_screen.dart';
@@ -252,6 +253,48 @@ void main() {
     expect(find.text('Sleep Quality'), findsOneWidget);
     expect(find.text('BEDTIME'), findsOneWidget);
     expect(find.text('WAKE UP'), findsOneWidget);
+    expect(find.text('LIFESTYLE FACTORS & HABITS'), findsOneWidget);
+    expect(find.text('Caffeine'), findsOneWidget);
+    expect(find.text('Workout'), findsOneWidget);
+
+    // Toggle Caffeine chip in-place
+    await tester.tap(find.text('Caffeine'));
+    await tester.pumpAndSettle();
+    expect(find.text('1 active'), findsOneWidget);
+    expect(sleepRepo.sessions.first.notes, contains('☕ Caffeine'));
+
+    // Adjust quality rating in-place (tap 4th star to change from 5 to 4)
+    final sheetStars = find.descendant(
+      of: find.byType(SessionDetailSheet),
+      matching: find.byIcon(Icons.star_rounded),
+    );
+    expect(sheetStars, findsNWidgets(5));
+    expect(find.text('Excellent (5/5)'), findsOneWidget);
+    expect(find.text('50% Restorative'), findsOneWidget);
+
+    await tester.tap(sheetStars.at(3));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Great (4/5)'), findsOneWidget);
+    expect(find.text('44% Restorative'), findsOneWidget);
+    expect(sleepRepo.sessions.first.qualityRating, equals(4));
+
+    // Edit notes in-place
+    expect(find.text('Edit'), findsOneWidget);
+    await tester.tap(find.text('Edit'));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(TextField), findsOneWidget);
+    await tester.enterText(
+        find.byType(TextField), 'Deep restorative REM cycles');
+    await tester.tap(find.text('Save Note'));
+    await tester.pumpAndSettle();
+
+    // Verify session notes updated with both the factor tag and new observation
+    expect(sleepRepo.sessions.first.notes, contains('☕ Caffeine'));
+    expect(sleepRepo.sessions.first.notes,
+        contains('Deep restorative REM cycles'));
+    expect(find.text('Deep restorative REM cycles'), findsOneWidget);
   });
 
   testWidgets('E2E Journey: Settings allows toggling theme and haptics',

@@ -24,6 +24,22 @@ class SettingsProvider with ChangeNotifier {
   bool get isLoading => _isLoading;
   ThemeMode get themeMode => _preferences.themeMode;
   bool get onboardingCompleted => _preferences.onboardingCompleted;
+  bool get crtScanlinesEnabled => _preferences.crtScanlinesEnabled;
+  bool get oledModeEnabled => _preferences.oledModeEnabled;
+
+  /// Updates CRT scanlines overlay toggle.
+  Future<void> updateCrtScanlines(bool enabled) async {
+    _preferences = _preferences.copyWith(crtScanlinesEnabled: enabled);
+    notifyListeners();
+    await _prefsRepo.savePreferences(_preferences);
+  }
+
+  /// Updates OLED True-Black Mode toggle.
+  Future<void> updateOledMode(bool enabled) async {
+    _preferences = _preferences.copyWith(oledModeEnabled: enabled);
+    notifyListeners();
+    await _prefsRepo.savePreferences(_preferences);
+  }
 
   Future<void> _loadSettings() async {
     _isLoading = true;

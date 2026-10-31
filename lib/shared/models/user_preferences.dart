@@ -12,6 +12,8 @@ class UserPreferences {
   final ThemeMode themeMode;
   final bool onboardingCompleted;
   final bool hapticsEnabled;
+  final bool crtScanlinesEnabled;
+  final bool oledModeEnabled;
 
   const UserPreferences({
     this.sleepGoalMinutes = AppConfig.defaultSleepGoalMinutes,
@@ -22,6 +24,8 @@ class UserPreferences {
     this.themeMode = ThemeMode.light,
     this.onboardingCompleted = true,
     this.hapticsEnabled = true,
+    this.crtScanlinesEnabled = false,
+    this.oledModeEnabled = false,
   });
 
   /// Formatted sleep goal, e.g. "8h 00m" or "7h 30m".
@@ -64,6 +68,8 @@ class UserPreferences {
     ThemeMode? themeMode,
     bool? onboardingCompleted,
     bool? hapticsEnabled,
+    bool? crtScanlinesEnabled,
+    bool? oledModeEnabled,
   }) {
     return UserPreferences(
       sleepGoalMinutes: sleepGoalMinutes ?? this.sleepGoalMinutes,
@@ -76,6 +82,8 @@ class UserPreferences {
       themeMode: themeMode ?? this.themeMode,
       onboardingCompleted: onboardingCompleted ?? this.onboardingCompleted,
       hapticsEnabled: hapticsEnabled ?? this.hapticsEnabled,
+      crtScanlinesEnabled: crtScanlinesEnabled ?? this.crtScanlinesEnabled,
+      oledModeEnabled: oledModeEnabled ?? this.oledModeEnabled,
     );
   }
 
@@ -89,6 +97,8 @@ class UserPreferences {
       'themeMode': themeMode.name,
       'onboardingCompleted': onboardingCompleted,
       'hapticsEnabled': hapticsEnabled,
+      'crtScanlinesEnabled': crtScanlinesEnabled,
+      'oledModeEnabled': oledModeEnabled,
     };
   }
 
@@ -114,6 +124,8 @@ class UserPreferences {
       themeMode: mode,
       onboardingCompleted: (json['onboardingCompleted'] as bool?) ?? true,
       hapticsEnabled: (json['hapticsEnabled'] as bool?) ?? true,
+      crtScanlinesEnabled: (json['crtScanlinesEnabled'] as bool?) ?? false,
+      oledModeEnabled: (json['oledModeEnabled'] as bool?) ?? false,
     );
   }
 
@@ -129,7 +141,8 @@ class UserPreferences {
           wakeReminderEnabled == other.wakeReminderEnabled &&
           themeMode == other.themeMode &&
           onboardingCompleted == other.onboardingCompleted &&
-          hapticsEnabled == other.hapticsEnabled;
+          hapticsEnabled == other.hapticsEnabled &&
+          crtScanlinesEnabled == other.crtScanlinesEnabled;
 
   @override
   int get hashCode =>
@@ -140,5 +153,6 @@ class UserPreferences {
       wakeReminderEnabled.hashCode ^
       themeMode.hashCode ^
       onboardingCompleted.hashCode ^
-      hapticsEnabled.hashCode;
+      hapticsEnabled.hashCode ^
+      crtScanlinesEnabled.hashCode;
 }

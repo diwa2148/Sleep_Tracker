@@ -49,11 +49,16 @@ class CircadianWindowCard extends StatelessWidget {
                     Container(
                       padding: const EdgeInsets.all(6),
                       decoration: BoxDecoration(
-                        color: AppColors.secondary.withValues(alpha: 0.12),
+                        color: isDark
+                            ? const Color(0xFF262626)
+                            : const Color(0xFFE5E5E5),
                         borderRadius: BorderRadius.circular(6),
                       ),
-                      child: const Icon(Icons.timelapse_rounded,
-                          size: 16, color: AppColors.secondary),
+                      child: Icon(
+                        Icons.timelapse_rounded,
+                        size: 16,
+                        color: isDark ? Colors.white : Colors.black,
+                      ),
                     ),
                     const SizedBox(width: 8),
                     Expanded(
@@ -70,16 +75,20 @@ class CircadianWindowCard extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                 decoration: BoxDecoration(
-                  color: AppColors.primary.withValues(alpha: 0.1),
+                  color: isDark
+                      ? const Color(0xFF262626)
+                      : const Color(0xFFE5E5E5),
                   borderRadius: BorderRadius.circular(6),
                   border: Border.all(
-                    color: AppColors.primary.withValues(alpha: 0.25),
+                    color: isDark
+                        ? const Color(0xFF404040)
+                        : const Color(0xFFCCCCCC),
                   ),
                 ),
                 child: Text(
                   '${goalMinutes ~/ 60}h Target Window',
                   style: AppTypography.labelSmall(isDark).copyWith(
-                    color: isDark ? AppColors.primary : AppColors.primaryDark,
+                    color: isDark ? Colors.white : Colors.black,
                     fontWeight: FontWeight.w700,
                   ),
                 ),
@@ -88,22 +97,22 @@ class CircadianWindowCard extends StatelessWidget {
           ),
           const SizedBox(height: 14),
 
-          // Visual 24-hour Day/Night Gradient Track
+          // Visual 24-hour Day/Night Gradient Track (Monochrome: Night=Black, Noon=Silver)
           Stack(
             clipBehavior: Clip.none,
             children: [
-              // Background 24h Bar (Night -> Day -> Night)
+              // Background 24h Bar (Midnight Black -> Midday Silver -> Midnight Black)
               Container(
                 height: 18,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(6),
                   gradient: const LinearGradient(
                     colors: [
-                      Color(0xFF1E1B4B), // Night (00:00)
-                      Color(0xFF38BDF8), // Morning (06:00)
-                      Color(0xFFFBBF24), // Noon (12:00)
-                      Color(0xFFF97316), // Sunset (18:00)
-                      Color(0xFF1E1B4B), // Night (24:00)
+                      Color(0xFF111111), // Night (00:00)
+                      Color(0xFF666666), // Morning (06:00)
+                      Color(0xFFE0E0E0), // Noon (12:00)
+                      Color(0xFF666666), // Sunset (18:00)
+                      Color(0xFF111111), // Night (24:00)
                     ],
                   ),
                 ),
@@ -122,12 +131,16 @@ class CircadianWindowCard extends StatelessWidget {
                       flex: wakeMinutes,
                       child: Container(
                         decoration: BoxDecoration(
-                          color: const Color(0xFF6366F1).withValues(alpha: 0.75),
+                          color: (isDark ? Colors.white : Colors.black)
+                              .withValues(alpha: 0.85),
                           borderRadius: const BorderRadius.only(
                             topLeft: Radius.circular(6),
                             bottomLeft: Radius.circular(6),
                           ),
-                          border: Border.all(color: Colors.white, width: 1.5),
+                          border: Border.all(
+                            color: isDark ? Colors.white : Colors.black,
+                            width: 1.5,
+                          ),
                         ),
                       ),
                     ),
@@ -141,12 +154,16 @@ class CircadianWindowCard extends StatelessWidget {
                       flex: (1440 - bedtimeMinutes).clamp(0, 1440),
                       child: Container(
                         decoration: BoxDecoration(
-                          color: const Color(0xFF6366F1).withValues(alpha: 0.75),
+                          color: (isDark ? Colors.white : Colors.black)
+                              .withValues(alpha: 0.85),
                           borderRadius: const BorderRadius.only(
                             topRight: Radius.circular(6),
                             bottomRight: Radius.circular(6),
                           ),
-                          border: Border.all(color: Colors.white, width: 1.5),
+                          border: Border.all(
+                            color: isDark ? Colors.white : Colors.black,
+                            width: 1.5,
+                          ),
                         ),
                       ),
                     ),
@@ -163,7 +180,7 @@ class CircadianWindowCard extends StatelessWidget {
                 child: Container(
                   width: 3,
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: isDark ? Colors.white : Colors.black,
                     borderRadius: BorderRadius.circular(2),
                     boxShadow: const [
                       BoxShadow(
@@ -207,8 +224,11 @@ class CircadianWindowCard extends StatelessWidget {
                   ),
                   child: Row(
                     children: [
-                      const Icon(Icons.nightlight_round,
-                          size: 16, color: AppColors.primary),
+                      Icon(Icons.nightlight_round,
+                          size: 16,
+                          color: isDark
+                              ? AppColors.primary
+                              : AppColors.primaryDark),
                       const SizedBox(width: 8),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -234,8 +254,11 @@ class CircadianWindowCard extends StatelessWidget {
                   ),
                   child: Row(
                     children: [
-                      const Icon(Icons.wb_sunny_rounded,
-                          size: 16, color: AppColors.secondary),
+                      Icon(Icons.wb_sunny_rounded,
+                          size: 16,
+                          color: isDark
+                              ? const Color(0xFFA3A3A3)
+                              : const Color(0xFF525252)),
                       const SizedBox(width: 8),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,

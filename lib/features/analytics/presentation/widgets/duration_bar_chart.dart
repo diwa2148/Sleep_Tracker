@@ -59,14 +59,24 @@ class DurationBarChart extends StatelessWidget {
                         padding: const EdgeInsets.symmetric(
                             horizontal: 6, vertical: 2),
                         decoration: BoxDecoration(
-                          color: AppColors.secondary.withValues(alpha: 0.15),
+                          color: isDark
+                              ? const Color(0xFF262626)
+                              : const Color(0xFFE5E5E5),
                           borderRadius: BorderRadius.circular(4),
+                          border: Border.all(
+                            color: isDark
+                                ? const Color(0xFF404040)
+                                : const Color(0xFFCCCCCC),
+                            width: 0.8,
+                          ),
                         ),
                         child: Text(
                           'Goal: ${goalMinutes ~/ 60}h',
                           style: AppTypography.labelSmall(isDark).copyWith(
                             fontSize: 10,
-                            color: AppColors.secondary,
+                            color: isDark
+                                ? const Color(0xFFD4D4D4)
+                                : const Color(0xFF262626),
                           ),
                         ),
                       ),
@@ -74,7 +84,9 @@ class DurationBarChart extends StatelessWidget {
                       Expanded(
                         child: Container(
                           height: 1,
-                          color: AppColors.secondary.withValues(alpha: 0.4),
+                          color: isDark
+                              ? const Color(0xFF404040)
+                              : const Color(0xFFCCCCCC),
                         ),
                       ),
                     ],
@@ -111,14 +123,24 @@ class DurationBarChart extends StatelessWidget {
                                   gradient: hasData
                                       ? LinearGradient(
                                           colors: metGoal
-                                              ? [
-                                                  AppColors.positive,
-                                                  AppColors.positiveDark
-                                                ]
-                                              : [
-                                                  AppColors.primary,
-                                                  AppColors.primaryDark
-                                                ],
+                                              ? (isDark
+                                                  ? const [
+                                                      Color(0xFFFFFFFF),
+                                                      Color(0xFFD4D4D4)
+                                                    ]
+                                                  : const [
+                                                      Color(0xFF000000),
+                                                      Color(0xFF262626)
+                                                    ])
+                                              : (isDark
+                                                  ? const [
+                                                      Color(0xFF737373),
+                                                      Color(0xFF404040)
+                                                    ]
+                                                  : const [
+                                                      Color(0xFF888888),
+                                                      Color(0xFFBDBDBD)
+                                                    ]),
                                           begin: Alignment.topCenter,
                                           end: Alignment.bottomCenter,
                                         )

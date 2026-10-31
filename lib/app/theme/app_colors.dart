@@ -1,52 +1,52 @@
 import 'package:flutter/material.dart';
 
-/// Premium color palette for SOMNA.
-/// Designed for a calm, luxury wellness aesthetic with midnight navies,
-/// soothing lavenders, soft sky accents, and restorative mint tones.
+/// Pure Black & White / Monochromatic color palette for SOMNA.
+/// Built with stark high-contrast pure black, pure white, and refined grayscale steps.
 class AppColors {
   AppColors._();
 
-  // Dark Theme Palette (Primary experience)
-  static const Color darkBackground = Color(0xFF0B1020);
-  static const Color darkSurface = Color(0xFF141B2D);
-  static const Color darkElevated = Color(0xFF1C2540);
-  static const Color darkCard = Color(0xFF182038);
-  static const Color darkBorder = Color(0xFF263354);
-  static const Color darkSubtle = Color(0xFF1E293B);
+  // Dark Theme Palette ("Pure Noir & Obsidian Glass")
+  static const Color darkBackground = Color(0xFF000000); // True pitch black
+  static const Color darkSurface = Color(0xFF0D0D0D); // Deep black surface plate
+  static const Color darkElevated = Color(0xFF171717); // Raised dark card
+  static const Color darkCard = Color(0xFF121212); // Matte black card
+  static const Color darkBorder = Color(0xFF262626); // Clean grayscale border
+  static const Color darkSubtle = Color(0xFF141414);
 
-  // Light Theme Palette
-  static const Color lightBackground = Color(0xFFF6F7FC);
-  static const Color lightSurface = Color(0xFFFFFFFF);
-  static const Color lightElevated = Color(0xFFF1F5F9);
-  static const Color lightCard = Color(0xFFFFFFFF);
-  static const Color lightBorder = Color(0xFFE2E8F0);
-  static const Color lightSubtle = Color(0xFFF8FAFC);
+  // Light Theme Palette ("Pure Stark White & Slate-Gray")
+  static const Color lightBackground = Color(0xFFFFFFFF); // Pure white
+  static const Color lightSurface = Color(0xFFFFFFFF); // Pure white plate
+  static const Color lightElevated = Color(0xFFF2F2F2); // Soft light gray
+  static const Color lightCard = Color(0xFFFFFFFF); // Crisp card
+  static const Color lightBorder = Color(0xFFE5E5E5); // Minimal clean border
+  static const Color lightSubtle = Color(0xFFF8F8F8);
 
-  // Accents & Functional Colors
-  static const Color primary = Color(0xFF9B8CFF); // Lavender / Violet
-  static const Color primaryLight = Color(0xFFB4A7FF);
-  static const Color primaryDark = Color(0xFF7B66FF);
+  // Modern Monochromatic Accents & Functional Colors
+  // High contrast: Pure White in dark mode, Pure Black in light mode
+  static const Color primary = Color(0xFFFFFFFF); // High-contrast White
+  static const Color primaryLight = Color(0xFFD4D4D4); // Soft silver
+  static const Color primaryDark = Color(0xFF000000); // Pure Black
 
-  static const Color secondary = Color(0xFF7DD3FC); // Sky / Cyan
-  static const Color secondaryLight = Color(0xFFBAE6FD);
-  static const Color secondaryDark = Color(0xFF38BDF8);
+  static const Color secondary = Color(0xFFA3A3A3); // Clean silver-gray
+  static const Color secondaryLight = Color(0xFFE5E5E5);
+  static const Color secondaryDark = Color(0xFF525252);
 
-  static const Color positive = Color(0xFF86D9B2); // Mint Green
-  static const Color positiveLight = Color(0xFFA7F3D0);
-  static const Color positiveDark = Color(0xFF34D399);
+  static const Color positive = Color(0xFFFFFFFF); // Monochrome highlight
+  static const Color positiveLight = Color(0xFFE5E5E5);
+  static const Color positiveDark = Color(0xFF737373);
 
-  static const Color warning = Color(0xFFFCD34D); // Soft Amber
-  static const Color warningLight = Color(0xFFFDE68A);
+  static const Color warning = Color(0xFFA3A3A3); // Neutral silver gray
+  static const Color warningLight = Color(0xFFD4D4D4);
 
-  static const Color error = Color(0xFFF87171); // Coral / Rose
-  static const Color errorLight = Color(0xFFFCA5A5);
+  static const Color error = Color(0xFF737373); // Charcoal
+  static const Color errorLight = Color(0xFFA3A3A3);
 
-  // Sleep Quality Scale Colors (1 to 5)
-  static const Color rating1 = Color(0xFFF87171); // Poor - Red/Coral
-  static const Color rating2 = Color(0xFFFB923C); // Fair - Orange
-  static const Color rating3 = Color(0xFFFBBF24); // Good - Amber
-  static const Color rating4 = Color(0xFF60A5FA); // Great - Blue
-  static const Color rating5 = Color(0xFF86D9B2); // Excellent - Mint
+  // Sleep Quality Scale Colors (1 to 5) - Pure grayscale gradient
+  static const Color rating1 = Color(0xFF404040); // Deep charcoal
+  static const Color rating2 = Color(0xFF666666); // Dark gray
+  static const Color rating3 = Color(0xFF8C8C8C); // Medium gray
+  static const Color rating4 = Color(0xFFB8B8B8); // Light silver
+  static const Color rating5 = Color(0xFFFFFFFF); // Pure white
 
   static const List<Color> ratingColors = [
     rating1,
@@ -57,36 +57,36 @@ class AppColors {
   ];
 
   // Text Colors
-  static const Color textPrimaryDark = Color(0xFFF4F5FF);
-  static const Color textSecondaryDark = Color(0xFFA6AEC8);
-  static const Color textMutedDark = Color(0xFF64748B);
+  static const Color textPrimaryDark = Color(0xFFFFFFFF); // Pure white
+  static const Color textSecondaryDark = Color(0xFFA3A3A3); // Neutral silver
+  static const Color textMutedDark = Color(0xFF737373); // Muted gray
 
-  static const Color textPrimaryLight = Color(0xFF0F172A);
-  static const Color textSecondaryLight = Color(0xFF475569);
-  static const Color textMutedLight = Color(0xFF94A3B8);
+  static const Color textPrimaryLight = Color(0xFF000000); // Pure black
+  static const Color textSecondaryLight = Color(0xFF525252); // Charcoal
+  static const Color textMutedLight = Color(0xFF888888); // Muted gray
 
-  // Gradients
+  // Modern Monochromatic Gradients
   static const LinearGradient primaryGradient = LinearGradient(
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
-    colors: [Color(0xFF9B8CFF), Color(0xFF7B66FF)],
+    colors: [Color(0xFFFFFFFF), Color(0xFFD4D4D4)],
   );
 
   static const LinearGradient sleepGlowGradient = LinearGradient(
     begin: Alignment.topCenter,
     end: Alignment.bottomCenter,
-    colors: [Color(0x339B8CFF), Color(0x000B1020)],
+    colors: [Color(0x33FFFFFF), Color(0x00000000)],
   );
 
   static const LinearGradient cardGlowGradient = LinearGradient(
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
-    colors: [Color(0xFF1E284A), Color(0xFF141B2D)],
+    colors: [Color(0xFF1E1E1E), Color(0xFF121212)],
   );
 
   static const LinearGradient activeTimerGradient = LinearGradient(
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
-    colors: [Color(0xFF1A2342), Color(0xFF0D1429)],
+    colors: [Color(0xFF1C1C1C), Color(0xFF0F0F0F)],
   );
 }

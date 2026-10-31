@@ -8,6 +8,7 @@ import '../../../../core/widgets/somna_card.dart';
 import '../../../../shared/models/sleep_session.dart';
 
 /// Card displayed prominently on the dashboard when a live sleep session is being tracked.
+/// Modernized with luminous ambient glow, rounded geometry, and sleek live status indicators.
 class ActiveSessionCard extends StatelessWidget {
   final SleepSession activeSession;
   final Duration elapsedDuration;
@@ -25,65 +26,93 @@ class ActiveSessionCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final dotColor = isDark ? Colors.white : Colors.black;
 
     return SomnaCard(
       gradient: LinearGradient(
         colors: isDark
-            ? [const Color(0xFF1E284A), const Color(0xFF12192F)]
-            : [const Color(0xFFEDE9FE), const Color(0xFFF1F5F9)],
+            ? [
+                const Color(0xFF1A1A1A),
+                const Color(0xFF0F0F0F),
+              ]
+            : [
+                const Color(0xFFF7F7F7),
+                const Color(0xFFFFFFFF),
+              ],
         begin: Alignment.topLeft,
         end: Alignment.bottomRight,
       ),
       border: Border.all(
-        color: AppColors.primary.withValues(alpha: 0.4),
-        width: 1.5,
+        color: isDark
+            ? const Color(0xFF333333)
+            : const Color(0xFFD4D4D4),
+        width: 1.2,
       ),
-      padding: const EdgeInsets.all(22),
+      padding: const EdgeInsets.all(20),
+      borderRadius: 20,
       child: Column(
         children: [
-          // Header with pulsating indicator
+          // Header with pulsating live recording pill & close button
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Row(
-                children: [
-                  Container(
-                    width: 10,
-                    height: 10,
-                    decoration: const BoxDecoration(
-                      color: AppColors.positive,
-                      shape: BoxShape.circle,
-                      boxShadow: [
-                        BoxShadow(
-                          color: AppColors.positive,
-                          blurRadius: 8,
-                          spreadRadius: 1,
-                        ),
-                      ],
-                    ),
+              Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                decoration: BoxDecoration(
+                  color: (isDark ? Colors.white : Colors.black)
+                      .withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(
+                    color: (isDark ? Colors.white : Colors.black)
+                        .withValues(alpha: 0.25),
                   ),
-                  const SizedBox(width: 10),
-                  Text(
-                    'SLEEP TRACKING ACTIVE',
-                    style: AppTypography.labelSmall(isDark).copyWith(
-                      color: AppColors.primary,
-                      fontWeight: FontWeight.w700,
-                      letterSpacing: 1.2,
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Container(
+                      width: 8,
+                      height: 8,
+                      decoration: BoxDecoration(
+                        color: dotColor,
+                        shape: BoxShape.circle,
+                        boxShadow: [
+                          BoxShadow(
+                            color: dotColor.withValues(alpha: 0.4),
+                            blurRadius: 6,
+                            spreadRadius: 1,
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                ],
+                    const SizedBox(width: 7),
+                    Text(
+                      'SLEEP TRACKING ACTIVE',
+                      style: AppTypography.labelSmall(isDark).copyWith(
+                        color: isDark ? Colors.white : Colors.black,
+                        fontWeight: FontWeight.w700,
+                        letterSpacing: 0.8,
+                        fontSize: 10.5,
+                      ),
+                    ),
+                  ],
+                ),
               ),
               IconButton(
                 icon: const Icon(Icons.close_rounded, size: 20),
-                color:
-                    isDark ? AppColors.textMutedDark : AppColors.textMutedLight,
-                tooltip: 'Cancel tracking',
+                color: isDark
+                    ? AppColors.textMutedDark
+                    : AppColors.textMutedLight,
+                tooltip: 'Discard tracking',
+                padding: EdgeInsets.zero,
+                constraints: const BoxConstraints(),
                 onPressed: () async {
                   final confirmed = await ConfirmDialog.show(
                     context: context,
-                    title: 'Cancel Active Session?',
+                    title: 'Cancel Sleep Tracking?',
                     message:
-                        'Are you sure you want to discard this sleep recording? Elapsed time will not be saved.',
+                        'This in-progress sleep session will not be saved. Are you sure you want to discard it?',
                     confirmText: 'Discard',
                     isDestructive: true,
                   );
@@ -94,31 +123,68 @@ class ActiveSessionCard extends StatelessWidget {
           ),
           const SizedBox(height: 16),
 
-          // Elapsed Duration
-          Text(
-            DateTimeFormatter.formatTimer(elapsedDuration),
-            style: AppTypography.statNumber(isDark, fontSize: 44).copyWith(
+          // Digital Timer Readout Container
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+            decoration: BoxDecoration(
               color: isDark
-                  ? AppColors.textPrimaryDark
-                  : AppColors.textPrimaryLight,
+                  ? const Color(0xFF080808)
+                  : const Color(0xFFF2F2F2),
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(
+                color: isDark
+                    ? const Color(0xFF262626)
+                    : const Color(0xFFE5E5E5),
+                width: 1,
+              ),
+            ),
+            child: Column(
+              children: [
+                Text(
+                  DateTimeFormatter.formatTimer(elapsedDuration),
+                  style: TextStyle(
+                    fontFamily: AppTypography.fontFamily,
+                    fontSize: 42,
+                    fontWeight: FontWeight.w700,
+                    letterSpacing: 1.0,
+                    color: isDark
+                        ? AppColors.textPrimaryDark
+                        : AppColors.textPrimaryLight,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.schedule_rounded,
+                      size: 13,
+                      color: isDark
+                          ? AppColors.textMutedDark
+                          : AppColors.textMutedLight,
+                    ),
+                    const SizedBox(width: 5),
+                    Text(
+                      'Started at ${DateTimeFormatter.formatTime(activeSession.startTimestamp.toLocal())}',
+                      style: AppTypography.bodySmall(isDark).copyWith(
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
             ),
           ),
-          const SizedBox(height: 4),
-          Text(
-            'Started at ${DateTimeFormatter.formatTime(activeSession.startTimestamp)}',
-            style: AppTypography.bodySmall(isDark).copyWith(
-              color: isDark
-                  ? AppColors.textSecondaryDark
-                  : AppColors.textSecondaryLight,
-            ),
-          ),
-          const SizedBox(height: 22),
+          const SizedBox(height: 18),
 
-          // Primary Wake Up Action
+          // Action Button
           SomnaButton(
             text: 'Wake Up & Record',
-            icon: Icons.wb_sunny_rounded,
-            width: double.infinity,
+            icon: Icons.alarm_on_rounded,
+            type: SomnaButtonType.primary,
+            borderRadius: 14,
+            height: 48,
             onPressed: onWakeUp,
           ),
         ],

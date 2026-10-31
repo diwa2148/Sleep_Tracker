@@ -9,6 +9,8 @@ import '../../../shared/providers/settings_provider.dart';
 import '../../../shared/providers/sleep_tracker_provider.dart';
 import 'widgets/consistency_meter.dart';
 import 'widgets/duration_bar_chart.dart';
+import 'widgets/habit_impact_card.dart';
+import 'widgets/sleep_debt_ledger_card.dart';
 
 /// The Sleep Analytics screen providing in-depth sleep metrics,
 /// circular average calculations, goal completion percentages, and duration trends.
@@ -38,7 +40,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
       ),
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+          padding: const EdgeInsets.fromLTRB(16, 10, 16, 96),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -206,6 +208,19 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                 ConsistencyMeter(
                   consistencyScore: stats.bedtimeConsistencyScore,
                   variabilityMinutes: stats.durationVariabilityMinutes,
+                ),
+                const SizedBox(height: 12),
+
+                // Habit & Factor Impact Matrix
+                HabitImpactCard(
+                  sessions: tracker.completedSessions,
+                ),
+                const SizedBox(height: 12),
+
+                // Sleep Debt & Reserve Ledger
+                SleepDebtLedgerCard(
+                  stats: stats,
+                  sleepGoalMinutes: preferences.sleepGoalMinutes,
                 ),
                 const SizedBox(height: 12),
 

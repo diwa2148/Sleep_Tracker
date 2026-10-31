@@ -1,3 +1,5 @@
+import 'sleep_factor.dart';
+
 /// Represents a single recorded sleep session in SOMNA.
 ///
 /// Can be:
@@ -66,6 +68,18 @@ class SleepSession {
 
   /// Whether the session spans multiple full days (>= 24 hours).
   bool get isMultiDay => duration().inHours >= 24;
+
+  /// Extracts lifestyle factor tags present in [notes].
+  List<String> get tags {
+    if (notes == null || notes!.isEmpty) return const [];
+    final lowerNotes = notes!.toLowerCase();
+    return SleepFactor.all
+        .where((factor) =>
+            notes!.contains(factor.label) ||
+            lowerNotes.contains(factor.name.toLowerCase()))
+        .map((f) => f.label)
+        .toList();
+  }
 
   /// Creates a copy with optionally updated fields.
   SleepSession copyWith({

@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
-import '../core/widgets/android_emulator_frame.dart';
 import '../features/onboarding/presentation/onboarding_screen.dart';
+import '../features/sound_machine/presentation/sound_machine_provider.dart';
+import '../features/alarm/presentation/alarm_provider.dart';
 import '../shared/providers/settings_provider.dart';
 import '../shared/providers/sleep_tracker_provider.dart';
 import 'app_config.dart';
 import 'main_screen.dart';
+import 'theme/app_colors.dart';
 import 'theme/app_theme.dart';
 
 /// Root application widget for SOMNA — Smart Sleep Tracker.
@@ -22,6 +24,8 @@ class SomnaApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (_) => SettingsProvider()),
         ChangeNotifierProvider(create: (_) => SleepTrackerProvider()),
+        ChangeNotifierProvider(create: (_) => SoundMachineProvider()),
+        ChangeNotifierProvider(create: (_) => AlarmProvider()),
       ],
       child: Consumer<SettingsProvider>(
         builder: (context, settings, _) {
@@ -41,9 +45,64 @@ class SomnaApp extends StatelessWidget {
               Locale('en', ''),
             ],
             builder: (context, child) {
-              return AndroidEmulatorFrame(
-                navigatorKey: navigatorKey,
-                child: child ?? const SizedBox(),
+              final isDark = Theme.of(context).brightness == Brightness.dark;
+              final isOled = isDark && settings.oledModeEnabled;
+              return Container(
+                decoration: BoxDecoration(
+                  gradient: isOled
+                      ? null
+                      : LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: isDark
+                              ? const [
+                                  Color(0xFF000000),
+                                  Color(0xFF080808),
+                                  Color(0xFF000000),
+                                ]
+                              : const [
+                                  Color(0xFFFFFFFF),
+                                  Color(0xFFF0F0F0),
+                                  Color(0xFFFFFFFF),
+                                ],
+                        ),
+                  color: isOled ? const Color(0xFF000000) : null,
+                ),
+                child: Center(
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: 680),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: isOled
+                            ? const Color(0xFF000000)
+                            : (isDark
+                                ? AppColors.darkBackground
+                                : AppColors.lightBackground),
+                        boxShadow: isOled
+                            ? null
+                            : [
+                                BoxShadow(
+                                  color: isDark
+                                      ? Colors.black.withValues(alpha: 0.55)
+                                      : Colors.black.withValues(alpha: 0.08),
+                                  blurRadius: 36,
+                                  spreadRadius: 2,
+                                  offset: const Offset(0, 4),
+                                ),
+                              ],
+                        border: Border.symmetric(
+                          vertical: BorderSide(
+                            color: isDark
+                                ? const Color(0xFF262626)
+                                : const Color(0xFFE5E5E5),
+                            width: 1,
+                          ),
+                        ),
+                      ),
+                      child: child ?? const SizedBox(),
+                    ),
+                  ),
+                ),
               );
             },
             home: settings.isLoading

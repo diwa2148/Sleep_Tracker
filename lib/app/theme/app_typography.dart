@@ -1,17 +1,21 @@
 import 'package:flutter/material.dart';
 import 'app_colors.dart';
 
-/// Centralized typographic styles for SOMNA.
+/// Centralized Typographic Styles for SOMNA with Modern, Sleek Sans-Serif aesthetic.
 class AppTypography {
   AppTypography._();
 
-  static const String fontFamily = 'Rajdhani';
+  static const String fontFamily = 'Poppins';
   static const List<String> fontFallbacks = [
-    'Barlow',
+    'Poppins',
     'Space Grotesk',
-    'Trebuchet MS',
-    'Segoe UI',
     '-apple-system',
+    'BlinkMacSystemFont',
+    'SF Pro Display',
+    'Segoe UI',
+    'Roboto',
+    'Helvetica Neue',
+    'Arial',
     'sans-serif',
   ];
 
@@ -19,7 +23,7 @@ class AppTypography {
   static TextStyle displayLarge(bool isDark) => TextStyle(
         fontFamily: fontFamily,
         fontFamilyFallback: fontFallbacks,
-        fontSize: 48,
+        fontSize: 44,
         fontWeight: FontWeight.w700,
         letterSpacing: -1.0,
         height: 1.1,
@@ -30,10 +34,21 @@ class AppTypography {
   static TextStyle displayMedium(bool isDark) => TextStyle(
         fontFamily: fontFamily,
         fontFamilyFallback: fontFallbacks,
-        fontSize: 36,
+        fontSize: 32,
         fontWeight: FontWeight.w700,
-        letterSpacing: -0.5,
+        letterSpacing: -0.8,
         height: 1.15,
+        color: isDark ? AppColors.textPrimaryDark : AppColors.textPrimaryLight,
+        fontFeatures: const [FontFeature.tabularFigures()],
+      );
+
+  static TextStyle statNumber(bool isDark, {double fontSize = 32}) => TextStyle(
+        fontFamily: fontFamily,
+        fontFamilyFallback: fontFallbacks,
+        fontSize: fontSize,
+        fontWeight: FontWeight.w700,
+        letterSpacing: -0.8,
+        height: 1.1,
         color: isDark ? AppColors.textPrimaryDark : AppColors.textPrimaryLight,
         fontFeatures: const [FontFeature.tabularFigures()],
       );
@@ -42,9 +57,9 @@ class AppTypography {
   static TextStyle headlineLarge(bool isDark) => TextStyle(
         fontFamily: fontFamily,
         fontFamilyFallback: fontFallbacks,
-        fontSize: 26,
+        fontSize: 24,
         fontWeight: FontWeight.w700,
-        letterSpacing: -0.3,
+        letterSpacing: -0.4,
         color: isDark ? AppColors.textPrimaryDark : AppColors.textPrimaryLight,
       );
 
@@ -52,8 +67,8 @@ class AppTypography {
         fontFamily: fontFamily,
         fontFamilyFallback: fontFallbacks,
         fontSize: 20,
-        fontWeight: FontWeight.w600,
-        letterSpacing: -0.2,
+        fontWeight: FontWeight.w700,
+        letterSpacing: -0.3,
         color: isDark ? AppColors.textPrimaryDark : AppColors.textPrimaryLight,
       );
 
@@ -61,27 +76,27 @@ class AppTypography {
   static TextStyle titleLarge(bool isDark) => TextStyle(
         fontFamily: fontFamily,
         fontFamilyFallback: fontFallbacks,
-        fontSize: 18,
+        fontSize: 17,
         fontWeight: FontWeight.w600,
-        letterSpacing: 0.0,
+        letterSpacing: -0.2,
         color: isDark ? AppColors.textPrimaryDark : AppColors.textPrimaryLight,
       );
 
   static TextStyle titleMedium(bool isDark) => TextStyle(
         fontFamily: fontFamily,
         fontFamilyFallback: fontFallbacks,
-        fontSize: 16,
+        fontSize: 15,
         fontWeight: FontWeight.w600,
-        letterSpacing: 0.1,
+        letterSpacing: -0.1,
         color: isDark ? AppColors.textPrimaryDark : AppColors.textPrimaryLight,
       );
 
   static TextStyle titleSmall(bool isDark) => TextStyle(
         fontFamily: fontFamily,
         fontFamilyFallback: fontFallbacks,
-        fontSize: 14,
+        fontSize: 13,
         fontWeight: FontWeight.w600,
-        letterSpacing: 0.1,
+        letterSpacing: 0.0,
         color: isDark ? AppColors.textPrimaryDark : AppColors.textPrimaryLight,
       );
 
@@ -89,9 +104,9 @@ class AppTypography {
   static TextStyle bodyLarge(bool isDark) => TextStyle(
         fontFamily: fontFamily,
         fontFamilyFallback: fontFallbacks,
-        fontSize: 16,
-        fontWeight: FontWeight.w500,
-        letterSpacing: 0.3,
+        fontSize: 15,
+        fontWeight: FontWeight.w400,
+        letterSpacing: 0.0,
         height: 1.45,
         color: isDark ? AppColors.textPrimaryDark : AppColors.textPrimaryLight,
       );
@@ -99,60 +114,48 @@ class AppTypography {
   static TextStyle bodyMedium(bool isDark) => TextStyle(
         fontFamily: fontFamily,
         fontFamilyFallback: fontFallbacks,
-        fontSize: 14,
-        fontWeight: FontWeight.w500,
-        letterSpacing: 0.3,
+        fontSize: 13,
+        fontWeight: FontWeight.w400,
+        letterSpacing: 0.0,
         height: 1.4,
-        color:
-            isDark ? AppColors.textSecondaryDark : AppColors.textSecondaryLight,
+        color: isDark ? AppColors.textSecondaryDark : AppColors.textSecondaryLight,
       );
 
   static TextStyle bodySmall(bool isDark) => TextStyle(
         fontFamily: fontFamily,
         fontFamilyFallback: fontFallbacks,
-        fontSize: 13,
-        fontWeight: FontWeight.w500,
-        letterSpacing: 0.3,
+        fontSize: 12,
+        fontWeight: FontWeight.w400,
+        letterSpacing: 0.0,
+        height: 1.35,
         color: isDark ? AppColors.textMutedDark : AppColors.textMutedLight,
       );
 
-  // Labels & Captions
+  // Labels & Tags
   static TextStyle labelLarge(bool isDark) => TextStyle(
         fontFamily: fontFamily,
         fontFamilyFallback: fontFallbacks,
-        fontSize: 14,
+        fontSize: 13,
         fontWeight: FontWeight.w600,
-        letterSpacing: 0.3,
+        letterSpacing: 0.1,
         color: isDark ? AppColors.textPrimaryDark : AppColors.textPrimaryLight,
       );
 
   static TextStyle labelMedium(bool isDark) => TextStyle(
         fontFamily: fontFamily,
         fontFamilyFallback: fontFallbacks,
-        fontSize: 12,
-        fontWeight: FontWeight.w500,
-        letterSpacing: 0.4,
-        color:
-            isDark ? AppColors.textSecondaryDark : AppColors.textSecondaryLight,
+        fontSize: 11,
+        fontWeight: FontWeight.w600,
+        letterSpacing: 0.2,
+        color: isDark ? AppColors.textSecondaryDark : AppColors.textSecondaryLight,
       );
 
   static TextStyle labelSmall(bool isDark) => TextStyle(
         fontFamily: fontFamily,
         fontFamilyFallback: fontFallbacks,
-        fontSize: 11,
-        fontWeight: FontWeight.w500,
-        letterSpacing: 0.5,
-        color: isDark ? AppColors.textMutedDark : AppColors.textMutedLight,
-      );
-
-  // Numeric Stats / Badges
-  static TextStyle statNumber(bool isDark, {double fontSize = 28}) => TextStyle(
-        fontFamily: fontFamily,
-        fontFamilyFallback: fontFallbacks,
-        fontSize: fontSize,
+        fontSize: 10,
         fontWeight: FontWeight.w700,
-        letterSpacing: -0.5,
-        fontFeatures: const [FontFeature.tabularFigures()],
-        color: isDark ? AppColors.textPrimaryDark : AppColors.textPrimaryLight,
+        letterSpacing: 0.6,
+        color: isDark ? AppColors.textMutedDark : AppColors.textMutedLight,
       );
 }

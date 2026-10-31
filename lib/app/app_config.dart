@@ -31,4 +31,5 @@ class AppConfig {
   static const String keyThemeMode = 'somna_theme_mode';
   static const String keyOnboardingCompleted = 'somna_onboarding_completed';
   static const String keyHapticsEnabled = 'somna_haptics_enabled';
+  static const String keyCrtScanlines = 'somna_crt_scanlines';
 }
