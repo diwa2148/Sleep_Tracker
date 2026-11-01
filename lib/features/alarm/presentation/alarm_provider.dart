@@ -11,6 +11,7 @@ class AlarmProvider with ChangeNotifier {
   String? _previewingToneId;
   bool _gentleRampEnabled = true;
   double _volume = 0.6;
+  int _smartWakeLeeway = 15; // 0 (OFF), 15 (±15m), 30 (±30m)
 
   AlarmProvider({AudioSynthesizer? synthesizer})
       : _synthesizer = synthesizer ?? AudioSynthesizer();
@@ -20,6 +21,12 @@ class AlarmProvider with ChangeNotifier {
   String? get previewingToneId => _previewingToneId;
   bool get gentleRampEnabled => _gentleRampEnabled;
   double get volume => _volume;
+  int get smartWakeLeeway => _smartWakeLeeway;
+
+  void setSmartWakeLeeway(int minutes) {
+    _smartWakeLeeway = minutes;
+    notifyListeners();
+  }
 
   AlarmTone get selectedTone => AlarmTone.all.firstWhere(
         (t) => t.id == _selectedToneId,

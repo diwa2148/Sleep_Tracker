@@ -124,15 +124,19 @@ class SomnaButton extends StatelessWidget {
                     children: [
                       if (icon != null) ...[
                         Icon(icon, size: 18, color: fg),
-                        const SizedBox(width: 8),
+                        const SizedBox(width: 6),
                       ],
-                      Text(
-                        text,
-                        style: AppTypography.labelLarge(isDark).copyWith(
-                          color: fg,
-                          fontWeight: FontWeight.w600,
-                          fontSize: 14,
-                          letterSpacing: 0.2,
+                      Flexible(
+                        child: Text(
+                          text,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: AppTypography.labelLarge(isDark).copyWith(
+                            color: fg,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 14,
+                            letterSpacing: 0.2,
+                          ),
                         ),
                       ),
                     ],

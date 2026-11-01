@@ -38,8 +38,12 @@ class SleepSummaryRing extends StatelessWidget {
             painter: _RingPainter(
               progress: progress,
               isDark: isDark,
-              trackColor: isDark ? const Color(0xFF262626) : const Color(0xFFE5E5E5),
-              progressColor: isDark ? Colors.white : Colors.black,
+              trackColor: isDark
+                  ? const Color(0xFF1E293B)
+                  : const Color(0xFFE2E8F0),
+              progressColor: progress >= 1.0
+                  ? AppColors.positive
+                  : (isDark ? AppColors.primary : AppColors.primaryDark),
             ),
           ),
 
@@ -153,15 +157,24 @@ class _RingPainter extends CustomPainter {
       glowPaint,
     );
 
-    // 4. Progress Paint with Retro Glow Shader
+    // 4. Progress Paint with Modern Aurora & Starlight Sweep Shader
+    final sweepColors = progress >= 1.0
+        ? [
+            const Color(0xFF38BDF8), // Celestial Cyan
+            const Color(0xFF10B981), // Aurora Emerald
+            const Color(0xFFFBBF24), // Starlight Gold
+          ]
+        : [
+            const Color(0xFF6366F1), // Royal Indigo
+            const Color(0xFF8B5CF6), // Electric Violet
+            const Color(0xFF38BDF8), // Celestial Cyan
+          ];
+
     final progressPaint = Paint()
       ..shader = SweepGradient(
         startAngle: 0.0,
         endAngle: 2 * math.pi,
-        colors: [
-          progressColor.withValues(alpha: 0.75),
-          progressColor,
-        ],
+        colors: sweepColors,
         transform: const GradientRotation(-math.pi / 2),
       ).createShader(Rect.fromCircle(center: center, radius: radius))
       ..style = PaintingStyle.stroke
@@ -175,6 +188,21 @@ class _RingPainter extends CustomPainter {
       false,
       progressPaint,
     );
+
+    // 5. Sparkling Starlight Bead at the Arc Endpoint
+    final tipAngle = sweepAngle - math.pi / 2;
+    final tipX = center.dx + radius * math.cos(tipAngle);
+    final tipY = center.dy + radius * math.sin(tipAngle);
+
+    final tipGlow = Paint()
+      ..color = sweepColors.last.withValues(alpha: isDark ? 0.7 : 0.5)
+      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 6);
+    canvas.drawCircle(Offset(tipX, tipY), strokeWidth * 0.75, tipGlow);
+
+    final tipCore = Paint()
+      ..color = Colors.white
+      ..style = PaintingStyle.fill;
+    canvas.drawCircle(Offset(tipX, tipY), strokeWidth * 0.35, tipCore);
   }
 
   @override

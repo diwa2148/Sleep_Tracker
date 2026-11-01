@@ -14,6 +14,8 @@ class UserPreferences {
   final bool hapticsEnabled;
   final bool crtScanlinesEnabled;
   final bool oledModeEnabled;
+  final int smartWakeLeewayMinutes;
+  final String chronotype;
 
   const UserPreferences({
     this.sleepGoalMinutes = AppConfig.defaultSleepGoalMinutes,
@@ -26,6 +28,8 @@ class UserPreferences {
     this.hapticsEnabled = true,
     this.crtScanlinesEnabled = false,
     this.oledModeEnabled = false,
+    this.smartWakeLeewayMinutes = 15,
+    this.chronotype = 'bear',
   });
 
   /// Formatted sleep goal, e.g. "8h 00m" or "7h 30m".
@@ -70,6 +74,8 @@ class UserPreferences {
     bool? hapticsEnabled,
     bool? crtScanlinesEnabled,
     bool? oledModeEnabled,
+    int? smartWakeLeewayMinutes,
+    String? chronotype,
   }) {
     return UserPreferences(
       sleepGoalMinutes: sleepGoalMinutes ?? this.sleepGoalMinutes,
@@ -84,6 +90,9 @@ class UserPreferences {
       hapticsEnabled: hapticsEnabled ?? this.hapticsEnabled,
       crtScanlinesEnabled: crtScanlinesEnabled ?? this.crtScanlinesEnabled,
       oledModeEnabled: oledModeEnabled ?? this.oledModeEnabled,
+      smartWakeLeewayMinutes:
+          smartWakeLeewayMinutes ?? this.smartWakeLeewayMinutes,
+      chronotype: chronotype ?? this.chronotype,
     );
   }
 
@@ -99,6 +108,8 @@ class UserPreferences {
       'hapticsEnabled': hapticsEnabled,
       'crtScanlinesEnabled': crtScanlinesEnabled,
       'oledModeEnabled': oledModeEnabled,
+      'smartWakeLeewayMinutes': smartWakeLeewayMinutes,
+      'chronotype': chronotype,
     };
   }
 
@@ -126,6 +137,9 @@ class UserPreferences {
       hapticsEnabled: (json['hapticsEnabled'] as bool?) ?? true,
       crtScanlinesEnabled: (json['crtScanlinesEnabled'] as bool?) ?? false,
       oledModeEnabled: (json['oledModeEnabled'] as bool?) ?? false,
+      smartWakeLeewayMinutes:
+          (json['smartWakeLeewayMinutes'] as int?) ?? 15,
+      chronotype: (json['chronotype'] as String?) ?? 'bear',
     );
   }
 
@@ -142,7 +156,9 @@ class UserPreferences {
           themeMode == other.themeMode &&
           onboardingCompleted == other.onboardingCompleted &&
           hapticsEnabled == other.hapticsEnabled &&
-          crtScanlinesEnabled == other.crtScanlinesEnabled;
+          crtScanlinesEnabled == other.crtScanlinesEnabled &&
+          smartWakeLeewayMinutes == other.smartWakeLeewayMinutes &&
+          chronotype == other.chronotype;
 
   @override
   int get hashCode =>
@@ -154,5 +170,7 @@ class UserPreferences {
       themeMode.hashCode ^
       onboardingCompleted.hashCode ^
       hapticsEnabled.hashCode ^
-      crtScanlinesEnabled.hashCode;
+      crtScanlinesEnabled.hashCode ^
+      smartWakeLeewayMinutes.hashCode ^
+      chronotype.hashCode;
 }

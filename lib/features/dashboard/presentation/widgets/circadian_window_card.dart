@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../../../../app/theme/app_colors.dart';
 import '../../../../app/theme/app_typography.dart';
 import '../../../../core/widgets/somna_card.dart';
+import '../../../../shared/providers/settings_provider.dart';
+import '../../../chronotype/domain/models/chronotype.dart';
+import '../../../chronotype/presentation/widgets/chronotype_assessment_modal.dart';
 
 /// Visual 24-hour Circadian Rhythm timeline & Target Sleep Window widget.
 class CircadianWindowCard extends StatelessWidget {
@@ -19,6 +23,10 @@ class CircadianWindowCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final settings = Provider.of<SettingsProvider?>(context);
+    final chronotypeKey = settings?.preferences.chronotype ?? 'bear';
+    final chronotypeProfile = ChronotypeProfile.fromString(chronotypeKey);
+
     final now = DateTime.now();
     final currentMinutes = now.hour * 60 + now.minute;
 
@@ -208,6 +216,103 @@ class CircadianWindowCard extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 12),
+
+          // Chronotype Archetype & Personalized Sleep Gate
+          InkWell(
+            onTap: () => ChronotypeAssessmentModal.show(context),
+            borderRadius: BorderRadius.circular(8),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+              decoration: BoxDecoration(
+                color: isDark ? const Color(0xFF141414) : const Color(0xFFF7F7F7),
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(
+                  color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
+                ),
+              ),
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  final isCompact = constraints.maxWidth < 500;
+                  final archetypePill = Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(chronotypeProfile.emoji,
+                          style: const TextStyle(fontSize: 14)),
+                      const SizedBox(width: 6),
+                      Flexible(
+                        child: Text(
+                          '${chronotypeProfile.name.toUpperCase()} ARCHETYPE',
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            fontFamily: AppTypography.fontFamily,
+                            fontSize: 10.5,
+                            fontWeight: FontWeight.w700,
+                            color: isDark ? Colors.white : Colors.black,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 4),
+                      Icon(
+                        Icons.edit_outlined,
+                        size: 11,
+                        color: isDark
+                            ? const Color(0xFFA3A3A3)
+                            : const Color(0xFF525252),
+                      ),
+                    ],
+                  );
+
+                  final sleepGatePill = Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        'SLEEP GATE: ',
+                        style: TextStyle(
+                          fontFamily: AppTypography.fontFamily,
+                          fontSize: 9.5,
+                          fontWeight: FontWeight.w600,
+                          color: isDark
+                              ? AppColors.primary
+                              : AppColors.primaryDark,
+                        ),
+                      ),
+                      Text(
+                        chronotypeProfile.sleepGateFormatted,
+                        style: TextStyle(
+                          fontFamily: AppTypography.fontFamily,
+                          fontSize: 10.5,
+                          fontWeight: FontWeight.w700,
+                          color: isDark ? Colors.white : Colors.black,
+                        ),
+                      ),
+                    ],
+                  );
+
+                  if (isCompact) {
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        archetypePill,
+                        const SizedBox(height: 4),
+                        sleepGatePill,
+                      ],
+                    );
+                  }
+
+                  return Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(child: archetypePill),
+                      const SizedBox(width: 8),
+                      sleepGatePill,
+                    ],
+                  );
+                },
+              ),
+            ),
+          ),
+          const SizedBox(height: 10),
 
           // Schedule Target Values Row
           Row(

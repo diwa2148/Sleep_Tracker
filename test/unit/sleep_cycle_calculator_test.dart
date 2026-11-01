@@ -53,6 +53,44 @@ void main() {
       expect(c6.targetTime, equals(DateTime(2026, 10, 26, 21, 45)));
       expect(c6.formattedTime, equals('9:45 PM'));
     });
+
+    test('calculateSmartWakeWindow calculates cycle-aligned window with leeway', () {
+      const bedtime = TimeOfDay(hour: 23, minute: 0); // 11:00 PM
+      const targetWake = TimeOfDay(hour: 7, minute: 0); // 7:00 AM
+
+      // 1. Leeway 0 (Disabled) -> exact wake time
+      final w0 = SleepCycleCalculator.calculateSmartWakeWindow(
+        bedtime: bedtime,
+        targetWakeTime: targetWake,
+        leewayMinutes: 0,
+      );
+      expect(w0.leewayMinutes, equals(0));
+      expect(w0.optimalWakeTime.hour, equals(7));
+      expect(w0.optimalWakeTime.minute, equals(0));
+      expect(w0.formattedRange, contains('7:00 AM'));
+
+      // 2. Leeway 15 -> checks cycle end within [6:45 AM, 7:00 AM]
+      // 5 cycles from 11:00 PM with 15m latency = 11:00 PM + 15m + 450m = 06:45 AM
+      final w15 = SleepCycleCalculator.calculateSmartWakeWindow(
+        bedtime: bedtime,
+        targetWakeTime: targetWake,
+        leewayMinutes: 15,
+      );
+      expect(w15.leewayMinutes, equals(15));
+      expect(w15.optimalWakeTime.hour, equals(6));
+      expect(w15.optimalWakeTime.minute, equals(45));
+      expect(w15.formattedRange, contains('6:45 AM'));
+
+      // 3. Leeway 30 -> checks cycle end within [6:30 AM, 7:00 AM]
+      final w30 = SleepCycleCalculator.calculateSmartWakeWindow(
+        bedtime: bedtime,
+        targetWakeTime: targetWake,
+        leewayMinutes: 30,
+      );
+      expect(w30.leewayMinutes, equals(30));
+      expect(w30.targetCycles, equals(5));
+      expect(w30.formattedRange, contains('6:30 AM'));
+    });
   });
 }
 

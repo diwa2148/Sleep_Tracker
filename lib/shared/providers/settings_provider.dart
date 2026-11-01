@@ -41,6 +41,20 @@ class SettingsProvider with ChangeNotifier {
     await _prefsRepo.savePreferences(_preferences);
   }
 
+  /// Updates Smart Wake leeway window (0 for OFF, 15m, or 30m).
+  Future<void> updateSmartWakeLeeway(int minutes) async {
+    _preferences = _preferences.copyWith(smartWakeLeewayMinutes: minutes);
+    notifyListeners();
+    await _prefsRepo.savePreferences(_preferences);
+  }
+
+  /// Updates circadian chronotype archetype ('lion', 'bear', 'wolf', 'dolphin').
+  Future<void> updateChronotype(String chronotype) async {
+    _preferences = _preferences.copyWith(chronotype: chronotype);
+    notifyListeners();
+    await _prefsRepo.savePreferences(_preferences);
+  }
+
   Future<void> _loadSettings() async {
     _isLoading = true;
     notifyListeners();

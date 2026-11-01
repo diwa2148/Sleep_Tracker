@@ -3,6 +3,8 @@ import 'package:provider/provider.dart';
 import '../../../../app/theme/app_colors.dart';
 import '../../../../app/theme/app_typography.dart';
 import '../../../../core/widgets/somna_card.dart';
+import '../../../../shared/providers/settings_provider.dart';
+import '../../../sleep_cycle/domain/sleep_cycle_calculator.dart';
 import '../alarm_provider.dart';
 import '../../domain/models/alarm_tone.dart';
 
@@ -14,10 +16,21 @@ class RetroAlarmDeckCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final alarm = Provider.of<AlarmProvider?>(context);
+    final settings = Provider.of<SettingsProvider?>(context);
 
     if (alarm == null) {
       return const SizedBox.shrink();
     }
+
+    final bedtime = settings?.preferences.preferredBedtime ??
+        const TimeOfDay(hour: 23, minute: 0);
+    final wakeTime = settings?.preferences.preferredWakeTime ??
+        const TimeOfDay(hour: 7, minute: 0);
+    final smartWakeWindow = SleepCycleCalculator.calculateSmartWakeWindow(
+      targetWakeTime: wakeTime,
+      bedtime: bedtime,
+      leewayMinutes: alarm.smartWakeLeeway,
+    );
 
     return SomnaCard(
       padding: const EdgeInsets.all(16),
@@ -190,6 +203,173 @@ class RetroAlarmDeckCard extends StatelessWidget {
           ),
           const SizedBox(height: 12),
 
+          // Cycle-Aware Smart Wake Window Card
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: isDark
+                  ? const Color(0xFF141414)
+                  : const Color(0xFFF7F7F7),
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(
+                color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
+              ),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.alarm_on_rounded,
+                          size: 15,
+                          color: isDark
+                              ? AppColors.primary
+                              : AppColors.primaryDark,
+                        ),
+                        const SizedBox(width: 6),
+                        Text(
+                          'CYCLE SMART WAKE',
+                          style: AppTypography.labelSmall(isDark).copyWith(
+                            letterSpacing: 1.0,
+                            fontWeight: FontWeight.w700,
+                            color: isDark
+                                ? AppColors.primary
+                                : AppColors.primaryDark,
+                          ),
+                        ),
+                      ],
+                    ),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8, vertical: 2),
+                      decoration: BoxDecoration(
+                        color: isDark
+                            ? const Color(0xFF262626)
+                            : const Color(0xFFE5E5E5),
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(
+                          color: isDark
+                              ? const Color(0xFF404040)
+                              : const Color(0xFFCCCCCC),
+                        ),
+                      ),
+                      child: Text(
+                        smartWakeWindow.statusSummary,
+                        style: TextStyle(
+                          fontFamily: AppTypography.fontFamily,
+                          fontSize: 9.5,
+                          fontWeight: FontWeight.w700,
+                          color: isDark ? Colors.white : Colors.black,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 8),
+
+                // 3-Segment Leeway Selector: OFF, ±15 MIN, ±30 MIN
+                Row(
+                  children: [
+                    Expanded(
+                      child: _buildLeewayChip(
+                        label: 'OFF',
+                        minutes: 0,
+                        currentMinutes: alarm.smartWakeLeeway,
+                        alarm: alarm,
+                        settings: settings,
+                        isDark: isDark,
+                      ),
+                    ),
+                    const SizedBox(width: 6),
+                    Expanded(
+                      child: _buildLeewayChip(
+                        label: '±15 MIN',
+                        minutes: 15,
+                        currentMinutes: alarm.smartWakeLeeway,
+                        alarm: alarm,
+                        settings: settings,
+                        isDark: isDark,
+                      ),
+                    ),
+                    const SizedBox(width: 6),
+                    Expanded(
+                      child: _buildLeewayChip(
+                        label: '±30 MIN',
+                        minutes: 30,
+                        currentMinutes: alarm.smartWakeLeeway,
+                        alarm: alarm,
+                        settings: settings,
+                        isDark: isDark,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 10),
+
+                // Dual-marker Target Range & Harmonic sync note
+                Container(
+                  width: double.infinity,
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                  decoration: BoxDecoration(
+                    color: isDark
+                        ? const Color(0xFF1E1E1E)
+                        : const Color(0xFFECECEC),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            smartWakeWindow.formattedRange,
+                            style: TextStyle(
+                              fontFamily: AppTypography.fontFamily,
+                              fontSize: 12,
+                              fontWeight: FontWeight.w800,
+                              letterSpacing: 0.5,
+                              color: isDark ? Colors.white : Colors.black,
+                            ),
+                          ),
+                          if (alarm.smartWakeLeeway > 0)
+                            Text(
+                              'CYCLE ${smartWakeWindow.targetCycles} END',
+                              style: TextStyle(
+                                fontFamily: AppTypography.fontFamily,
+                                fontSize: 9.5,
+                                fontWeight: FontWeight.w700,
+                                color: isDark
+                                    ? AppColors.primary
+                                    : AppColors.primaryDark,
+                              ),
+                            ),
+                        ],
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        smartWakeWindow.syncNote,
+                        style: TextStyle(
+                          fontFamily: AppTypography.fontFamily,
+                          fontSize: 10,
+                          color: isDark
+                              ? AppColors.textSecondaryDark
+                              : AppColors.textSecondaryLight,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 12),
+
           // Big Mechanical Preview Button
           SizedBox(
             width: double.infinity,
@@ -340,6 +520,56 @@ class RetroAlarmDeckCard extends StatelessWidget {
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildLeewayChip({
+    required String label,
+    required int minutes,
+    required int currentMinutes,
+    required AlarmProvider alarm,
+    required SettingsProvider? settings,
+    required bool isDark,
+  }) {
+    final isSelected = currentMinutes == minutes;
+
+    return InkWell(
+      onTap: () {
+        alarm.setSmartWakeLeeway(minutes);
+        settings?.updateSmartWakeLeeway(minutes);
+      },
+      borderRadius: BorderRadius.circular(8),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 160),
+        padding: const EdgeInsets.symmetric(vertical: 7),
+        decoration: BoxDecoration(
+          color: isSelected
+              ? (isDark ? Colors.white : Colors.black)
+              : (isDark ? const Color(0xFF262626) : const Color(0xFFE5E5E5)),
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(
+            color: isSelected
+                ? (isDark ? Colors.white : Colors.black)
+                : (isDark ? const Color(0xFF383838) : const Color(0xFFCCCCCC)),
+            width: isSelected ? 1.5 : 1.0,
+          ),
+        ),
+        child: Center(
+          child: Text(
+            label,
+            style: TextStyle(
+              fontFamily: AppTypography.fontFamily,
+              fontSize: 10.5,
+              fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
+              color: isSelected
+                  ? (isDark ? Colors.black : Colors.white)
+                  : (isDark
+                      ? AppColors.textSecondaryDark
+                      : AppColors.textSecondaryLight),
+            ),
+          ),
         ),
       ),
     );

@@ -343,4 +343,58 @@ void main() {
     expect(find.text('50% Restorative'), findsOneWidget);
     expect(sleepRepo.sessions.first.qualityRating, equals(5));
   });
+
+  testWidgets(
+      'SessionDetailSheet handles micro-duration and narrow viewport without overflow or assertion crashes',
+      (tester) async {
+    // Narrow phone viewport (300px wide)
+    tester.view.physicalSize = const Size(300 * 2, 800 * 2);
+    tester.view.devicePixelRatio = 2.0;
+    addTearDown(tester.view.resetPhysicalSize);
+
+    final sleepRepo = MockSleepRepo();
+    final prefsRepo = MockPrefsRepo();
+
+    final now = DateTime(2026, 10, 31, 8, 0);
+    final microSession = SleepSession(
+      id: 'session_micro',
+      startTimestamp: now.subtract(const Duration(minutes: 1)),
+      endTimestamp: now,
+      qualityRating: 1,
+      notes: null,
+      source: 'manual',
+      createdAt: now,
+      updatedAt: now,
+    );
+    sleepRepo.sessions.add(microSession);
+
+    final settings = SettingsProvider(prefsRepo: prefsRepo);
+    final tracker = SleepTrackerProvider(sleepRepo: sleepRepo);
+    await tracker.loadSessions();
+
+    await tester.pumpWidget(
+      MultiProvider(
+        providers: [
+          ChangeNotifierProvider.value(value: settings),
+          ChangeNotifierProvider.value(value: tracker),
+        ],
+        child: MaterialApp(
+          theme: AppTheme.darkTheme,
+          home: Scaffold(
+            body: SessionDetailSheet(session: microSession),
+          ),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('SLEEP ARCHITECTURE'), findsOneWidget);
+    expect(find.text('Deep Sleep'), findsOneWidget);
+    expect(find.text('REM Sleep'), findsOneWidget);
+    expect(find.text('Light Sleep'), findsOneWidget);
+    expect(find.text('Awake / Arousals'), findsOneWidget);
+
+    // Verify semantics
+    expect(find.bySemanticsLabel(RegExp(r'Deep Sleep:.*')), findsOneWidget);
+  });
 }

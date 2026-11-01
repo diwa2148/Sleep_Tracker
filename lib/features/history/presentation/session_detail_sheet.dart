@@ -1,3 +1,4 @@
+import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -620,14 +621,19 @@ class _SessionDetailSheetState extends State<SessionDetailSheet> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(
-              'LIFESTYLE FACTORS & HABITS',
-              style: AppTypography.labelSmall(isDark).copyWith(
-                letterSpacing: 1.2,
-                fontWeight: FontWeight.w700,
-                color: isDark ? AppColors.primary : AppColors.primaryDark,
+            Expanded(
+              child: Text(
+                'LIFESTYLE FACTORS & HABITS',
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
+                style: AppTypography.labelSmall(isDark).copyWith(
+                  letterSpacing: 1.2,
+                  fontWeight: FontWeight.w700,
+                  color: isDark ? AppColors.primary : AppColors.primaryDark,
+                ),
               ),
             ),
+            const SizedBox(width: 8),
             if (activeTags.isNotEmpty)
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
@@ -755,14 +761,19 @@ class _SessionDetailSheetState extends State<SessionDetailSheet> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(
-              'NOTES & OBSERVATIONS',
-              style: AppTypography.labelSmall(isDark).copyWith(
-                letterSpacing: 1.2,
-                fontWeight: FontWeight.w700,
-                color: isDark ? AppColors.primary : AppColors.primaryDark,
+            Expanded(
+              child: Text(
+                'NOTES & OBSERVATIONS',
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
+                style: AppTypography.labelSmall(isDark).copyWith(
+                  letterSpacing: 1.2,
+                  fontWeight: FontWeight.w700,
+                  color: isDark ? AppColors.primary : AppColors.primaryDark,
+                ),
               ),
             ),
+            const SizedBox(width: 8),
             InkWell(
               onTap: () {
                 setState(() {
@@ -926,14 +937,18 @@ class _SessionDetailSheetState extends State<SessionDetailSheet> {
                         : const Color(0xFF777777),
                   ),
                   const SizedBox(width: 8),
-                  Text(
-                    'Add personal observation notes...',
-                    style: TextStyle(
-                      fontFamily: AppTypography.fontFamily,
-                      fontSize: 12,
-                      color: isDark
-                          ? const Color(0xFF888888)
-                          : const Color(0xFF777777),
+                  Expanded(
+                    child: Text(
+                      'Add personal observation notes...',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontFamily: AppTypography.fontFamily,
+                        fontSize: 12,
+                        color: isDark
+                            ? const Color(0xFF888888)
+                            : const Color(0xFF777777),
+                      ),
                     ),
                   ),
                 ],
@@ -956,16 +971,24 @@ class _SessionDetailSheetState extends State<SessionDetailSheet> {
       onTap: onTap,
       borderRadius: BorderRadius.circular(10),
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+        padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
         child: Column(
           children: [
             Row(
+              mainAxisAlignment: MainAxisAlignment.center,
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(icon, size: 14, color: AppColors.primary),
+                Icon(icon, size: 13, color: AppColors.primary),
                 const SizedBox(width: 4),
-                Text(label, style: AppTypography.labelSmall(isDark)),
-                const SizedBox(width: 4),
+                Flexible(
+                  child: Text(
+                    label,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: AppTypography.labelSmall(isDark),
+                  ),
+                ),
+                const SizedBox(width: 3),
                 Icon(
                   Icons.edit_outlined,
                   size: 11,
@@ -976,10 +999,13 @@ class _SessionDetailSheetState extends State<SessionDetailSheet> {
               ],
             ),
             const SizedBox(height: 4),
-            Text(
-              DateTimeFormatter.formatTime(dt),
-              style: AppTypography.titleMedium(isDark).copyWith(
-                fontWeight: FontWeight.w700,
+            FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Text(
+                DateTimeFormatter.formatTime(dt),
+                style: AppTypography.titleMedium(isDark).copyWith(
+                  fontWeight: FontWeight.w700,
+                ),
               ),
             ),
           ],
@@ -1037,19 +1063,65 @@ class _SessionDetailSheetState extends State<SessionDetailSheet> {
         break;
     }
 
-    final deepMinutes = (totalMinutes * deepPct).round();
-    final remMinutes = (totalMinutes * remPct).round();
-    final awakeMinutes = (totalMinutes * awakePct).round();
-    final lightMinutes =
-        totalMinutes - deepMinutes - remMinutes - awakeMinutes;
+    final deepMinutes = math.max(0, (totalMinutes * deepPct).round());
+    final remMinutes = math.max(0, (totalMinutes * remPct).round());
+    final awakeMinutes = math.max(0, (totalMinutes * awakePct).round());
+    final lightMinutes = math.max(
+      0,
+      totalMinutes - deepMinutes - remMinutes - awakeMinutes,
+    );
 
     String fmt(int mins) {
+      if (mins <= 0) return '0m';
       final h = mins ~/ 60;
       final m = mins % 60;
       return h > 0 ? '${h}h ${m}m' : '${m}m';
     }
 
-    final restorativePct = ((deepPct + remPct) * 100).round();
+    final restorativePct = ((deepPct + remPct) * 100).round().clamp(0, 100);
+
+    // Build architecture bar segments safely (only positive flex, avoids assertion crashes)
+    final deepFlex = math.max(0, (deepPct * 1000).round());
+    final remFlex = math.max(0, (remPct * 1000).round());
+    final lightFlex = math.max(0, (lightPct * 1000).round());
+    final awakeFlex = math.max(0, (awakePct * 1000).round());
+
+    final rawSegments = [
+      (
+        flex: deepFlex,
+        gradient: const LinearGradient(
+          colors: [Color(0xFF4F46E5), Color(0xFF6366F1)],
+        ),
+        label: 'Deep Sleep',
+        percent: '${(deepPct * 100).round()}%',
+      ),
+      (
+        flex: remFlex,
+        gradient: const LinearGradient(
+          colors: [Color(0xFF0284C7), Color(0xFF38BDF8)],
+        ),
+        label: 'REM Sleep',
+        percent: '${(remPct * 100).round()}%',
+      ),
+      (
+        flex: lightFlex,
+        gradient: const LinearGradient(
+          colors: [Color(0xFF8B5CF6), Color(0xFFA78BFA)],
+        ),
+        label: 'Light Sleep',
+        percent: '${(lightPct * 100).round()}%',
+      ),
+      (
+        flex: awakeFlex,
+        gradient: const LinearGradient(
+          colors: [Color(0xFFE11D48), Color(0xFFFB7185)],
+        ),
+        label: 'Awake',
+        percent: '${(awakePct * 100).round()}%',
+      ),
+    ];
+
+    final activeSegments = rawSegments.where((s) => s.flex > 0).toList();
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -1061,6 +1133,7 @@ class _SessionDetailSheetState extends State<SessionDetailSheet> {
               child: Text(
                 'SLEEP ARCHITECTURE',
                 overflow: TextOverflow.ellipsis,
+                maxLines: 1,
                 style: AppTypography.labelSmall(isDark).copyWith(
                   letterSpacing: 1.0,
                   fontWeight: FontWeight.w700,
@@ -1085,6 +1158,8 @@ class _SessionDetailSheetState extends State<SessionDetailSheet> {
               ),
               child: Text(
                 '$restorativePct% Restorative',
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
                 style: TextStyle(
                   fontFamily: AppTypography.fontFamily,
                   fontSize: 10,
@@ -1099,103 +1174,94 @@ class _SessionDetailSheetState extends State<SessionDetailSheet> {
         ClipRRect(
           borderRadius: BorderRadius.circular(8),
           child: SizedBox(
-            height: 14,
-            child: Row(
-              children: [
-                Expanded(
-                  flex: (deepPct * 1000).round(),
-                  child: Container(
+            height: 16,
+            child: activeSegments.isEmpty
+                ? Container(
                     color: isDark
-                        ? const Color(0xFFFFFFFF)
-                        : const Color(0xFF000000),
+                        ? const Color(0xFF1E293B)
+                        : const Color(0xFFE2E8F0),
+                  )
+                : Row(
+                    children: [
+                      for (int i = 0; i < activeSegments.length; i++) ...[
+                        if (i > 0) const SizedBox(width: 2),
+                        Expanded(
+                          flex: activeSegments[i].flex,
+                          child: Tooltip(
+                            message:
+                                '${activeSegments[i].label}: ${activeSegments[i].percent}',
+                            child: Container(
+                              decoration: BoxDecoration(
+                                gradient: activeSegments[i].gradient,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ],
                   ),
-                ),
-                const SizedBox(width: 2),
-                Expanded(
-                  flex: (remPct * 1000).round(),
-                  child: Container(
-                    color: isDark
-                        ? const Color(0xFFA3A3A3)
-                        : const Color(0xFF525252),
-                  ),
-                ),
-                const SizedBox(width: 2),
-                Expanded(
-                  flex: (lightPct * 1000).round(),
-                  child: Container(
-                    color: isDark
-                        ? const Color(0xFF525252)
-                        : const Color(0xFFA3A3A3),
-                  ),
-                ),
-                const SizedBox(width: 2),
-                Expanded(
-                  flex: (awakePct * 1000).round(),
-                  child: Container(
-                    color: isDark
-                        ? const Color(0xFF262626)
-                        : const Color(0xFFE5E5E5),
-                  ),
-                ),
-              ],
-            ),
           ),
         ),
         const SizedBox(height: 10),
-        Row(
-          children: [
-            Expanded(
-              child: _buildStagePill(
-                label: 'Deep Sleep',
-                duration: fmt(deepMinutes),
-                percent: '${(deepPct * 100).round()}%',
-                color: isDark
-                    ? const Color(0xFFFFFFFF)
-                    : const Color(0xFF000000),
-                isDark: isDark,
-              ),
-            ),
-            const SizedBox(width: 8),
-            Expanded(
-              child: _buildStagePill(
-                label: 'REM Sleep',
-                duration: fmt(remMinutes),
-                percent: '${(remPct * 100).round()}%',
-                color: isDark
-                    ? const Color(0xFFA3A3A3)
-                    : const Color(0xFF525252),
-                isDark: isDark,
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 8),
-        Row(
-          children: [
-            Expanded(
-              child: _buildStagePill(
-                label: 'Light Sleep',
-                duration: fmt(lightMinutes),
-                percent: '${(lightPct * 100).round()}%',
-                color: isDark
-                    ? const Color(0xFF525252)
-                    : const Color(0xFFA3A3A3),
-                isDark: isDark,
-              ),
-            ),
-            const SizedBox(width: 8),
-            Expanded(
-              child: _buildStagePill(
-                label: 'Awake / Arousals',
-                duration: fmt(awakeMinutes),
-                percent: '${(awakePct * 100).round()}%',
-                color: isDark
-                    ? const Color(0xFF262626)
-                    : const Color(0xFFE5E5E5),
-                isDark: isDark,
-              ),
-            ),
-          ],
+        LayoutBuilder(
+          builder: (context, constraints) {
+            final isNarrow = constraints.maxWidth < 280;
+            return Column(
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                      child: _buildStagePill(
+                        label: 'Deep Sleep',
+                        duration: fmt(deepMinutes),
+                        percent: '${(deepPct * 100).round()}%',
+                        color: AppColors.deepSleep,
+                        isDark: isDark,
+                        isCompact: isNarrow,
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: _buildStagePill(
+                        label: 'REM Sleep',
+                        duration: fmt(remMinutes),
+                        percent: '${(remPct * 100).round()}%',
+                        color: AppColors.remSleep,
+                        isDark: isDark,
+                        isCompact: isNarrow,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 8),
+                Row(
+                  children: [
+                    Expanded(
+                      child: _buildStagePill(
+                        label: 'Light Sleep',
+                        duration: fmt(lightMinutes),
+                        percent: '${(lightPct * 100).round()}%',
+                        color: AppColors.lightSleep,
+                        isDark: isDark,
+                        isCompact: isNarrow,
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: _buildStagePill(
+                        label: 'Awake / Arousals',
+                        duration: fmt(awakeMinutes),
+                        percent: '${(awakePct * 100).round()}%',
+                        color: AppColors.awake,
+                        isDark: isDark,
+                        isCompact: isNarrow,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            );
+          },
         ),
         const SizedBox(height: 16),
       ],
@@ -1208,57 +1274,70 @@ class _SessionDetailSheetState extends State<SessionDetailSheet> {
     required String percent,
     required Color color,
     required bool isDark,
+    bool isCompact = false,
   }) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-      decoration: BoxDecoration(
-        color: isDark ? AppColors.darkElevated : AppColors.lightElevated,
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(
-          color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
+    return Semantics(
+      label: '$label: $duration, $percent',
+      child: Container(
+        padding: EdgeInsets.symmetric(
+          horizontal: isCompact ? 6 : 10,
+          vertical: 8,
         ),
-      ),
-      child: Row(
-        children: [
-          Container(
-            width: 8,
-            height: 8,
-            decoration: BoxDecoration(
-              color: color,
-              shape: BoxShape.circle,
-            ),
+        decoration: BoxDecoration(
+          color: isDark ? AppColors.darkElevated : AppColors.lightElevated,
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(
+            color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
           ),
-          const SizedBox(width: 6),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  label,
-                  style: TextStyle(
-                    fontFamily: AppTypography.fontFamily,
-                    fontSize: 10,
-                    fontWeight: FontWeight.w600,
-                    color: isDark
-                        ? AppColors.textSecondaryDark
-                        : AppColors.textSecondaryLight,
-                  ),
-                ),
-                Text(
-                  '$duration ($percent)',
-                  style: TextStyle(
-                    fontFamily: AppTypography.fontFamily,
-                    fontSize: 11,
-                    fontWeight: FontWeight.w700,
-                    color: isDark
-                        ? AppColors.textPrimaryDark
-                        : AppColors.textPrimaryLight,
-                  ),
-                ),
-              ],
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 8,
+              height: 8,
+              decoration: BoxDecoration(
+                color: color,
+                shape: BoxShape.circle,
+              ),
             ),
-          ),
-        ],
+            SizedBox(width: isCompact ? 4 : 6),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    label,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontFamily: AppTypography.fontFamily,
+                      fontSize: isCompact ? 9 : 10,
+                      fontWeight: FontWeight.w600,
+                      color: isDark
+                          ? AppColors.textSecondaryDark
+                          : AppColors.textSecondaryLight,
+                    ),
+                  ),
+                  const SizedBox(height: 1),
+                  Text(
+                    '$duration ($percent)',
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontFamily: AppTypography.fontFamily,
+                      fontSize: isCompact ? 10 : 11,
+                      fontWeight: FontWeight.w700,
+                      color: isDark
+                          ? AppColors.textPrimaryDark
+                          : AppColors.textPrimaryLight,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
