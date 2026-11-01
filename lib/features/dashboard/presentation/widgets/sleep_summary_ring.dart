@@ -47,43 +47,49 @@ class SleepSummaryRing extends StatelessWidget {
             ),
           ),
 
-          // Central Metrics Display
-          Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                DateTimeFormatter.formatMinutes(durationMinutes),
-                style: AppTypography.statNumber(isDark, fontSize: 30).copyWith(
-                  letterSpacing: -0.5,
-                ),
-              ),
-              const SizedBox(height: 4),
-              Row(
+          // Central Metrics Display (Scales down gracefully on any container size)
+          Padding(
+            padding: EdgeInsets.all(size * 0.16),
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(
-                    progress >= 1.0
-                        ? Icons.check_circle_rounded
-                        : Icons.timelapse_rounded,
-                    size: 13,
-                    color: progress >= 1.0
-                        ? AppColors.positive
-                        : (isDark ? AppColors.primary : AppColors.primaryDark),
-                  ),
-                  const SizedBox(width: 4),
                   Text(
-                    '$percentage% of goal',
-                    style: AppTypography.labelSmall(isDark).copyWith(
-                      color: progress >= 1.0
-                          ? AppColors.positive
-                          : (isDark ? AppColors.primary : AppColors.primaryDark),
-                      fontWeight: FontWeight.w700,
-                      letterSpacing: 0.5,
+                    DateTimeFormatter.formatMinutes(durationMinutes),
+                    style: AppTypography.statNumber(isDark, fontSize: 30).copyWith(
+                      letterSpacing: -0.5,
                     ),
+                  ),
+                  const SizedBox(height: 4),
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        progress >= 1.0
+                            ? Icons.check_circle_rounded
+                            : Icons.timelapse_rounded,
+                        size: 13,
+                        color: progress >= 1.0
+                            ? AppColors.positive
+                            : (isDark ? AppColors.primary : AppColors.primaryDark),
+                      ),
+                      const SizedBox(width: 4),
+                      Text(
+                        '$percentage% of goal',
+                        style: AppTypography.labelSmall(isDark).copyWith(
+                          color: progress >= 1.0
+                              ? AppColors.positive
+                              : (isDark ? AppColors.primary : AppColors.primaryDark),
+                          fontWeight: FontWeight.w700,
+                          letterSpacing: 0.5,
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
-            ],
+            ),
           ),
         ],
       ),
@@ -109,6 +115,7 @@ class _RingPainter extends CustomPainter {
     final center = Offset(size.width / 2, size.height / 2);
     final strokeWidth = size.width * 0.08;
     final radius = (size.width - strokeWidth - 12) / 2;
+    if (radius <= 0 || size.width <= 4.0 || size.height <= 4.0) return;
 
     // 1. Draw 12 subtle modern hour dots around perimeter
     final dotRadius = size.width / 2 - 3.5;
