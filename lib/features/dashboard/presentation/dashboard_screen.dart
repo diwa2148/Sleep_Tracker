@@ -533,8 +533,9 @@ class DashboardScreen extends StatelessWidget {
                   title: 'Quality',
                   value: '${session.qualityRating}/5',
                   isDark: isDark,
-                  accentColor:
-                      AppColors.ratingColors[session.qualityRating! - 1],
+                  accentColor: AppColors.ratingColors[
+                      (session.qualityRating! - 1)
+                          .clamp(0, AppColors.ratingColors.length - 1)],
                 ),
               ],
             ],

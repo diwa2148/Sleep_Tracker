@@ -217,6 +217,7 @@ class _SessionDetailSheetState extends State<SessionDetailSheet> {
       return;
     }
 
+    final previousSession = _currentSession;
     _triggerHaptic(settings);
     final updated = _currentSession.copyWith(
       startTimestamp: newStart,
@@ -238,6 +239,9 @@ class _SessionDetailSheetState extends State<SessionDetailSheet> {
     );
 
     if (error != null && mounted) {
+      setState(() {
+        _currentSession = previousSession;
+      });
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(error),
@@ -252,6 +256,7 @@ class _SessionDetailSheetState extends State<SessionDetailSheet> {
     SleepTrackerProvider tracker,
     SettingsProvider settings,
   ) async {
+    final previousSession = _currentSession;
     _triggerHaptic(settings);
 
     // Determine current active tags
@@ -278,7 +283,7 @@ class _SessionDetailSheetState extends State<SessionDetailSheet> {
       _currentSession = updated;
     });
 
-    await tracker.updateSession(
+    final error = await tracker.updateSession(
       id: updated.id,
       start: updated.startTimestamp,
       end: updated.endTimestamp ?? DateTime.now(),
@@ -286,6 +291,18 @@ class _SessionDetailSheetState extends State<SessionDetailSheet> {
       notes: updated.notes,
       preferences: settings.preferences,
     );
+
+    if (error != null && mounted) {
+      setState(() {
+        _currentSession = previousSession;
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(error),
+          duration: const Duration(seconds: 2),
+        ),
+      );
+    }
   }
 
   Future<void> _updateRating(
@@ -293,6 +310,7 @@ class _SessionDetailSheetState extends State<SessionDetailSheet> {
     SleepTrackerProvider tracker,
     SettingsProvider settings,
   ) async {
+    final previousSession = _currentSession;
     _triggerHaptic(settings);
 
     final updated = _currentSession.copyWith(
@@ -305,7 +323,7 @@ class _SessionDetailSheetState extends State<SessionDetailSheet> {
       _currentSession = updated;
     });
 
-    await tracker.updateSession(
+    final error = await tracker.updateSession(
       id: updated.id,
       start: updated.startTimestamp,
       end: updated.endTimestamp ?? DateTime.now(),
@@ -313,12 +331,25 @@ class _SessionDetailSheetState extends State<SessionDetailSheet> {
       notes: updated.notes,
       preferences: settings.preferences,
     );
+
+    if (error != null && mounted) {
+      setState(() {
+        _currentSession = previousSession;
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(error),
+          duration: const Duration(seconds: 2),
+        ),
+      );
+    }
   }
 
   Future<void> _saveCustomNotes(
     SleepTrackerProvider tracker,
     SettingsProvider settings,
   ) async {
+    final previousSession = _currentSession;
     _triggerHaptic(settings);
     final customNotes = _notesController.text.trim();
     final combinedNotes = _composeNotes(
@@ -337,7 +368,7 @@ class _SessionDetailSheetState extends State<SessionDetailSheet> {
       _isEditingNotes = false;
     });
 
-    await tracker.updateSession(
+    final error = await tracker.updateSession(
       id: updated.id,
       start: updated.startTimestamp,
       end: updated.endTimestamp ?? DateTime.now(),
@@ -345,6 +376,18 @@ class _SessionDetailSheetState extends State<SessionDetailSheet> {
       notes: updated.notes,
       preferences: settings.preferences,
     );
+
+    if (error != null && mounted) {
+      setState(() {
+        _currentSession = previousSession;
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(error),
+          duration: const Duration(seconds: 2),
+        ),
+      );
+    }
   }
 
   @override

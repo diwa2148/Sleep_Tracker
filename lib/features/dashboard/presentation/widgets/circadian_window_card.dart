@@ -335,12 +335,24 @@ class CircadianWindowCard extends StatelessWidget {
                               ? AppColors.primary
                               : AppColors.primaryDark),
                       const SizedBox(width: 8),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text('Bedtime Target', style: AppTypography.labelSmall(isDark)),
-                          Text(bedtimeStr, style: AppTypography.titleMedium(isDark).copyWith(fontSize: 14)),
-                        ],
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Bedtime Target',
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: AppTypography.labelSmall(isDark),
+                            ),
+                            Text(
+                              bedtimeStr,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: AppTypography.titleMedium(isDark).copyWith(fontSize: 14),
+                            ),
+                          ],
+                        ),
                       ),
                     ],
                   ),
@@ -365,12 +377,24 @@ class CircadianWindowCard extends StatelessWidget {
                               ? const Color(0xFFA3A3A3)
                               : const Color(0xFF525252)),
                       const SizedBox(width: 8),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text('Wake Target', style: AppTypography.labelSmall(isDark)),
-                          Text(wakeStr, style: AppTypography.titleMedium(isDark).copyWith(fontSize: 14)),
-                        ],
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Wake Target',
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: AppTypography.labelSmall(isDark),
+                            ),
+                            Text(
+                              wakeStr,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: AppTypography.titleMedium(isDark).copyWith(fontSize: 14),
+                            ),
+                          ],
+                        ),
                       ),
                     ],
                   ),
