@@ -169,29 +169,34 @@ class RetroAlarmDeckCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 // Gentle ramp toggle
-                Row(
-                  children: [
-                    Icon(
-                      alarm.gentleRampEnabled
-                          ? Icons.trending_up_rounded
-                          : Icons.volume_up_rounded,
-                      size: 16,
-                      color:
-                          isDark ? AppColors.primary : AppColors.primaryDark,
-                    ),
-                    const SizedBox(width: 8),
-                    Text(
-                      '30S GENTLE RAMP',
-                      style: TextStyle(
-                        fontFamily: AppTypography.fontFamily,
-                        fontSize: 11,
-                        fontWeight: FontWeight.w700,
-                        color: isDark
-                            ? AppColors.textSecondaryDark
-                            : AppColors.textSecondaryLight,
+                Expanded(
+                  child: Row(
+                    children: [
+                      Icon(
+                        alarm.gentleRampEnabled
+                            ? Icons.trending_up_rounded
+                            : Icons.volume_up_rounded,
+                        size: 16,
+                        color:
+                            isDark ? AppColors.primary : AppColors.primaryDark,
                       ),
-                    ),
-                  ],
+                      const SizedBox(width: 8),
+                      Flexible(
+                        child: Text(
+                          '30S GENTLE RAMP',
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            fontFamily: AppTypography.fontFamily,
+                            fontSize: 11,
+                            fontWeight: FontWeight.w700,
+                            color: isDark
+                                ? AppColors.textSecondaryDark
+                                : AppColors.textSecondaryLight,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
                 Switch(
                   value: alarm.gentleRampEnabled,
@@ -221,28 +226,34 @@ class RetroAlarmDeckCard extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Row(
-                      children: [
-                        Icon(
-                          Icons.alarm_on_rounded,
-                          size: 15,
-                          color: isDark
-                              ? AppColors.primary
-                              : AppColors.primaryDark,
-                        ),
-                        const SizedBox(width: 6),
-                        Text(
-                          'CYCLE SMART WAKE',
-                          style: AppTypography.labelSmall(isDark).copyWith(
-                            letterSpacing: 1.0,
-                            fontWeight: FontWeight.w700,
+                    Expanded(
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.alarm_on_rounded,
+                            size: 15,
                             color: isDark
                                 ? AppColors.primary
                                 : AppColors.primaryDark,
                           ),
-                        ),
-                      ],
+                          const SizedBox(width: 6),
+                          Flexible(
+                            child: Text(
+                              'CYCLE SMART WAKE',
+                              overflow: TextOverflow.ellipsis,
+                              style: AppTypography.labelSmall(isDark).copyWith(
+                                letterSpacing: 1.0,
+                                fontWeight: FontWeight.w700,
+                                color: isDark
+                                    ? AppColors.primary
+                                    : AppColors.primaryDark,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
+                    const SizedBox(width: 6),
                     Container(
                       padding: const EdgeInsets.symmetric(
                           horizontal: 8, vertical: 2),

@@ -61,9 +61,11 @@ class _ChronotypeAssessmentModalState extends State<ChronotypeAssessmentModal> {
     final settings = Provider.of<SettingsProvider>(context, listen: false);
     final maxHeight = MediaQuery.of(context).size.height * 0.90;
 
-    return Container(
-      constraints: BoxConstraints(maxHeight: maxHeight),
-      padding: EdgeInsets.fromLTRB(
+    return Center(
+      child: ConstrainedBox(
+        constraints: BoxConstraints(maxWidth: 620, maxHeight: maxHeight),
+        child: Container(
+          padding: EdgeInsets.fromLTRB(
         24,
         16,
         24,
@@ -148,7 +150,9 @@ class _ChronotypeAssessmentModalState extends State<ChronotypeAssessmentModal> {
           ),
         ],
       ),
-    );
+    ),
+  ),
+);
   }
 
   Widget _buildQuestionStep(bool isDark) {

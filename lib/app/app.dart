@@ -47,9 +47,12 @@ class SomnaApp extends StatelessWidget {
             builder: (context, child) {
               final isDark = Theme.of(context).brightness == Brightness.dark;
               final isOled = isDark && settings.oledModeEnabled;
+              final width = MediaQuery.sizeOf(context).width;
+              final isWide = width >= 768;
+
               return Container(
                 decoration: BoxDecoration(
-                  gradient: isOled
+                  gradient: isOled || !isWide
                       ? null
                       : LinearGradient(
                           begin: Alignment.topLeft,
@@ -66,11 +69,15 @@ class SomnaApp extends StatelessWidget {
                                   Color(0xFFFFFFFF),
                                 ],
                         ),
-                  color: isOled ? const Color(0xFF000000) : null,
+                  color: isOled
+                      ? const Color(0xFF000000)
+                      : (isDark
+                          ? AppColors.darkBackground
+                          : AppColors.lightBackground),
                 ),
                 child: Center(
                   child: ConstrainedBox(
-                    constraints: const BoxConstraints(maxWidth: 680),
+                    constraints: const BoxConstraints(maxWidth: 1400),
                     child: Container(
                       decoration: BoxDecoration(
                         color: isOled
@@ -78,7 +85,7 @@ class SomnaApp extends StatelessWidget {
                             : (isDark
                                 ? AppColors.darkBackground
                                 : AppColors.lightBackground),
-                        boxShadow: isOled
+                        boxShadow: isOled || !isWide
                             ? null
                             : [
                                 BoxShadow(
@@ -90,14 +97,16 @@ class SomnaApp extends StatelessWidget {
                                   offset: const Offset(0, 4),
                                 ),
                               ],
-                        border: Border.symmetric(
-                          vertical: BorderSide(
-                            color: isDark
-                                ? const Color(0xFF262626)
-                                : const Color(0xFFE5E5E5),
-                            width: 1,
-                          ),
-                        ),
+                        border: isWide
+                            ? Border.symmetric(
+                                vertical: BorderSide(
+                                  color: isDark
+                                      ? const Color(0xFF262626)
+                                      : const Color(0xFFE5E5E5),
+                                  width: 1,
+                                ),
+                              )
+                            : null,
                       ),
                       child: child ?? const SizedBox(),
                     ),

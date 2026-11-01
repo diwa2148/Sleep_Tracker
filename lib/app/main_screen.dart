@@ -25,6 +25,8 @@ class _MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final width = MediaQuery.sizeOf(context).width;
+    final isWide = width >= 768;
 
     final pages = [
       DashboardScreen(
@@ -36,6 +38,127 @@ class _MainScreenState extends State<MainScreen> {
       const InsightsScreen(),
       const SettingsScreen(),
     ];
+
+    if (isWide) {
+      return Scaffold(
+        backgroundColor:
+            isDark ? AppColors.darkBackground : AppColors.lightBackground,
+        body: Row(
+          children: [
+            Container(
+              decoration: BoxDecoration(
+                color: isDark ? AppColors.darkSurface : AppColors.lightSurface,
+                border: Border(
+                  right: BorderSide(
+                    color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
+                    width: 1,
+                  ),
+                ),
+              ),
+              child: NavigationRail(
+                selectedIndex: _currentIndex,
+                onDestinationSelected: _navigateToIndex,
+                backgroundColor:
+                    isDark ? AppColors.darkSurface : AppColors.lightSurface,
+                labelType: NavigationRailLabelType.all,
+                minWidth: 80,
+                leading: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 20),
+                  child: Column(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                          color: (isDark ? AppColors.primary : AppColors.primaryDark)
+                              .withValues(alpha: 0.15),
+                          borderRadius: BorderRadius.circular(14),
+                          border: Border.all(
+                            color: (isDark ? AppColors.primary : AppColors.primaryDark)
+                                .withValues(alpha: 0.3),
+                          ),
+                        ),
+                        child: Icon(
+                          Icons.nights_stay_rounded,
+                          color: isDark ? AppColors.primary : AppColors.primaryDark,
+                          size: 24,
+                        ),
+                      ),
+                      const SizedBox(height: 6),
+                      Text(
+                        'SOMNA',
+                        style: TextStyle(
+                          fontFamily: AppTypography.fontFamily,
+                          fontSize: 11,
+                          fontWeight: FontWeight.w800,
+                          letterSpacing: 1.5,
+                          color: isDark ? Colors.white : Colors.black,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                selectedLabelTextStyle: TextStyle(
+                  fontFamily: AppTypography.fontFamily,
+                  fontWeight: FontWeight.w700,
+                  fontSize: 11,
+                  color: isDark ? AppColors.primary : AppColors.primaryDark,
+                  letterSpacing: 0.2,
+                ),
+                unselectedLabelTextStyle: TextStyle(
+                  fontFamily: AppTypography.fontFamily,
+                  fontWeight: FontWeight.w500,
+                  fontSize: 11,
+                  color: isDark ? AppColors.textMutedDark : AppColors.textMutedLight,
+                  letterSpacing: 0.2,
+                ),
+                selectedIconTheme: IconThemeData(
+                  color: isDark ? AppColors.primary : AppColors.primaryDark,
+                  size: 24,
+                ),
+                unselectedIconTheme: IconThemeData(
+                  color: isDark ? AppColors.textMutedDark : AppColors.textMutedLight,
+                  size: 22,
+                ),
+                destinations: [
+                  NavigationRailDestination(
+                    icon: const Icon(Icons.home_rounded),
+                    selectedIcon: _buildActiveIcon(Icons.home_rounded, isDark),
+                    label: const Text('Home'),
+                  ),
+                  NavigationRailDestination(
+                    icon: const Icon(Icons.history_rounded),
+                    selectedIcon: _buildActiveIcon(Icons.history_rounded, isDark),
+                    label: const Text('History'),
+                  ),
+                  NavigationRailDestination(
+                    icon: const Icon(Icons.insights_rounded),
+                    selectedIcon: _buildActiveIcon(Icons.insights_rounded, isDark),
+                    label: const Text('Analytics'),
+                  ),
+                  NavigationRailDestination(
+                    icon: const Icon(Icons.auto_awesome_rounded),
+                    selectedIcon:
+                        _buildActiveIcon(Icons.auto_awesome_rounded, isDark),
+                    label: const Text('Insights'),
+                  ),
+                  NavigationRailDestination(
+                    icon: const Icon(Icons.settings_rounded),
+                    selectedIcon: _buildActiveIcon(Icons.settings_rounded, isDark),
+                    label: const Text('Settings'),
+                  ),
+                ],
+              ),
+            ),
+            Expanded(
+              child: IndexedStack(
+                index: _currentIndex,
+                children: pages,
+              ),
+            ),
+          ],
+        ),
+      );
+    }
 
     return Scaffold(
       backgroundColor:

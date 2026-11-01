@@ -188,9 +188,12 @@ class _WindDownPacerSheetState extends State<WindDownPacerSheet>
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
-    return Container(
-      padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
-      decoration: BoxDecoration(
+    return Center(
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 580),
+        child: Container(
+          padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
+          decoration: BoxDecoration(
         color: isDark ? AppColors.darkSurface : AppColors.lightSurface,
         borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
         border: Border(
@@ -448,7 +451,9 @@ class _WindDownPacerSheetState extends State<WindDownPacerSheet>
           ),
         ],
       ),
-    );
+    ),
+  ),
+);
   }
 }
 

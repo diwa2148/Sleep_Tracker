@@ -86,9 +86,12 @@ class _WakeUpSheetState extends State<WakeUpSheet> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final bottomInset = MediaQuery.of(context).viewInsets.bottom;
 
-    return Container(
-      padding: EdgeInsets.fromLTRB(24, 20, 24, 24 + bottomInset),
-      decoration: BoxDecoration(
+    return Center(
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 580),
+        child: Container(
+          padding: EdgeInsets.fromLTRB(24, 20, 24, 24 + bottomInset),
+          decoration: BoxDecoration(
         color: isDark ? AppColors.darkSurface : AppColors.lightSurface,
         borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
         border: Border(
@@ -226,6 +229,8 @@ class _WakeUpSheetState extends State<WakeUpSheet> {
           ],
         ),
       ),
-    );
+    ),
+  ),
+);
   }
 }

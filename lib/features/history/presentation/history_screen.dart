@@ -103,92 +103,104 @@ class _HistoryScreenState extends State<HistoryScreen> {
             const SizedBox(height: 4),
 
             // Dot-matrix receipt print banner
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-              child: Material(
-                color: isDark ? AppColors.darkElevated : AppColors.lightElevated,
-                borderRadius: BorderRadius.circular(12),
-                child: InkWell(
-                  onTap: () {
-                    SleepReceiptSheet.show(
-                      context: context,
-                      sessions: allCompleted,
-                      stats: tracker.weeklyStats,
-                      preferences: settings.preferences,
-                    );
-                  },
-                  borderRadius: BorderRadius.circular(12),
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 14, vertical: 10),
-                    decoration: BoxDecoration(
+            Center(
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 860),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                  child: Material(
+                    color: isDark ? AppColors.darkElevated : AppColors.lightElevated,
+                    borderRadius: BorderRadius.circular(12),
+                    child: InkWell(
+                      onTap: () {
+                        SleepReceiptSheet.show(
+                          context: context,
+                          sessions: allCompleted,
+                          stats: tracker.weeklyStats,
+                          preferences: settings.preferences,
+                        );
+                      },
                       borderRadius: BorderRadius.circular(12),
-                      border: Border.all(
-                        color: isDark
-                            ? AppColors.darkBorder
-                            : AppColors.lightBorder,
-                      ),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 14, vertical: 10),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(
+                            color: isDark
+                                ? AppColors.darkBorder
+                                : AppColors.lightBorder,
+                          ),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Icon(Icons.receipt_long_rounded,
-                                size: 18,
-                                color: isDark
-                                    ? AppColors.primary
-                                    : AppColors.primaryDark),
+                            Expanded(
+                              child: Row(
+                                children: [
+                                  Icon(Icons.receipt_long_rounded,
+                                      size: 18,
+                                      color: isDark
+                                          ? AppColors.primary
+                                          : AppColors.primaryDark),
+                                  const SizedBox(width: 8),
+                                  Expanded(
+                                    child: Text(
+                                      'DOT-MATRIX SLEEP TICKET',
+                                      overflow: TextOverflow.ellipsis,
+                                      maxLines: 1,
+                                      style: TextStyle(
+                                        fontFamily: AppTypography.fontFamily,
+                                        fontSize: 11,
+                                        fontWeight: FontWeight.w700,
+                                        color: isDark
+                                            ? AppColors.textPrimaryDark
+                                            : AppColors.textPrimaryLight,
+                                        letterSpacing: 0.5,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
                             const SizedBox(width: 8),
-                            Text(
-                              'DOT-MATRIX SLEEP TICKET',
-                              style: TextStyle(
-                                fontFamily: AppTypography.fontFamily,
-                                fontSize: 11,
-                                fontWeight: FontWeight.w700,
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 10, vertical: 4),
+                              decoration: BoxDecoration(
                                 color: isDark
-                                    ? AppColors.textPrimaryDark
-                                    : AppColors.textPrimaryLight,
-                                letterSpacing: 0.5,
+                                    ? const Color(0xFF262626)
+                                    : const Color(0xFFE5E5E5),
+                                borderRadius: BorderRadius.circular(20),
+                                border: Border.all(
+                                  color: isDark
+                                      ? const Color(0xFF404040)
+                                      : const Color(0xFFCCCCCC),
+                                ),
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(Icons.print_rounded,
+                                      size: 11,
+                                      color: isDark ? Colors.white : Colors.black),
+                                  const SizedBox(width: 4),
+                                  Text(
+                                    'PRINT',
+                                    style: TextStyle(
+                                      fontFamily: AppTypography.fontFamily,
+                                      fontSize: 10,
+                                      fontWeight: FontWeight.w700,
+                                      color: isDark ? Colors.white : Colors.black,
+                                      letterSpacing: 0.5,
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
                           ],
                         ),
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 10, vertical: 4),
-                          decoration: BoxDecoration(
-                            color: isDark
-                                ? const Color(0xFF262626)
-                                : const Color(0xFFE5E5E5),
-                            borderRadius: BorderRadius.circular(20),
-                            border: Border.all(
-                              color: isDark
-                                  ? const Color(0xFF404040)
-                                  : const Color(0xFFCCCCCC),
-                            ),
-                          ),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Icon(Icons.print_rounded,
-                                  size: 11,
-                                  color: isDark ? Colors.white : Colors.black),
-                              const SizedBox(width: 4),
-                              Text(
-                                'PRINT',
-                                style: TextStyle(
-                                  fontFamily: AppTypography.fontFamily,
-                                  fontSize: 10,
-                                  fontWeight: FontWeight.w700,
-                                  color: isDark ? Colors.white : Colors.black,
-                                  letterSpacing: 0.5,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
+                      ),
                     ),
                   ),
                 ),
@@ -198,37 +210,42 @@ class _HistoryScreenState extends State<HistoryScreen> {
 
             // Sessions List or Empty State
             Expanded(
-              child: filteredSessions.isEmpty
-                  ? _buildEmptyState(isDark)
-                  : ListView.separated(
-                      padding: const EdgeInsets.fromLTRB(16, 8, 16, 96),
-                      itemCount: filteredSessions.length,
-                      separatorBuilder: (_, __) => const SizedBox(height: 8),
-                      itemBuilder: (context, index) {
-                        final session = filteredSessions[index];
-                        return _buildSessionCard(
-                          context: context,
-                          session: session,
-                          isDark: isDark,
-                          onTap: () =>
-                              SessionDetailSheet.show(context, session),
-                          onDelete: () async {
-                            final confirmed = await ConfirmDialog.show(
+              child: Center(
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 860),
+                  child: filteredSessions.isEmpty
+                      ? _buildEmptyState(isDark)
+                      : ListView.separated(
+                          padding: const EdgeInsets.fromLTRB(16, 8, 16, 96),
+                          itemCount: filteredSessions.length,
+                          separatorBuilder: (_, __) => const SizedBox(height: 8),
+                          itemBuilder: (context, index) {
+                            final session = filteredSessions[index];
+                            return _buildSessionCard(
                               context: context,
-                              title: 'Delete Session?',
-                              message:
-                                  'Are you sure you want to permanently delete this sleep session?',
-                              confirmText: 'Delete',
-                              isDestructive: true,
+                              session: session,
+                              isDark: isDark,
+                              onTap: () =>
+                                  SessionDetailSheet.show(context, session),
+                              onDelete: () async {
+                                final confirmed = await ConfirmDialog.show(
+                                  context: context,
+                                  title: 'Delete Session?',
+                                  message:
+                                      'Are you sure you want to permanently delete this sleep session?',
+                                  confirmText: 'Delete',
+                                  isDestructive: true,
+                                );
+                                if (confirmed && context.mounted) {
+                                  await tracker.deleteSession(
+                                      session.id, settings.preferences);
+                                }
+                              },
                             );
-                            if (confirmed && context.mounted) {
-                              await tracker.deleteSession(
-                                  session.id, settings.preferences);
-                            }
                           },
-                        );
-                      },
-                    ),
+                        ),
+                ),
+              ),
             ),
           ],
         ),
@@ -316,10 +333,14 @@ class _HistoryScreenState extends State<HistoryScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  relativeDate,
-                  style: AppTypography.titleMedium(isDark),
+                Expanded(
+                  child: Text(
+                    relativeDate,
+                    style: AppTypography.titleMedium(isDark),
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 ),
+                const SizedBox(width: 8),
                 Container(
                   padding:
                       const EdgeInsets.symmetric(horizontal: 8, vertical: 3),

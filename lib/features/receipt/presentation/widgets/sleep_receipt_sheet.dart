@@ -125,12 +125,15 @@ class _SleepReceiptSheetState extends State<SleepReceiptSheet>
     final parts = textReceipt.split('====================================');
     final statsBody = parts.length > 2 ? parts[2].trim() : textReceipt.trim();
 
-    return Container(
-      constraints: BoxConstraints(
-        maxHeight: MediaQuery.of(context).size.height * 0.88,
-      ),
-      padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
-      decoration: BoxDecoration(
+    return Center(
+      child: ConstrainedBox(
+        constraints: BoxConstraints(
+          maxWidth: 480,
+          maxHeight: MediaQuery.of(context).size.height * 0.88,
+        ),
+        child: Container(
+          padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
+          decoration: BoxDecoration(
         color: isDark ? AppColors.darkSurface : AppColors.lightSurface,
         borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
       ),
@@ -366,7 +369,9 @@ class _SleepReceiptSheetState extends State<SleepReceiptSheet>
           ),
         ],
       ),
-    );
+    ),
+  ),
+);
   }
 }
 

@@ -189,48 +189,71 @@ class SleepStagesCard extends StatelessWidget {
           const SizedBox(height: 14),
 
           // 4 Stage Detail Badges Grid
-          Row(
-            children: [
-              Expanded(
-                child: _buildStageMetric(
-                  label: 'Deep Sleep',
-                  duration: '${deepMins ~/ 60}h ${deepMins % 60}m',
-                  percentage: '22%',
-                  color: AppColors.deepSleep,
-                  isDark: isDark,
-                ),
-              ),
-              const SizedBox(width: 8),
-              Expanded(
-                child: _buildStageMetric(
-                  label: 'REM Sleep',
-                  duration: '${remMins ~/ 60}h ${remMins % 60}m',
-                  percentage: '26%',
-                  color: AppColors.remSleep,
-                  isDark: isDark,
-                ),
-              ),
-              const SizedBox(width: 8),
-              Expanded(
-                child: _buildStageMetric(
-                  label: 'Light Rest',
-                  duration: '${lightMins ~/ 60}h ${lightMins % 60}m',
-                  percentage: '44%',
-                  color: AppColors.lightSleep,
-                  isDark: isDark,
-                ),
-              ),
-              const SizedBox(width: 8),
-              Expanded(
-                child: _buildStageMetric(
-                  label: 'Awake',
-                  duration: '${awakeMins}m',
-                  percentage: '8%',
-                  color: AppColors.awake,
-                  isDark: isDark,
-                ),
-              ),
-            ],
+          LayoutBuilder(
+            builder: (context, constraints) {
+              final deepBadge = _buildStageMetric(
+                label: 'Deep Sleep',
+                duration: '${deepMins ~/ 60}h ${deepMins % 60}m',
+                percentage: '22%',
+                color: AppColors.deepSleep,
+                isDark: isDark,
+              );
+              final remBadge = _buildStageMetric(
+                label: 'REM Sleep',
+                duration: '${remMins ~/ 60}h ${remMins % 60}m',
+                percentage: '26%',
+                color: AppColors.remSleep,
+                isDark: isDark,
+              );
+              final lightBadge = _buildStageMetric(
+                label: 'Light Rest',
+                duration: '${lightMins ~/ 60}h ${lightMins % 60}m',
+                percentage: '44%',
+                color: AppColors.lightSleep,
+                isDark: isDark,
+              );
+              final awakeBadge = _buildStageMetric(
+                label: 'Awake',
+                duration: '${awakeMins}m',
+                percentage: '8%',
+                color: AppColors.awake,
+                isDark: isDark,
+              );
+
+              if (constraints.maxWidth < 440) {
+                return Column(
+                  children: [
+                    Row(
+                      children: [
+                        Expanded(child: deepBadge),
+                        const SizedBox(width: 8),
+                        Expanded(child: remBadge),
+                      ],
+                    ),
+                    const SizedBox(height: 8),
+                    Row(
+                      children: [
+                        Expanded(child: lightBadge),
+                        const SizedBox(width: 8),
+                        Expanded(child: awakeBadge),
+                      ],
+                    ),
+                  ],
+                );
+              }
+
+              return Row(
+                children: [
+                  Expanded(child: deepBadge),
+                  const SizedBox(width: 8),
+                  Expanded(child: remBadge),
+                  const SizedBox(width: 8),
+                  Expanded(child: lightBadge),
+                  const SizedBox(width: 8),
+                  Expanded(child: awakeBadge),
+                ],
+              );
+            },
           ),
         ],
       ),
@@ -275,9 +298,13 @@ class SleepStagesCard extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 4),
-          Text(
-            duration,
-            style: AppTypography.titleMedium(isDark).copyWith(fontSize: 14),
+          FittedBox(
+            fit: BoxFit.scaleDown,
+            alignment: Alignment.centerLeft,
+            child: Text(
+              duration,
+              style: AppTypography.titleMedium(isDark).copyWith(fontSize: 14),
+            ),
           ),
           Text(
             percentage,

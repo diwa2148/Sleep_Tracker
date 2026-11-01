@@ -206,13 +206,59 @@ class CircadianWindowCard extends StatelessWidget {
 
           // 24h Time Labels (00h, 06h, 12h, 18h, 24h)
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text('00:00', style: AppTypography.bodySmall(isDark).copyWith(fontSize: 10)),
-              Text('06:00', style: AppTypography.bodySmall(isDark).copyWith(fontSize: 10)),
-              Text('12:00', style: AppTypography.bodySmall(isDark).copyWith(fontSize: 10)),
-              Text('18:00', style: AppTypography.bodySmall(isDark).copyWith(fontSize: 10)),
-              Text('24:00', style: AppTypography.bodySmall(isDark).copyWith(fontSize: 10)),
+              Expanded(
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Text('00:00',
+                        style: AppTypography.bodySmall(isDark)
+                            .copyWith(fontSize: 10)),
+                  ),
+                ),
+              ),
+              Expanded(
+                child: Center(
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Text('06:00',
+                        style: AppTypography.bodySmall(isDark)
+                            .copyWith(fontSize: 10)),
+                  ),
+                ),
+              ),
+              Expanded(
+                child: Center(
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Text('12:00',
+                        style: AppTypography.bodySmall(isDark)
+                            .copyWith(fontSize: 10)),
+                  ),
+                ),
+              ),
+              Expanded(
+                child: Center(
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Text('18:00',
+                        style: AppTypography.bodySmall(isDark)
+                            .copyWith(fontSize: 10)),
+                  ),
+                ),
+              ),
+              Expanded(
+                child: Align(
+                  alignment: Alignment.centerRight,
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Text('24:00',
+                        style: AppTypography.bodySmall(isDark)
+                            .copyWith(fontSize: 10)),
+                  ),
+                ),
+              ),
             ],
           ),
           const SizedBox(height: 12),
@@ -233,14 +279,16 @@ class CircadianWindowCard extends StatelessWidget {
               child: LayoutBuilder(
                 builder: (context, constraints) {
                   final isCompact = constraints.maxWidth < 500;
-                  final archetypePill = Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(chronotypeProfile.emoji,
-                          style: const TextStyle(fontSize: 14)),
-                      const SizedBox(width: 6),
-                      Flexible(
-                        child: Text(
+                  final archetypePill = FittedBox(
+                    fit: BoxFit.scaleDown,
+                    alignment: Alignment.centerLeft,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(chronotypeProfile.emoji,
+                            style: const TextStyle(fontSize: 14)),
+                        const SizedBox(width: 6),
+                        Text(
                           '${chronotypeProfile.name.toUpperCase()} ARCHETYPE',
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
@@ -251,42 +299,46 @@ class CircadianWindowCard extends StatelessWidget {
                             color: isDark ? Colors.white : Colors.black,
                           ),
                         ),
-                      ),
-                      const SizedBox(width: 4),
-                      Icon(
-                        Icons.edit_outlined,
-                        size: 11,
-                        color: isDark
-                            ? const Color(0xFFA3A3A3)
-                            : const Color(0xFF525252),
-                      ),
-                    ],
+                        const SizedBox(width: 4),
+                        Icon(
+                          Icons.edit_outlined,
+                          size: 11,
+                          color: isDark
+                              ? const Color(0xFFA3A3A3)
+                              : const Color(0xFF525252),
+                        ),
+                      ],
+                    ),
                   );
 
-                  final sleepGatePill = Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        'SLEEP GATE: ',
-                        style: TextStyle(
-                          fontFamily: AppTypography.fontFamily,
-                          fontSize: 9.5,
-                          fontWeight: FontWeight.w600,
-                          color: isDark
-                              ? AppColors.primary
-                              : AppColors.primaryDark,
+                  final sleepGatePill = FittedBox(
+                    fit: BoxFit.scaleDown,
+                    alignment: Alignment.centerLeft,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          'SLEEP GATE: ',
+                          style: TextStyle(
+                            fontFamily: AppTypography.fontFamily,
+                            fontSize: 9.5,
+                            fontWeight: FontWeight.w600,
+                            color: isDark
+                                ? AppColors.primary
+                                : AppColors.primaryDark,
+                          ),
                         ),
-                      ),
-                      Text(
-                        chronotypeProfile.sleepGateFormatted,
-                        style: TextStyle(
-                          fontFamily: AppTypography.fontFamily,
-                          fontSize: 10.5,
-                          fontWeight: FontWeight.w700,
-                          color: isDark ? Colors.white : Colors.black,
+                        Text(
+                          chronotypeProfile.sleepGateFormatted,
+                          style: TextStyle(
+                            fontFamily: AppTypography.fontFamily,
+                            fontSize: 10.5,
+                            fontWeight: FontWeight.w700,
+                            color: isDark ? Colors.white : Colors.black,
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   );
 
                   if (isCompact) {

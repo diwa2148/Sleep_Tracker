@@ -75,43 +75,49 @@ class _VintageSoundDeckCardState extends State<VintageSoundDeckCard>
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Row(
-                children: [
-                  Container(
-                    width: 8,
-                    height: 8,
-                    decoration: BoxDecoration(
-                      color: sound.isPlaying
-                          ? (isDark ? Colors.white : Colors.black)
-                          : (isDark
-                              ? const Color(0xFF404040)
-                              : const Color(0xFFCCCCCC)),
-                      shape: BoxShape.circle,
-                      boxShadow: sound.isPlaying
-                          ? [
-                              BoxShadow(
-                                color: (isDark ? Colors.white : Colors.black)
-                                    .withValues(alpha: 0.6),
-                                blurRadius: 6,
-                                spreadRadius: 1,
-                              ),
-                            ]
-                          : null,
+              Expanded(
+                child: Row(
+                  children: [
+                    Container(
+                      width: 8,
+                      height: 8,
+                      decoration: BoxDecoration(
+                        color: sound.isPlaying
+                            ? (isDark ? Colors.white : Colors.black)
+                            : (isDark
+                                ? const Color(0xFF404040)
+                                : const Color(0xFFCCCCCC)),
+                        shape: BoxShape.circle,
+                        boxShadow: sound.isPlaying
+                            ? [
+                                BoxShadow(
+                                  color: (isDark ? Colors.white : Colors.black)
+                                      .withValues(alpha: 0.6),
+                                  blurRadius: 6,
+                                  spreadRadius: 1,
+                                ),
+                              ]
+                            : null,
+                      ),
                     ),
-                  ),
-                  const SizedBox(width: 8),
-                  Text(
-                    'ANALOG SLEEP DECK • ST-84',
-                    style: AppTypography.labelSmall(isDark).copyWith(
-                      color: isDark
-                          ? const Color(0xFFD4D4D4)
-                          : const Color(0xFF262626),
-                      fontWeight: FontWeight.w700,
-                      letterSpacing: 1.0,
+                    const SizedBox(width: 8),
+                    Flexible(
+                      child: Text(
+                        'ANALOG SLEEP DECK • ST-84',
+                        overflow: TextOverflow.ellipsis,
+                        style: AppTypography.labelSmall(isDark).copyWith(
+                          color: isDark
+                              ? const Color(0xFFD4D4D4)
+                              : const Color(0xFF262626),
+                          fontWeight: FontWeight.w700,
+                          letterSpacing: 1.0,
+                        ),
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
+              const SizedBox(width: 6),
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                 decoration: BoxDecoration(

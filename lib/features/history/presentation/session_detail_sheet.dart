@@ -397,9 +397,11 @@ class _SessionDetailSheetState extends State<SessionDetailSheet> {
     final settings = context.read<SettingsProvider>();
     final maxHeight = MediaQuery.of(context).size.height * 0.90;
 
-    return Container(
-      constraints: BoxConstraints(maxHeight: maxHeight),
-      padding: EdgeInsets.fromLTRB(
+    return Center(
+      child: ConstrainedBox(
+        constraints: BoxConstraints(maxWidth: 680, maxHeight: maxHeight),
+        child: Container(
+          padding: EdgeInsets.fromLTRB(
         24,
         16,
         24,
@@ -648,7 +650,9 @@ class _SessionDetailSheetState extends State<SessionDetailSheet> {
           ),
         ],
       ),
-    );
+    ),
+  ),
+);
   }
 
   Widget _buildFactorChips({

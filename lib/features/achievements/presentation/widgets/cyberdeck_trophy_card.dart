@@ -113,19 +113,37 @@ class CyberdeckTrophyCard extends StatelessWidget {
           ),
           const SizedBox(height: 12),
 
-          // 2-Column Grid of Badges
-          GridView.builder(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            itemCount: badges.length,
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              crossAxisSpacing: 8,
-              mainAxisSpacing: 8,
-              childAspectRatio: 2.1,
-            ),
-            itemBuilder: (context, index) {
-              return _buildBadgeTile(context, badges[index], isDark);
+          // Responsive Grid of Badges
+          LayoutBuilder(
+            builder: (context, constraints) {
+              int columns = 2;
+              double aspectRatio = 1.85;
+
+              if (constraints.maxWidth < 360) {
+                columns = 1;
+                aspectRatio = 2.1;
+              } else if (constraints.maxWidth >= 720) {
+                columns = 3;
+                aspectRatio = 1.95;
+              } else if (constraints.maxWidth >= 1000) {
+                columns = 4;
+                aspectRatio = 2.0;
+              }
+
+              return GridView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: badges.length,
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: columns,
+                  crossAxisSpacing: 8,
+                  mainAxisSpacing: 8,
+                  childAspectRatio: aspectRatio,
+                ),
+                itemBuilder: (context, index) {
+                  return _buildBadgeTile(context, badges[index], isDark);
+                },
+              );
             },
           ),
         ],
@@ -373,17 +391,23 @@ class CyberdeckTrophyCard extends StatelessWidget {
                             : AppColors.textMutedLight,
                       ),
                     ),
-                    Text(
-                      badge.progressLabel,
-                      style: TextStyle(
-                        fontFamily: AppTypography.fontFamily,
-                        fontSize: 9,
-                        fontWeight: FontWeight.w700,
-                        color: badge.isUnlocked
-                            ? AppColors.positive
-                            : (isDark
-                                ? AppColors.textSecondaryDark
-                                : AppColors.textSecondaryLight),
+                    const SizedBox(width: 4),
+                    Expanded(
+                      child: Text(
+                        badge.progressLabel,
+                        textAlign: TextAlign.end,
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                        style: TextStyle(
+                          fontFamily: AppTypography.fontFamily,
+                          fontSize: 9,
+                          fontWeight: FontWeight.w700,
+                          color: badge.isUnlocked
+                              ? AppColors.positive
+                              : (isDark
+                                  ? AppColors.textSecondaryDark
+                                  : AppColors.textSecondaryLight),
+                        ),
                       ),
                     ),
                   ],

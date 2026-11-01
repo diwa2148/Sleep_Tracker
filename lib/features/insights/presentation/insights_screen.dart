@@ -23,64 +23,111 @@ class InsightsScreen extends StatelessWidget {
         title: const Text('Sleep Insights'),
       ),
       body: SafeArea(
-        child: ListView(
-          padding: const EdgeInsets.fromLTRB(16, 10, 16, 96),
-          children: [
-            // Cyberdeck Milestone Trophy Vault
-            CyberdeckTrophyCard(
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final isDesktop = constraints.maxWidth >= 840;
+
+            final trophyCard = CyberdeckTrophyCard(
               sessions: tracker.completedSessions,
               stats: tracker.weeklyStats,
-            ),
-            const SizedBox(height: 18),
+            );
 
-            Text(
-              'PERSONALIZED PATTERNS',
-              style:
-                  AppTypography.labelSmall(isDark).copyWith(letterSpacing: 1.1),
-            ),
-            const SizedBox(height: 8),
-            if (insights.isEmpty)
-              _buildEmptyState(isDark)
-            else
-              ...insights.map((insight) => Padding(
-                    padding: const EdgeInsets.only(bottom: 10),
-                    child: _buildInsightCard(insight, isDark),
-                  )),
-            const SizedBox(height: 14),
-            Text(
-              'FOUNDATIONAL SLEEP HABITS',
-              style:
-                  AppTypography.labelSmall(isDark).copyWith(letterSpacing: 1.1),
-            ),
-            const SizedBox(height: 12),
-            _buildTipCard(
-              title: 'Anchor Your Wake Time',
-              description:
-                  'Waking up at the same time each day—even on weekends—sets your circadian rhythm and improves nighttime sleep drive.',
-              icon: Icons.alarm_rounded,
-              color: isDark ? const Color(0xFFA3A3A3) : const Color(0xFF525252),
-              isDark: isDark,
-            ),
-            const SizedBox(height: 12),
-            _buildTipCard(
-              title: 'Wind-Down Buffer Zone',
-              description:
-                  'Allow 30 to 60 minutes before bed with dim lighting and relaxing activities (reading, gentle stretching) to signal melatonin release.',
-              icon: Icons.nightlight_round,
-              color: isDark ? AppColors.primary : AppColors.primaryDark,
-              isDark: isDark,
-            ),
-            const SizedBox(height: 12),
-            _buildTipCard(
-              title: 'Keep Room Cool & Dark',
-              description:
-                  'Body temperature naturally dips during sleep. A room temperature around 18–20°C (65–68°F) prevents nighttime awakenings.',
-              icon: Icons.thermostat_rounded,
-              color: isDark ? AppColors.primary : AppColors.primaryDark,
-              isDark: isDark,
-            ),
-            const SizedBox(height: 24),
-          ],
+            final patternsSection = Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'PERSONALIZED PATTERNS',
+                  style:
+                      AppTypography.labelSmall(isDark).copyWith(letterSpacing: 1.1),
+                ),
+                const SizedBox(height: 8),
+                if (insights.isEmpty)
+                  _buildEmptyState(isDark)
+                else
+                  ...insights.map((insight) => Padding(
+                        padding: const EdgeInsets.only(bottom: 10),
+                        child: _buildInsightCard(insight, isDark),
+                      )),
+              ],
+            );
+
+            final tipsSection = Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'FOUNDATIONAL SLEEP HABITS',
+                  style:
+                      AppTypography.labelSmall(isDark).copyWith(letterSpacing: 1.1),
+                ),
+                const SizedBox(height: 12),
+                _buildTipCard(
+                  title: 'Anchor Your Wake Time',
+                  description:
+                      'Waking up at the same time each day—even on weekends—sets your circadian rhythm and improves nighttime sleep drive.',
+                  icon: Icons.alarm_rounded,
+                  color: isDark ? const Color(0xFFA3A3A3) : const Color(0xFF525252),
+                  isDark: isDark,
+                ),
+                const SizedBox(height: 12),
+                _buildTipCard(
+                  title: 'Wind-Down Buffer Zone',
+                  description:
+                      'Allow 30 to 60 minutes before bed with dim lighting and relaxing activities (reading, gentle stretching) to signal melatonin release.',
+                  icon: Icons.nightlight_round,
+                  color: isDark ? AppColors.primary : AppColors.primaryDark,
+                  isDark: isDark,
+                ),
+                const SizedBox(height: 12),
+                _buildTipCard(
+                  title: 'Keep Room Cool & Dark',
+                  description:
+                      'Body temperature naturally dips during sleep. A room temperature around 18–20°C (65–68°F) prevents nighttime awakenings.',
+                  icon: Icons.thermostat_rounded,
+                  color: isDark ? AppColors.primary : AppColors.primaryDark,
+                  isDark: isDark,
+                ),
+              ],
+            );
+
+            if (isDesktop) {
+              return SingleChildScrollView(
+                padding: const EdgeInsets.fromLTRB(20, 14, 20, 96),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      flex: 5,
+                      child: trophyCard,
+                    ),
+                    const SizedBox(width: 20),
+                    Expanded(
+                      flex: 6,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          patternsSection,
+                          const SizedBox(height: 20),
+                          tipsSection,
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            }
+
+            return ListView(
+              padding: const EdgeInsets.fromLTRB(16, 10, 16, 96),
+              children: [
+                trophyCard,
+                const SizedBox(height: 18),
+                patternsSection,
+                const SizedBox(height: 14),
+                tipsSection,
+                const SizedBox(height: 24),
+              ],
+            );
+          },
         ),
       ),
     );

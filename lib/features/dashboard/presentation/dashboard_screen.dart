@@ -86,32 +86,38 @@ class DashboardScreen extends StatelessWidget {
                     ),
                     const SizedBox(width: 8),
                     // Goal Indicator Badge
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 12, vertical: 6),
-                      decoration: BoxDecoration(
-                        color: AppColors.primary.withValues(alpha: 0.12),
-                        borderRadius: BorderRadius.circular(6),
-                        border: Border.all(
-                          color: AppColors.primary.withValues(alpha: 0.25),
-                        ),
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          const Icon(Icons.flag_rounded,
-                              size: 15, color: AppColors.primary),
-                          const SizedBox(width: 6),
-                          Text(
-                            'Goal: ${preferences.formattedSleepGoal}',
-                            style: AppTypography.labelSmall(isDark).copyWith(
-                              color: isDark
-                                  ? AppColors.primary
-                                  : AppColors.primaryDark,
-                              fontWeight: FontWeight.w700,
+                    Flexible(
+                      child: FittedBox(
+                        fit: BoxFit.scaleDown,
+                        alignment: Alignment.centerRight,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 12, vertical: 6),
+                          decoration: BoxDecoration(
+                            color: AppColors.primary.withValues(alpha: 0.12),
+                            borderRadius: BorderRadius.circular(6),
+                            border: Border.all(
+                              color: AppColors.primary.withValues(alpha: 0.25),
                             ),
                           ),
-                        ],
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const Icon(Icons.flag_rounded,
+                                  size: 15, color: AppColors.primary),
+                              const SizedBox(width: 6),
+                              Text(
+                                'Goal: ${preferences.formattedSleepGoal}',
+                                style: AppTypography.labelSmall(isDark).copyWith(
+                                  color: isDark
+                                      ? AppColors.primary
+                                      : AppColors.primaryDark,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
                       ),
                     ),
                   ],
@@ -142,162 +148,140 @@ class DashboardScreen extends StatelessWidget {
                   const SizedBox(height: 16),
                 ],
 
-                // Responsive Layout: 2-Column on Desktop (>= 880px), Single Column on Mobile
+                // Responsive Layout: 2-Column on Desktop (>= 840px), Single Column on Mobile
                 LayoutBuilder(
                   builder: (context, constraints) {
-                    final mobileWidgets = [
-                      // 1. Today's / Last Night's Sleep Performance Summary
-                      _buildSleepSummaryCard(
-                        context: context,
-                        isDark: isDark,
-                        session: latestSession,
-                        goalMinutes: preferences.sleepGoalMinutes,
-                      ),
-                      const SizedBox(height: 14),
+                    final isDesktop = constraints.maxWidth >= 840;
+                    final isNarrow = constraints.maxWidth < 360;
 
-                      // 2. Quick Action Bar
-                      QuickActionBar(
-                        isTracking: tracker.isTracking,
-                        onStartSleep: () => tracker.startSleepTimer(),
-                        onManualLog: () {
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (_) => const ManualEntryScreen(),
-                            ),
-                          );
-                        },
-                      ),
-                      const SizedBox(height: 14),
+                    final summaryCard = _buildSleepSummaryCard(
+                      context: context,
+                      isDark: isDark,
+                      session: latestSession,
+                      goalMinutes: preferences.sleepGoalMinutes,
+                    );
+                    final quickActionBar = QuickActionBar(
+                      isTracking: tracker.isTracking,
+                      onStartSleep: () => tracker.startSleepTimer(),
+                      onManualLog: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (_) => const ManualEntryScreen(),
+                          ),
+                        );
+                      },
+                    );
+                    final statBadges = _buildStatBadges(
+                      weeklyStats: weeklyStats,
+                      onNavigateToAnalytics: onNavigateToAnalytics,
+                      isNarrow: isNarrow,
+                    );
+                    final sleepStagesCard = SleepStagesCard(
+                      totalMinutes: latestSession?.durationMinutes() ??
+                          preferences.sleepGoalMinutes,
+                    );
+                    final circadianWindowCard = CircadianWindowCard(
+                      bedtimeMinutes: preferences.preferredBedtimeMinutes,
+                      wakeMinutes: preferences.preferredWakeMinutes,
+                      goalMinutes: preferences.sleepGoalMinutes,
+                    );
+                    final recentTrendCard = RecentTrendCard(
+                      dailySummaries: weeklyStats.dailySummaries,
+                      goalMinutes: preferences.sleepGoalMinutes,
+                      onTap: onNavigateToAnalytics,
+                    );
+                    final recoveryDebtCard = RecoveryDebtCard(
+                      consistencyScore: weeklyStats.bedtimeConsistencyScore,
+                      totalSessions: weeklyStats.totalSessions,
+                      sleepDebt: weeklyStats.hasData
+                          ? weeklyStats.formattedSleepDebt
+                          : '0m',
+                      hasSleepDebt: weeklyStats.hasSleepDebt,
+                      sleepEfficiency: weeklyStats.hasData
+                          ? weeklyStats.sleepEfficiencyPercentage
+                          : 92,
+                      streakDays: weeklyStats.currentStreak,
+                    );
+                    final recentSessionsList = RecentSessionsListCard(
+                      sessions: tracker.completedSessions,
+                      onSeeAll: onNavigateToAnalytics,
+                    );
+                    final insightPreview = tracker.insights.isNotEmpty
+                        ? _buildInsightPreview(
+                            context: context,
+                            isDark: isDark,
+                            insight: tracker.insights.first,
+                          )
+                        : null;
 
-                      // 3. 4 Visual Stat Badges 2x2 Grid
-                      Row(
+                    if (isDesktop) {
+                      return Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
+                          // Left Column
                           Expanded(
-                            child: SomnaStatBadge(
-                              icon: Icons.sync_rounded,
-                              title: 'Consistency',
-                              value: weeklyStats.hasData
-                                  ? '${weeklyStats.bedtimeConsistencyScore}%'
-                                  : '88%',
-                              subtitle: 'Stable rhythm (+4%)',
-                              accentColor: AppColors.positive,
-                              onTap: onNavigateToAnalytics,
+                            flex: 5,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                summaryCard,
+                                const SizedBox(height: 14),
+                                quickActionBar,
+                                const SizedBox(height: 14),
+                                sleepStagesCard,
+                                const SizedBox(height: 14),
+                                circadianWindowCard,
+                              ],
                             ),
                           ),
-                          const SizedBox(width: 10),
+                          const SizedBox(width: 16),
+                          // Right Column
                           Expanded(
-                            child: SomnaStatBadge(
-                              icon: Icons.bar_chart_rounded,
-                              title: '7-Day Average',
-                              value: weeklyStats.hasData
-                                  ? weeklyStats.formattedAverageDuration
-                                  : '7h 45m',
-                              subtitle: '${weeklyStats.totalSessions > 0 ? weeklyStats.totalSessions : 6} logs this week',
-                              accentColor: AppColors.secondary,
-                              onTap: onNavigateToAnalytics,
+                            flex: 6,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                statBadges,
+                                const SizedBox(height: 14),
+                                recentTrendCard,
+                                const SizedBox(height: 14),
+                                recoveryDebtCard,
+                                const SizedBox(height: 14),
+                                recentSessionsList,
+                                if (insightPreview != null) ...[
+                                  const SizedBox(height: 14),
+                                  insightPreview,
+                                ],
+                              ],
                             ),
                           ),
                         ],
-                      ),
-                      const SizedBox(height: 10),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: SomnaStatBadge(
-                              icon: Icons.auto_graph_rounded,
-                              title: 'Sleep Efficiency',
-                              value: weeklyStats.hasData
-                                  ? '${weeklyStats.sleepEfficiencyPercentage}%'
-                                  : '92%',
-                              subtitle: weeklyStats.sleepEfficiencyPercentage >= 85
-                                  ? 'High continuity'
-                                  : 'Variable rest',
-                              accentColor: const Color(0xFF6366F1),
-                              onTap: onNavigateToAnalytics,
-                            ),
-                          ),
-                          const SizedBox(width: 10),
-                          Expanded(
-                            child: SomnaStatBadge(
-                              icon: weeklyStats.hasSleepDebt
-                                  ? Icons.battery_alert_rounded
-                                  : Icons.battery_charging_full_rounded,
-                              title: 'Sleep Debt',
-                              value: weeklyStats.hasData
-                                  ? weeklyStats.formattedSleepDebt
-                                  : '0m',
-                              subtitle: weeklyStats.hasSleepDebt
-                                  ? 'Rest deficit'
-                                  : 'Optimal state',
-                              accentColor: weeklyStats.hasSleepDebt
-                                  ? AppColors.warning
-                                  : AppColors.positive,
-                              onTap: onNavigateToAnalytics,
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 14),
-
-                      // 4. Visual Sleep Stages Architecture
-                      SleepStagesCard(
-                        totalMinutes: latestSession?.durationMinutes() ??
-                            preferences.sleepGoalMinutes,
-                      ),
-                      const SizedBox(height: 14),
-
-                      // 5. Circadian Rhythm & 24h Sleep Window
-                      CircadianWindowCard(
-                        bedtimeMinutes: preferences.preferredBedtimeMinutes,
-                        wakeMinutes: preferences.preferredWakeMinutes,
-                        goalMinutes: preferences.sleepGoalMinutes,
-                      ),
-                      const SizedBox(height: 14),
-
-                      // 6. 7-Day Sleep Trend Mini Chart
-                      RecentTrendCard(
-                        dailySummaries: weeklyStats.dailySummaries,
-                        goalMinutes: preferences.sleepGoalMinutes,
-                        onTap: onNavigateToAnalytics,
-                      ),
-                      const SizedBox(height: 14),
-
-                      // 7. Physical Recovery & Debt Gauge
-                      RecoveryDebtCard(
-                        consistencyScore:
-                            weeklyStats.bedtimeConsistencyScore,
-                        totalSessions: weeklyStats.totalSessions,
-                        sleepDebt: weeklyStats.hasData
-                            ? weeklyStats.formattedSleepDebt
-                            : '0m',
-                        hasSleepDebt: weeklyStats.hasSleepDebt,
-                        sleepEfficiency: weeklyStats.hasData
-                            ? weeklyStats.sleepEfficiencyPercentage
-                            : 92,
-                        streakDays: weeklyStats.currentStreak,
-                      ),
-                      const SizedBox(height: 14),
-
-                      // 8. Recent Sleep Sessions Activity Log
-                      RecentSessionsListCard(
-                        sessions: tracker.completedSessions,
-                        onSeeAll: onNavigateToAnalytics,
-                      ),
-                      const SizedBox(height: 14),
-
-                      // 9. Smart Sleep Insight Card
-                      if (tracker.insights.isNotEmpty) ...[
-                        _buildInsightPreview(
-                          context: context,
-                          isDark: isDark,
-                          insight: tracker.insights.first,
-                        ),
-                      ],
-                    ];
+                      );
+                    }
 
                     return Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      children: mobileWidgets,
+                      children: [
+                        summaryCard,
+                        const SizedBox(height: 14),
+                        quickActionBar,
+                        const SizedBox(height: 14),
+                        statBadges,
+                        const SizedBox(height: 14),
+                        sleepStagesCard,
+                        const SizedBox(height: 14),
+                        circadianWindowCard,
+                        const SizedBox(height: 14),
+                        recentTrendCard,
+                        const SizedBox(height: 14),
+                        recoveryDebtCard,
+                        const SizedBox(height: 14),
+                        recentSessionsList,
+                        if (insightPreview != null) ...[
+                          const SizedBox(height: 14),
+                          insightPreview,
+                        ],
+                      ],
                     );
                   },
                 ),
@@ -391,13 +375,23 @@ class DashboardScreen extends StatelessWidget {
                             const Icon(Icons.nightlight_round,
                                 size: 14, color: AppColors.primary),
                             const SizedBox(width: 4),
-                            Text('Bedtime',
-                                style: AppTypography.labelSmall(isDark)),
+                            Expanded(
+                              child: Text(
+                                'Bedtime',
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 1,
+                                style: AppTypography.labelSmall(isDark),
+                              ),
+                            ),
                           ],
                         ),
                         const SizedBox(height: 3),
-                        Text('11:00 PM',
-                            style: AppTypography.titleMedium(isDark)),
+                        FittedBox(
+                          fit: BoxFit.scaleDown,
+                          alignment: Alignment.centerLeft,
+                          child: Text('11:00 PM',
+                              style: AppTypography.titleMedium(isDark)),
+                        ),
                       ],
                     ),
                   ),
@@ -406,7 +400,7 @@ class DashboardScreen extends StatelessWidget {
                 Expanded(
                   child: Container(
                     padding: const EdgeInsets.symmetric(
-                        horizontal: 12, vertical: 10),
+                        horizontal: 10, vertical: 8),
                     decoration: BoxDecoration(
                       color: isDark
                           ? AppColors.darkElevated
@@ -426,13 +420,23 @@ class DashboardScreen extends StatelessWidget {
                             const Icon(Icons.wb_sunny_rounded,
                                 size: 14, color: AppColors.secondary),
                             const SizedBox(width: 4),
-                            Text('Wake Up',
-                                style: AppTypography.labelSmall(isDark)),
+                            Expanded(
+                              child: Text(
+                                'Wake Up',
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 1,
+                                style: AppTypography.labelSmall(isDark),
+                              ),
+                            ),
                           ],
                         ),
                         const SizedBox(height: 3),
-                        Text('07:00 AM',
-                            style: AppTypography.titleMedium(isDark)),
+                        FittedBox(
+                          fit: BoxFit.scaleDown,
+                          alignment: Alignment.centerLeft,
+                          child: Text('07:00 AM',
+                              style: AppTypography.titleMedium(isDark)),
+                        ),
                       ],
                     ),
                   ),
@@ -568,12 +572,101 @@ class DashboardScreen extends StatelessWidget {
           ],
         ),
         const SizedBox(height: 3),
-        Text(
-          value,
-          style: AppTypography.titleMedium(isDark).copyWith(
-            color: accentColor,
-            fontWeight: FontWeight.w700,
+        FittedBox(
+          fit: BoxFit.scaleDown,
+          child: Text(
+            value,
+            style: AppTypography.titleMedium(isDark).copyWith(
+              color: accentColor,
+              fontWeight: FontWeight.w700,
+            ),
           ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildStatBadges({
+    required dynamic weeklyStats,
+    required VoidCallback onNavigateToAnalytics,
+    required bool isNarrow,
+  }) {
+    final badge1 = SomnaStatBadge(
+      icon: Icons.sync_rounded,
+      title: 'Consistency',
+      value: weeklyStats.hasData
+          ? '${weeklyStats.bedtimeConsistencyScore}%'
+          : '88%',
+      subtitle: 'Stable rhythm (+4%)',
+      accentColor: AppColors.positive,
+      onTap: onNavigateToAnalytics,
+    );
+    final badge2 = SomnaStatBadge(
+      icon: Icons.bar_chart_rounded,
+      title: '7-Day Average',
+      value: weeklyStats.hasData
+          ? weeklyStats.formattedAverageDuration
+          : '7h 45m',
+      subtitle:
+          '${weeklyStats.totalSessions > 0 ? weeklyStats.totalSessions : 6} logs this week',
+      accentColor: AppColors.secondary,
+      onTap: onNavigateToAnalytics,
+    );
+    final badge3 = SomnaStatBadge(
+      icon: Icons.auto_graph_rounded,
+      title: 'Sleep Efficiency',
+      value: weeklyStats.hasData
+          ? '${weeklyStats.sleepEfficiencyPercentage}%'
+          : '92%',
+      subtitle: weeklyStats.sleepEfficiencyPercentage >= 85
+          ? 'High continuity'
+          : 'Variable rest',
+      accentColor: const Color(0xFF6366F1),
+      onTap: onNavigateToAnalytics,
+    );
+    final badge4 = SomnaStatBadge(
+      icon: weeklyStats.hasSleepDebt
+          ? Icons.battery_alert_rounded
+          : Icons.battery_charging_full_rounded,
+      title: 'Sleep Debt',
+      value: weeklyStats.hasData ? weeklyStats.formattedSleepDebt : '0m',
+      subtitle:
+          weeklyStats.hasSleepDebt ? 'Rest deficit' : 'Optimal state',
+      accentColor:
+          weeklyStats.hasSleepDebt ? AppColors.warning : AppColors.positive,
+      onTap: onNavigateToAnalytics,
+    );
+
+    if (isNarrow) {
+      return Column(
+        children: [
+          badge1,
+          const SizedBox(height: 8),
+          badge2,
+          const SizedBox(height: 8),
+          badge3,
+          const SizedBox(height: 8),
+          badge4,
+        ],
+      );
+    }
+
+    return Column(
+      children: [
+        Row(
+          children: [
+            Expanded(child: badge1),
+            const SizedBox(width: 10),
+            Expanded(child: badge2),
+          ],
+        ),
+        const SizedBox(height: 10),
+        Row(
+          children: [
+            Expanded(child: badge3),
+            const SizedBox(width: 10),
+            Expanded(child: badge4),
+          ],
         ),
       ],
     );
@@ -607,10 +700,15 @@ class DashboardScreen extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      insight.title,
-                      style: AppTypography.titleSmall(isDark),
+                    Expanded(
+                      child: Text(
+                        insight.title,
+                        style: AppTypography.titleSmall(isDark),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
                     ),
+                    const SizedBox(width: 4),
                     Icon(
                       Icons.chevron_right_rounded,
                       size: 16,

@@ -29,9 +29,12 @@ class SettingsScreen extends StatelessWidget {
         title: const Text('Settings'),
       ),
       body: SafeArea(
-        child: ListView(
-          padding: const EdgeInsets.fromLTRB(16, 10, 16, 96),
-          children: [
+        child: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 900),
+            child: ListView(
+              padding: const EdgeInsets.fromLTRB(16, 10, 16, 96),
+              children: [
             // --- SECTION 1: SLEEP GOAL & SCHEDULE ---
             _buildSectionHeader('SLEEP GOAL & SCHEDULE', isDark),
             const SizedBox(height: 6),
@@ -400,7 +403,9 @@ class SettingsScreen extends StatelessWidget {
           ],
         ),
       ),
-    );
+    ),
+  ),
+);
   }
 
   Widget _buildSectionHeader(String title, bool isDark) {

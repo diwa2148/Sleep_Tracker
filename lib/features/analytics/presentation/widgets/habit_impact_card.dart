@@ -32,24 +32,30 @@ class HabitImpactCard extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Row(
-                children: [
-                  Icon(
-                    Icons.bubble_chart_rounded,
-                    size: 16,
-                    color: isDark ? Colors.white : Colors.black,
-                  ),
-                  const SizedBox(width: 8),
-                  Text(
-                    'HABIT & FACTOR IMPACT MATRIX',
-                    style: AppTypography.labelSmall(isDark).copyWith(
+              Expanded(
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.bubble_chart_rounded,
+                      size: 16,
                       color: isDark ? Colors.white : Colors.black,
-                      fontWeight: FontWeight.w700,
-                      letterSpacing: 0.8,
                     ),
-                  ),
-                ],
+                    const SizedBox(width: 8),
+                    Flexible(
+                      child: Text(
+                        'HABIT & FACTOR IMPACT MATRIX',
+                        overflow: TextOverflow.ellipsis,
+                        style: AppTypography.labelSmall(isDark).copyWith(
+                          color: isDark ? Colors.white : Colors.black,
+                          fontWeight: FontWeight.w700,
+                          letterSpacing: 0.8,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
+              const SizedBox(width: 6),
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                 decoration: BoxDecoration(

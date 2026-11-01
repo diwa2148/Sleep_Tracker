@@ -72,205 +72,282 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
               if (stats.isEmpty)
                 _buildEmptyAnalytics(isDark)
               else ...[
-                // Main Duration Chart Card
-                SomnaCard(
-                  padding: const EdgeInsets.all(14),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                LayoutBuilder(
+                  builder: (context, constraints) {
+                    final isDesktop = constraints.maxWidth >= 840;
+                    final isNarrow = constraints.maxWidth < 360;
+
+                    // Chart Card
+                    final chartCard = SomnaCard(
+                      padding: const EdgeInsets.all(14),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text(
-                                isWeekly
-                                    ? '7-Day Sleep Duration'
-                                    : '30-Day Sleep Duration',
-                                style: AppTypography.titleMedium(isDark),
-                              ),
-                              const SizedBox(height: 2),
-                              Text(
-                                'Average: ${stats.formattedAverageDuration}',
-                                style: AppTypography.bodySmall(isDark).copyWith(
-                                  color: isDark ? AppColors.primary : AppColors.primaryDark,
-                                  fontWeight: FontWeight.w600,
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      isWeekly
+                                          ? '7-Day Sleep Duration'
+                                          : '30-Day Sleep Duration',
+                                      style: AppTypography.titleMedium(isDark),
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                    const SizedBox(height: 2),
+                                    Text(
+                                      'Average: ${stats.formattedAverageDuration}',
+                                      style: AppTypography.bodySmall(isDark).copyWith(
+                                        color: isDark
+                                            ? AppColors.primary
+                                            : AppColors.primaryDark,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ],
                                 ),
                               ),
+                              if (stats.durationDifferenceMinutes != null)
+                                Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 8, vertical: 4),
+                                  decoration: BoxDecoration(
+                                    color: (stats.durationDifferenceMinutes! >= 0
+                                            ? AppColors.positive
+                                            : AppColors.warning)
+                                        .withValues(alpha: 0.14),
+                                    borderRadius: BorderRadius.circular(6),
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      Icon(
+                                        stats.durationDifferenceMinutes! >= 0
+                                            ? Icons.arrow_upward_rounded
+                                            : Icons.arrow_downward_rounded,
+                                        size: 12,
+                                        color: stats.durationDifferenceMinutes! >= 0
+                                            ? AppColors.positive
+                                            : AppColors.warning,
+                                      ),
+                                      const SizedBox(width: 4),
+                                      Text(
+                                        '${DateTimeFormatter.formatMinutes(stats.durationDifferenceMinutes!.abs())} vs prev',
+                                        style: AppTypography.labelSmall(isDark)
+                                            .copyWith(
+                                          color:
+                                              stats.durationDifferenceMinutes! >= 0
+                                                  ? AppColors.positive
+                                                  : AppColors.warning,
+                                          fontSize: 10,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
                             ],
                           ),
-                          if (stats.durationDifferenceMinutes != null)
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 8, vertical: 4),
-                              decoration: BoxDecoration(
-                                color: (stats.durationDifferenceMinutes! >= 0
-                                        ? AppColors.positive
-                                        : AppColors.warning)
-                                    .withValues(alpha: 0.14),
-                                borderRadius: BorderRadius.circular(6),
-                              ),
-                              child: Row(
-                                children: [
-                                  Icon(
-                                    stats.durationDifferenceMinutes! >= 0
-                                        ? Icons.arrow_upward_rounded
-                                        : Icons.arrow_downward_rounded,
-                                    size: 12,
-                                    color: stats.durationDifferenceMinutes! >= 0
-                                        ? AppColors.positive
-                                        : AppColors.warning,
-                                  ),
-                                  const SizedBox(width: 4),
-                                  Text(
-                                    '${DateTimeFormatter.formatMinutes(stats.durationDifferenceMinutes!.abs())} vs prev',
-                                    style: AppTypography.labelSmall(isDark)
-                                        .copyWith(
-                                      color:
-                                          stats.durationDifferenceMinutes! >= 0
-                                              ? AppColors.positive
-                                              : AppColors.warning,
-                                      fontSize: 10,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
+                          const SizedBox(height: 12),
+                          DurationBarChart(
+                            summaries: stats.dailySummaries,
+                            goalMinutes: preferences.sleepGoalMinutes,
+                            height: 150,
+                          ),
                         ],
                       ),
-                      const SizedBox(height: 12),
-                      DurationBarChart(
-                        summaries: stats.dailySummaries,
-                        goalMinutes: preferences.sleepGoalMinutes,
-                        height: 150,
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 12),
+                    );
 
-                // Circular Average Bedtime & Wake-up Time
-                Row(
-                  children: [
-                    Expanded(
-                      child: SomnaStatBadge(
-                        icon: Icons.nightlight_round,
-                        title: 'Avg Bedtime',
-                        value: stats.formattedAverageBedtime,
-                        subtitle: 'Circular avg around midnight',
-                        accentColor: AppColors.primary,
-                      ),
-                    ),
-                    const SizedBox(width: 10),
-                    Expanded(
-                      child: SomnaStatBadge(
-                        icon: Icons.wb_sunny_rounded,
-                        title: 'Avg Wake Up',
-                        value: stats.formattedAverageWakeTime,
-                        subtitle:
-                            'Target: ${preferences.preferredWakeTime.format(context)}',
-                        accentColor: AppColors.secondary,
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 10),
+                    // Averages Row or Column
+                    final bedtimeBadge = SomnaStatBadge(
+                      icon: Icons.nightlight_round,
+                      title: 'Avg Bedtime',
+                      value: stats.formattedAverageBedtime,
+                      subtitle: 'Circular avg around midnight',
+                      accentColor: AppColors.primary,
+                    );
+                    final wakeBadge = SomnaStatBadge(
+                      icon: Icons.wb_sunny_rounded,
+                      title: 'Avg Wake Up',
+                      value: stats.formattedAverageWakeTime,
+                      subtitle:
+                          'Target: ${preferences.preferredWakeTime.format(context)}',
+                      accentColor: AppColors.secondary,
+                    );
 
-                // Goal Completion & Duration Variability
-                Row(
-                  children: [
-                    Expanded(
-                      child: SomnaStatBadge(
-                        icon: Icons.flag_rounded,
-                        title: 'Goal Hit Rate',
-                        value: '${stats.goalCompletionPercentage.round()}%',
-                        subtitle:
-                            '${stats.dailySummaries.where((d) => d.metGoal).length} of ${stats.totalSessions} sessions',
-                        accentColor: AppColors.positive,
-                      ),
-                    ),
-                    const SizedBox(width: 10),
-                    Expanded(
-                      child: SomnaStatBadge(
-                        icon: Icons.tune_rounded,
-                        title: 'Variability',
-                        value: '±${stats.durationVariabilityMinutes.round()}m',
-                        subtitle: 'Duration deviation',
-                        accentColor: AppColors.warning,
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 12),
+                    final averagesSection = isNarrow
+                        ? Column(
+                            children: [
+                              bedtimeBadge,
+                              const SizedBox(height: 8),
+                              wakeBadge,
+                            ],
+                          )
+                        : Row(
+                            children: [
+                              Expanded(child: bedtimeBadge),
+                              const SizedBox(width: 10),
+                              Expanded(child: wakeBadge),
+                            ],
+                          );
 
-                // Consistency Meter
-                ConsistencyMeter(
-                  consistencyScore: stats.bedtimeConsistencyScore,
-                  variabilityMinutes: stats.durationVariabilityMinutes,
-                ),
-                const SizedBox(height: 12),
+                    // Goal & Variability Row or Column
+                    final goalBadge = SomnaStatBadge(
+                      icon: Icons.flag_rounded,
+                      title: 'Goal Hit Rate',
+                      value: '${stats.goalCompletionPercentage.round()}%',
+                      subtitle:
+                          '${stats.dailySummaries.where((d) => d.metGoal).length} of ${stats.totalSessions} sessions',
+                      accentColor: AppColors.positive,
+                    );
+                    final varBadge = SomnaStatBadge(
+                      icon: Icons.tune_rounded,
+                      title: 'Variability',
+                      value: '±${stats.durationVariabilityMinutes.round()}m',
+                      subtitle: 'Duration deviation',
+                      accentColor: AppColors.warning,
+                    );
 
-                // Habit & Factor Impact Matrix
-                HabitImpactCard(
-                  sessions: tracker.completedSessions,
-                ),
-                const SizedBox(height: 12),
+                    final goalSection = isNarrow
+                        ? Column(
+                            children: [
+                              goalBadge,
+                              const SizedBox(height: 8),
+                              varBadge,
+                            ],
+                          )
+                        : Row(
+                            children: [
+                              Expanded(child: goalBadge),
+                              const SizedBox(width: 10),
+                              Expanded(child: varBadge),
+                            ],
+                          );
 
-                // Sleep Debt & Reserve Ledger
-                SleepDebtLedgerCard(
-                  stats: stats,
-                  sleepGoalMinutes: preferences.sleepGoalMinutes,
-                ),
-                const SizedBox(height: 12),
+                    final consistencyMeter = ConsistencyMeter(
+                      consistencyScore: stats.bedtimeConsistencyScore,
+                      variabilityMinutes: stats.durationVariabilityMinutes,
+                    );
 
-                // Shortest & Longest Sessions
-                if (stats.shortestSession != null &&
-                    stats.longestSession != null) ...[
-                  SomnaCard(
-                    padding: const EdgeInsets.all(20),
-                    child: Column(
+                    final habitImpact = HabitImpactCard(
+                      sessions: tracker.completedSessions,
+                    );
+
+                    final sleepDebtLedger = SleepDebtLedgerCard(
+                      stats: stats,
+                      sleepGoalMinutes: preferences.sleepGoalMinutes,
+                    );
+
+                    final extremesCard = (stats.shortestSession != null &&
+                            stats.longestSession != null)
+                        ? SomnaCard(
+                            padding: const EdgeInsets.all(20),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text('Recorded Extremes',
+                                    style: AppTypography.titleMedium(isDark)),
+                                const SizedBox(height: 14),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    _buildExtremeRow(
+                                      'Shortest Sleep',
+                                      stats.shortestSession!.formattedDuration(),
+                                      DateTimeFormatter.formatShortDate(
+                                          stats.shortestSession!.startTimestamp),
+                                      Icons.arrow_downward_rounded,
+                                      AppColors.warning,
+                                      isDark,
+                                    ),
+                                    Container(
+                                      width: 1,
+                                      height: 38,
+                                      color: isDark
+                                          ? AppColors.darkBorder
+                                          : AppColors.lightBorder,
+                                    ),
+                                    _buildExtremeRow(
+                                      'Longest Sleep',
+                                      stats.longestSession!.formattedDuration(),
+                                      DateTimeFormatter.formatShortDate(
+                                          stats.longestSession!.startTimestamp),
+                                      Icons.arrow_upward_rounded,
+                                      AppColors.positive,
+                                      isDark,
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          )
+                        : const SizedBox.shrink();
+
+                    if (isDesktop) {
+                      return Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                chartCard,
+                                const SizedBox(height: 12),
+                                averagesSection,
+                                const SizedBox(height: 12),
+                                consistencyMeter,
+                                if (stats.shortestSession != null &&
+                                    stats.longestSession != null) ...[
+                                  const SizedBox(height: 12),
+                                  extremesCard,
+                                ],
+                              ],
+                            ),
+                          ),
+                          const SizedBox(width: 16),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                goalSection,
+                                const SizedBox(height: 12),
+                                habitImpact,
+                                const SizedBox(height: 12),
+                                sleepDebtLedger,
+                              ],
+                            ),
+                          ),
+                        ],
+                      );
+                    }
+
+                    return Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('Recorded Extremes',
-                            style: AppTypography.titleMedium(isDark)),
-                        const SizedBox(height: 14),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            _buildExtremeRow(
-                              'Shortest Sleep',
-                              stats.shortestSession!.formattedDuration(),
-                              DateTimeFormatter.formatShortDate(
-                                  stats.shortestSession!.startTimestamp),
-                              Icons.arrow_downward_rounded,
-                              AppColors.warning,
-                              isDark,
-                            ),
-                            Container(
-                              width: 1,
-                              height: 38,
-                              color: isDark
-                                  ? AppColors.darkBorder
-                                  : AppColors.lightBorder,
-                            ),
-                            _buildExtremeRow(
-                              'Longest Sleep',
-                              stats.longestSession!.formattedDuration(),
-                              DateTimeFormatter.formatShortDate(
-                                  stats.longestSession!.startTimestamp),
-                              Icons.arrow_upward_rounded,
-                              AppColors.positive,
-                              isDark,
-                            ),
-                          ],
-                        ),
+                        chartCard,
+                        const SizedBox(height: 12),
+                        averagesSection,
+                        const SizedBox(height: 10),
+                        goalSection,
+                        const SizedBox(height: 12),
+                        consistencyMeter,
+                        const SizedBox(height: 12),
+                        habitImpact,
+                        const SizedBox(height: 12),
+                        sleepDebtLedger,
+                        if (stats.shortestSession != null &&
+                            stats.longestSession != null) ...[
+                          const SizedBox(height: 12),
+                          extremesCard,
+                        ],
                       ],
-                    ),
-                  ),
-                  const SizedBox(height: 24),
-                ],
-
+                    );
+                  },
+                ),
+                const SizedBox(height: 24),
                 // Scientific Disclaimer
                 Center(
                   child: Text(

@@ -40,11 +40,17 @@ class RecentTrendCard extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                '7-Day Sleep Trend',
-                style: AppTypography.titleMedium(isDark),
+              Expanded(
+                child: Text(
+                  '7-Day Sleep Trend',
+                  style: AppTypography.titleMedium(isDark),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
               ),
+              const SizedBox(width: 8),
               Row(
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   Container(
                     width: 7,

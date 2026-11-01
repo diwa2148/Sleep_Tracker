@@ -64,11 +64,15 @@ class SomnaStatBadge extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 12),
-          Text(
-            value,
-            style: AppTypography.headlineMedium(isDark).copyWith(
-              fontWeight: FontWeight.w700,
-              fontSize: 22,
+          FittedBox(
+            fit: BoxFit.scaleDown,
+            alignment: Alignment.centerLeft,
+            child: Text(
+              value,
+              style: AppTypography.headlineMedium(isDark).copyWith(
+                fontWeight: FontWeight.w700,
+                fontSize: 22,
+              ),
             ),
           ),
           if (subtitle != null) ...[
